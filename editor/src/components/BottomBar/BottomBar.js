@@ -42,13 +42,17 @@ function BottomBar() {
         context.event.dispatchEvent(new CustomEvent("addTextField"))
     }
 
+    const handleDoneClick = () => {
+        context.event.dispatchEvent(new CustomEvent("generateImage"))
+    }
+
     return (
         <AppBar position="fixed" className={classes.appBar}>
             <Toolbar>
 
                 <div className={classes.spacer}/>
 
-                <Fab color="primary" className={classes.fabButton}>
+                <Fab color="primary" className={classes.fabButton} onClick={handleDoneClick}>
                     <DoneIcon/>
                 </Fab>
 

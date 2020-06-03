@@ -85,10 +85,11 @@ function Textbox({ id, onRemove }) {
     }
 
     return (
-        <div id={id} className={classes.container} style={{
+        <div className={classes.container} style={{
             transform: `translate(${pos.x}px, ${pos.y}px)`
         }}>
             <input
+                id={`textbox-${id}`}
                 type="text"
                 className={`${classes.input} input`}
                 value={value}

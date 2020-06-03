@@ -3,6 +3,8 @@ import { Dialog, DialogTitle, Button, TextField, MenuItem } from "@material-ui/c
 import { makeStyles } from "@material-ui/core/styles"
 import { useForm, Controller } from "react-hook-form"
 
+import colors from "../../config/colors.json"
+
 const useStyles = makeStyles(theme => ({
     form: {
         padding: theme.spacing(2),
@@ -17,16 +19,6 @@ const useStyles = makeStyles(theme => ({
         marginTop: theme.spacing(1)
     }
 }))
-
-const colors = {
-    White: "white",
-    Black: "black",
-    Green: "#2ecc71",
-    Red: "#e74c3c",
-    Blue: "#3498db",
-    Yellow: "#f1c40f",
-    Purple: "#9b59b6"
-}
 
 function SettingsDialog({ onClose, open, values, text }) {
     const { register, getValues, handleSubmit, control, watch, reset } = useForm()
