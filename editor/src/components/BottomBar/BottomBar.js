@@ -1,7 +1,11 @@
-import React from "react"
-import { AppBar, Toolbar, Fab } from "@material-ui/core"
+import React, { useContext } from "react"
+import { AppBar, Toolbar, Fab, IconButton } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import DoneIcon from "@material-ui/icons/Done"
+import PhotoLibraryIcon from "@material-ui/icons/PhotoLibrary"
+
+import importFile, { fileToImage } from "../../utils/importFile.js"
+import { AppContext } from "../../App.js"
 
 const useStyles = makeStyles(theme => ({
     appBar: {
@@ -16,18 +20,36 @@ const useStyles = makeStyles(theme => ({
         left: 0,
         right: 0,
         margin: "0 auto"
+    },
+
+    spacer: {
+        flexGrow: 1
     }
 }))
 
 function BottomBar() {
+    const context = useContext(AppContext)
     const classes = useStyles()
+
+    const handleImageImport = async () => {
+        const file = await importFile("image/*")
+        const base64Image = await fileToImage(file)
+        context.setImage(base64Image)
+    }
 
     return (
         <AppBar position="fixed" className={classes.appBar}>
             <Toolbar>
+
+                <div className={classes.spacer}/>
+
                 <Fab color="primary" className={classes.fabButton}>
                     <DoneIcon/>
                 </Fab>
+
+                <IconButton onClick={handleImageImport}>
+                    <PhotoLibraryIcon/>
+                </IconButton>
             </Toolbar>
         </AppBar>
     )
