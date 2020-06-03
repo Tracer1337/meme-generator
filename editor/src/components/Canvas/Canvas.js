@@ -1,5 +1,7 @@
-import React, { useContext } from "react"
+import React, { useContext, useEffect, useState, useRef } from "react"
 import { makeStyles } from "@material-ui/core/styles"
+
+import Textbox from "./Textbox.js"
 
 import { AppContext } from "../../App.js"
 
@@ -12,11 +14,13 @@ const useStyles = makeStyles(theme => ({
         left: 0, right: 0,
         backgroundColor: theme.palette.background.default,
         marginBottom: theme.mixins.toolbar.minHeight,
-        display: "flex"
+        display: "flex",
+        overflow: "hidden"
     },
 
     canvas: {
-        flexGrow: 1
+        flexGrow: 1,
+        position: "relative"
     },
 
     image: {
@@ -29,12 +33,37 @@ const useStyles = makeStyles(theme => ({
 
 function Canvas() {
     const context = useContext(AppContext)
+
     const classes = useStyles()
+
+    const idCounter = useRef(0)
+
+    const [textboxes, setTextboxes] = useState([])
+
+    useEffect(() => {
+        const handleAddTextField = () => {
+            const newId = idCounter.current++
+            const newElement = [(
+                <Textbox
+                    key={newId}
+                    id={newId}
+                />
+            ), newId]
+
+            setTextboxes([...textboxes, newElement])
+        }
+
+        context.event.addEventListener("addTextField", handleAddTextField)
+
+        return () => context.event.removeEventListener("addTextField", handleAddTextField)
+    })
 
     return (
         <div className={classes.canvasWrapper}>
             <div className={classes.canvas}>
-                {context.image && <img src={context.image} className={classes.image}/>}
+                {context.image && <img alt="" src={context.image} className={classes.image}/>}
+
+                {textboxes.map(([element]) => element)}
             </div>
         </div>
     )
