@@ -1,28 +1,93 @@
-import React from "react"
-import { Dialog, DialogTitle, Button, TextField } from "@material-ui/core"
+import React, { useEffect } from "react"
+import { Dialog, DialogTitle, Button, TextField, MenuItem } from "@material-ui/core"
+import { makeStyles } from "@material-ui/core/styles"
 import { useForm, Controller } from "react-hook-form"
 
-function SettingsDialog({ onClose, open, values }) {
-    const { getValues, handleSubmit, control } = useForm()
+const useStyles = makeStyles(theme => ({
+    form: {
+        padding: theme.spacing(2),
+        paddingTop: 0
+    },
+
+    applyButton: {
+        marginTop: theme.spacing(2)
+    },
+
+    input: {
+        marginTop: theme.spacing(1)
+    }
+}))
+
+const colors = {
+    White: "white",
+    Black: "black",
+    Green: "#2ecc71",
+    Red: "#e74c3c",
+    Blue: "#3498db",
+    Yellow: "#f1c40f",
+    Purple: "#9b59b6"
+}
+
+function SettingsDialog({ onClose, open, values, text }) {
+    const { register, getValues, handleSubmit, control, watch, reset } = useForm()
+
+    const classes = useStyles()
 
     const handleClose = () => {
-        onClose(getValues())
+        const values = getValues()
+        
+        values.fontSize = parseInt(values.fontSize)
+
+        onClose(values)
     }
+
+    useEffect(() => {
+        reset(values)
+    }, [values, reset])
 
     return (
         <Dialog onClose={handleClose} open={open}>
-            <DialogTitle>Customize Text</DialogTitle>
+            <DialogTitle>
+                <span style={{
+                    ...watch(),
+                    fontSize: parseInt(watch("fontSize")),
+                }}>
+                    {text}
+                </span>
+            </DialogTitle>
 
-            <form onSubmit={handleSubmit(handleClose)}>
-                <Controller
-                    as={TextField}
-                    control={control}
+            <form onSubmit={handleSubmit(handleClose)} className={classes.form}>
+                <TextField
+                    inputRef={register()}
                     name="fontSize"
-                    defaultValue={values.fontSize}
                     type="number"
+                    label="Font Size"
+                    fullWidth
+                    className={classes.input}
                 />
 
-                <Button>Apply</Button>
+                <Controller
+                    as={props => (
+                        <TextField
+                            select
+                            label="Color"
+                            fullWidth
+                            className={classes.input}
+                            value={watch("color")}
+                            {...props}
+                        >
+                            {Object.entries(colors).map(([label, code]) => (
+                                <MenuItem key={code} value={code}>
+                                    <span style={{ color: code }}>{label}</span>
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                    )}
+                    control={control}
+                    name="color"
+                />
+
+                <Button fullWidth className={classes.applyButton} type="submit">Apply</Button>
             </form>
         </Dialog>
     )

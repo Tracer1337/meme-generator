@@ -4,6 +4,7 @@ import { IconButton } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import ZoomOutMapIcon from "@material-ui/icons/ZoomOutMap"
 import SettingsIcon from "@material-ui/icons/Settings"
+import CloseIcon from "@material-ui/icons/Close"
 
 import SettingsDialog from "./SettingsDialog.js"
 
@@ -19,7 +20,9 @@ const useStyles = makeStyles(theme => ({
 
     movementHandle: {
         transform: "rotate(45deg)",
-        color: "white"
+        color: "white",
+        fontSize: 28,
+        cursor: "pointer"
     },
 
     input: {
@@ -35,7 +38,7 @@ const useStyles = makeStyles(theme => ({
 
     button: {
         padding: 0,
-        marginLeft: theme.spacing(1)
+        marginLeft: theme.spacing(2)
     },
 
     action: {
@@ -49,7 +52,7 @@ const defaultSettings = {
     color: "white"
 }
 
-function Textbox({ id }) {
+function Textbox({ id, onRemove }) {
     const classes = useStyles()
 
     const [value, setValue] = useState("Enter Text...")
@@ -73,7 +76,12 @@ function Textbox({ id }) {
     }
 
     const handleSettingsApply = values => {
+        setSettings(values)
         setDialogOpen(false)
+    }
+
+    const handleRemoveClicked = () => {
+        onRemove(id)
     }
 
     return (
@@ -85,22 +93,29 @@ function Textbox({ id }) {
                 className={`${classes.input} input`}
                 value={value}
                 onChange={handleChange}
-                style={{ width: textWidth({ text: value, fontSize: 24 }) + "px" }}
+                style={{
+                    width: textWidth({ text: value, fontSize: settings.fontSize }) + "px",
+                    ...settings
+                }}
             />
             
             <div className={classes.action}>
                 <DraggableCore
                     onDrag={handleDrag}
                 >
-                    <ZoomOutMapIcon className={classes.movementHandle} fontSize="large"/>
+                    <ZoomOutMapIcon className={classes.movementHandle}/>
                 </DraggableCore>
 
                 <IconButton className={classes.button} onClick={handleSettingsClicked}>
                     <SettingsIcon fontSize="large"/>
                 </IconButton>
+
+                <IconButton className={classes.button} onClick={handleRemoveClicked}>
+                    <CloseIcon fontSize="large"/>
+                </IconButton>
             </div>
 
-            <SettingsDialog open={dialogOpen} onClose={handleSettingsApply} values={settings}/>
+            <SettingsDialog open={dialogOpen} onClose={handleSettingsApply} values={settings} text={value}/>
         </div>
     )
 }

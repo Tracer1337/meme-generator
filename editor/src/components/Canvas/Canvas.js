@@ -38,24 +38,20 @@ function Canvas() {
 
     const idCounter = useRef(0)
 
-    const [textboxes, setTextboxes] = useState([])
+    const [keys, setKeys] = useState([])
+
+    const handleRemoveKey = removeKey => {
+        const newKeys = keys.filter(key => key !== removeKey)
+        setKeys(newKeys)
+    }
+
+    const handleAddTextField = () => {
+        const newKey = idCounter.current++
+        setKeys([...keys, newKey])
+    }
 
     useEffect(() => {
-        const handleAddTextField = () => {
-            const newId = idCounter.current++
-            const newElement = [(
-                <Textbox
-                    key={newId}
-                    id={newId}
-                />
-            ), newId]
-
-            setTextboxes([...textboxes, newElement])
-        }
-
         context.event.addEventListener("addTextField", handleAddTextField)
-
-        return () => context.event.removeEventListener("addTextField", handleAddTextField)
     })
 
     return (
@@ -63,7 +59,13 @@ function Canvas() {
             <div className={classes.canvas}>
                 {context.image && <img alt="" src={context.image} className={classes.image}/>}
 
-                {textboxes.map(([element]) => element)}
+                {keys.map(key => (
+                    <Textbox
+                        key={key}
+                        id={key}
+                        onRemove={handleRemoveKey}
+                    />
+                ))}
             </div>
         </div>
     )
