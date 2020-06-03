@@ -1,6 +1,6 @@
-export default function downloadImage(image) {
+export default function downloadImageSrc(src) {
     const a = document.createElement("a")
-    a.href = image.src
+    a.href = src
     a.download = "download.png"
     document.body.appendChild(a)
     a.click()

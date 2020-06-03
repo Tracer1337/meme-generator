@@ -13,6 +13,7 @@ import textWidth from "../../utils/textWidth.js"
 const useStyles = makeStyles(theme => ({
     container: {
         position: "absolute",
+        top: 0,
         display: "flex",
         flexDirection: "column",
         alignItems: "center"
@@ -58,10 +59,7 @@ function Textbox({ id, onRemove }) {
     const [value, setValue] = useState("Enter Text...")
     const [dialogOpen, setDialogOpen] = useState(false)
     const [settings, setSettings] = useState(defaultSettings)
-    const [pos, setPos] = useState({
-        x: window.innerWidth / 2 - 100,
-        y: (window.innerHeight - 56) / 2
-    })
+    const [pos, setPos] = useState({ x: 0, y: 0 })
 
     const handleChange = event => {
         setValue(event.target.value)
