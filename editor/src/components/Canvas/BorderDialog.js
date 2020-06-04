@@ -93,6 +93,34 @@ function SettingsDialog({ onClose, open, values }) {
                                 className={classes.input}
                             />
 
+                            {/* Left */}
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        name="left"
+                                        inputRef={register()}
+                                        onChange={(event, value) => setValue("left", value)}
+                                        checked={watch("left")}
+                                    />
+                                }
+                                label="Left"
+                                className={classes.input}
+                            />
+
+                            {/* Right */}
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        name="right"
+                                        inputRef={register()}
+                                        onChange={(event, value) => setValue("right", value)}
+                                        checked={watch("right")}
+                                    />
+                                }
+                                label="Right"
+                                className={classes.input}
+                            />
+
                             <Button fullWidth className={classes.applyButton} type="submit">Apply</Button>
                         </FormGroup>
                     </form>

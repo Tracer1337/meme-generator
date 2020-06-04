@@ -20,6 +20,8 @@ const defaultBorderValues = {
     size: 0,
     top: true,
     bottom: true,
+    left: false,
+    right: false,
     color: "white"
 }
 
@@ -129,6 +131,8 @@ function Canvas() {
             <div className={classes.canvas} style={{
                 paddingTop: borderValues.top ? borderValues.size + "px" : null,
                 paddingBottom: borderValues.bottom ? borderValues.size + "px" : null,
+                paddingLeft: borderValues.left ? borderValues.size + "px" : null,
+                paddingRight: borderValues.right ? borderValues.size + "px" : null,
                 backgroundColor: borderValues.color
             }}>
                 {context.image && <img alt="" src={context.image} className={classes.image} ref={image}/>}
