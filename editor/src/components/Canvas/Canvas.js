@@ -8,6 +8,11 @@ import { AppContext } from "../../App.js"
 
 import downloadImageSrc from "../../utils/downloadImageSrc.js"
 
+const showCanvas = (canvas) => {
+    const newWindow = window.open("", "canvas")
+    newWindow.document.body.appendChild(canvas)
+}
+
 const imagePadding = 10
 
 const useStyles = makeStyles(theme => ({
@@ -64,16 +69,29 @@ function Canvas() {
         setKeys([...keys, newKey])
     }
 
-    const beforeCapturing = container => {
-        console.log(textboxes)
+    const beforeCapturing = async container => {
+        Object.values(textboxes.current).forEach(textbox => textbox.beforeCapturing())
+
+        // Wait until the dom changes have applied
+        await new Promise(requestAnimationFrame)
+    }
+
+    const afterCapturing = container => {
+        Object.values(textboxes.current).forEach(textbox => textbox.afterCapturing())
     }
 
     const handleGenerateImage = async () => {
         const container = document.querySelector(`.${classes.imageWrapper}`)
 
-        beforeCapturing(container)
+        await beforeCapturing(container)
 
         const canvas = await html2canvas(container)
+
+        showCanvas(canvas)
+        
+        return
+
+        afterCapturing(container)
 
         downloadImageSrc(canvas.toDataURL())
     }

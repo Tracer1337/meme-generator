@@ -83,6 +83,7 @@ function Textbox({ id, onRemove, handle }) {
     const [position, setPosition] = useState({ x: 0, y: 0 })
     const [rotation, setRotation] = useState(0)
     const [height, setHeight] = useState(defaultSettings.fontSize)
+    const [capture, setCapture] = useState(false)
 
     const handleChange = event => {
         setValue(event.target.value)
@@ -140,27 +141,43 @@ function Textbox({ id, onRemove, handle }) {
     }
 
     const beforeCapturing = () => {
-        
+        setCapture(true)
     }
 
+    const afterCapturing = () => {
+        setCapture(false)
+    }
+
+    // Expose methods for parent
     handle.beforeCapturing = beforeCapturing
+    handle.afterCapturing = afterCapturing
+
+    const styles = {
+        width: textWidth({ text: value, fontSize: settings.fontSize }) + "px",
+        height: height + "px",
+        ...settings
+    }
 
     return (
         <div className={classes.container} style={{
             transform: `translate(${position.x}px, ${position.y}px) rotate(${rotation}rad)`
         }}>
-            <textarea
-                id={`textbox-${id}`}
-                type="text"
-                className={`${classes.input} input`}
-                value={value}
-                onChange={handleChange}
-                style={{
-                    width: textWidth({ text: value, fontSize: settings.fontSize }) + "px",
-                    height: height + "px",
-                    ...settings
-                }}
-            />
+            {!capture ? (
+                // Render textarea for editing
+                <textarea
+                    id={`textbox-${id}`}
+                    type="text"
+                    className={`${classes.input} input`}
+                    value={value}
+                    onChange={handleChange}
+                    style={styles}
+                />
+            ) : (
+                // Render div for capturing
+                <div className={classes.input} style={styles} >
+                    {value}
+                </div>
+            )}
             
             <div className={classes.action}>
                 <DraggableCore onStart={handleRotationStart} onStop={handleRotationEnd} onDrag={handleRotationDrag}>
