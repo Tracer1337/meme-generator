@@ -48,6 +48,11 @@ function Canvas() {
     const image = useRef()
 
     const [keys, setKeys] = useState([])
+    const textboxes = useRef({})
+
+    for(let key in keys) {
+        textboxes.current[key] = {}
+    }
 
     const handleRemoveKey = removeKey => {
         const newKeys = keys.filter(key => key !== removeKey)
@@ -59,9 +64,15 @@ function Canvas() {
         setKeys([...keys, newKey])
     }
 
+    const beforeCapturing = container => {
+        console.log(textboxes)
+    }
+
     const handleGenerateImage = async () => {
         const container = document.querySelector(`.${classes.imageWrapper}`)
-        
+
+        beforeCapturing(container)
+
         const canvas = await html2canvas(container)
 
         downloadImageSrc(canvas.toDataURL())
@@ -88,6 +99,7 @@ function Canvas() {
                             key={key}
                             id={key}
                             onRemove={handleRemoveKey}
+                            handle={textboxes.current[key]}
                         />
                     ))}
                 </div>
