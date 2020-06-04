@@ -1,9 +1,12 @@
-import React, { useContext } from "react"
+import React, { useContext, useState, useRef } from "react"
 import { AppBar, Toolbar, Fab, IconButton } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import DoneIcon from "@material-ui/icons/Done"
 import PhotoLibraryIcon from "@material-ui/icons/PhotoLibrary"
 import TextFieldsIcon from "@material-ui/icons/TextFields"
+import MoreVertIcon from "@material-ui/icons/MoreVert"
+
+import Menu from "./Menu.js"
 
 import importFile, { fileToImage } from "../../utils/importFile.js"
 import { AppContext } from "../../App.js"
@@ -30,7 +33,12 @@ const useStyles = makeStyles(theme => ({
 
 function BottomBar() {
     const context = useContext(AppContext)
+    
     const classes = useStyles()
+
+    const openMenuButton = useRef()
+
+    const [isMenuOpen, setIsMenuOpen] = useState(false)
 
     const handleImageImportClick = async () => {
         const file = await importFile("image/*")
@@ -46,10 +54,17 @@ function BottomBar() {
         context.event.dispatchEvent(new CustomEvent("generateImage"))
     }
 
+    const handleMoreClick = () => {
+        setIsMenuOpen(!isMenuOpen)
+    }
+
+    const handleMenuClose = () => {
+        setIsMenuOpen(false)
+    }
+
     return (
         <AppBar position="fixed" className={classes.appBar}>
             <Toolbar>
-
                 <div className={classes.spacer}/>
 
                 <Fab color="primary" className={classes.fabButton} onClick={handleDoneClick}>
@@ -63,6 +78,12 @@ function BottomBar() {
                 <IconButton onClick={handleImageImportClick}>
                     <PhotoLibraryIcon/>
                 </IconButton>
+
+                <IconButton onClick={handleMoreClick} ref={openMenuButton}>
+                    <MoreVertIcon/>
+                </IconButton>
+
+                <Menu open={isMenuOpen} anchorEl={openMenuButton.current} onClose={handleMenuClose}/>
             </Toolbar>
         </AppBar>
     )

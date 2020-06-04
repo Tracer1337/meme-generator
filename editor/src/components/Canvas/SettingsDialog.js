@@ -1,7 +1,9 @@
 import React, { useEffect } from "react"
-import { Dialog, DialogTitle, Button, TextField, MenuItem } from "@material-ui/core"
+import { Dialog, Button, TextField } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
-import { useForm, Controller } from "react-hook-form"
+import { useForm, FormContext } from "react-hook-form"
+
+import Select from "./Select.js"
 
 import settingsOptions from "../../config/settings-options.json"
 
@@ -50,86 +52,50 @@ function SettingsDialog({ onClose, open, values, text }) {
             }}>
                 {text}
             </div>
+            
+            <FormContext {...{ control, watch }}>
+                <form onSubmit={handleSubmit(handleClose)} className={classes.form}>
+                    {/* Font Size */}
+                    <TextField
+                        inputRef={register()}
+                        name="fontSize"
+                        type="number"
+                        label="Font Size"
+                        fullWidth
+                        className={classes.input}
+                    />
 
-            <form onSubmit={handleSubmit(handleClose)} className={classes.form}>
-                {/* Font Size */}
-                <TextField
-                    inputRef={register()}
-                    name="fontSize"
-                    type="number"
-                    label="Font Size"
-                    fullWidth
-                    className={classes.input}
-                />
+                    {/* Color */}
+                    <Select
+                        name="color"
+                        label="Color"
+                        options={settingsOptions.colors}
+                        child={({ label, value }) => (
+                            <span style={{ color: value }}>{label}</span>
+                        )}
+                    />
 
-                {/* Color */}
-                <Controller
-                    as={props => (
-                        <TextField
-                            select
-                            label="Color"
-                            fullWidth
-                            className={classes.input}
-                            value={watch("color")}
-                            {...props}
-                        >
-                            {Object.entries(settingsOptions.colors).map(([label, code]) => (
-                                <MenuItem key={code} value={code}>
-                                    <span style={{ color: code }}>{label}</span>
-                                </MenuItem>
-                            ))}
-                        </TextField>
-                    )}
-                    control={control}
-                    name="color"
-                />
-                
-                {/* Text Align */}
-                <Controller
-                    as={props => (
-                        <TextField
-                            select
-                            label="Text Align"
-                            fullWidth
-                            className={classes.input}
-                            value={watch("textAlign")}
-                            {...props}
-                        >
-                            {Object.entries(settingsOptions.textAlign).map(([label, value]) => (
-                                <MenuItem key={value} value={value}>
-                                    {label}
-                                </MenuItem>
-                            ))}
-                        </TextField>
-                    )}
-                    control={control}
-                    name="textAlign"
-                />
+                    {/* Text Align */}
+                    <Select
+                        name="textAlign"
+                        label="Text Align"
+                        options={settingsOptions.textAlign}
+                        child={({ label }) => label}
+                    />
 
-                {/* Font Family */}
-                <Controller
-                    as={props => (
-                        <TextField
-                            select
-                            label="Font Family"
-                            fullWidth
-                            className={classes.input}
-                            value={watch("fontFamily")}
-                            {...props}
-                        >
-                            {Object.entries(settingsOptions.fontFamilies).map(([label, value]) => (
-                                <MenuItem key={value} value={value}>
-                                    <span style={{ fontFamily: value }}>{label}</span>
-                                </MenuItem>
-                            ))}
-                        </TextField>
-                    )}
-                    control={control}
-                    name="fontFamily"
-                />
+                    {/* Font Family */}
+                    <Select
+                        name="fontFamily"
+                        label="Font Family"
+                        options={settingsOptions.fontFamilies}
+                        child={({ label, value }) => (
+                            <span style={{ fontFamily: value }}>{label}</span>
+                        )}
+                    />
 
-                <Button fullWidth className={classes.applyButton} type="submit">Apply</Button>
-            </form>
+                    <Button fullWidth className={classes.applyButton} type="submit">Apply</Button>
+                </form>
+            </FormContext>
         </Dialog>
     )
 }

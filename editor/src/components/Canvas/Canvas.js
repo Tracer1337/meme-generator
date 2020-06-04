@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles"
 import html2canvas from "html2canvas"
 
 import Textbox from "./Textbox.js"
+import BorderDialog from "./BorderDialog.js"
 
 import { AppContext } from "../../App.js"
 
@@ -14,6 +15,13 @@ const showCanvas = (canvas) => {
 }
 
 const imagePadding = 10
+
+const defaultBorderValues = {
+    size: 0,
+    top: true,
+    bottom: true,
+    color: "white"
+}
 
 const useStyles = makeStyles(theme => ({
     canvasWrapper: {
@@ -29,10 +37,6 @@ const useStyles = makeStyles(theme => ({
     },
 
     canvas: {
-        position: "relative"
-    },
-
-    imageWrapper: {
         width: `calc(100vw - ${imagePadding * 2}px)`,
         position: "relative",
         display: "flex"
@@ -51,11 +55,14 @@ function Canvas() {
     const idCounter = useRef(0)
 
     const image = useRef()
-
-    const [keys, setKeys] = useState([])
     const textboxes = useRef({})
 
-    for(let key in keys) {
+    const [keys, setKeys] = useState([])
+    const [borderValues, setBorderValues] = useState(defaultBorderValues)
+    const [isBorderDialogOpen, setIsBorderDialogOpen] = useState(false)
+
+    for(let key of keys) {
+        textboxes.current = {}
         textboxes.current[key] = {}
     }
 
@@ -81,7 +88,7 @@ function Canvas() {
     }
 
     const handleGenerateImage = async () => {
-        const container = document.querySelector(`.${classes.imageWrapper}`)
+        const container = document.querySelector(`.${classes.canvas}`)
 
         await beforeCapturing(container)
 
@@ -89,39 +96,54 @@ function Canvas() {
 
         showCanvas(canvas)
         
-        return
-        
         afterCapturing(container)
+        
+        return
 
         downloadImageSrc(canvas.toDataURL())
+    }
+
+    const handleSetBorder = () => {
+        setIsBorderDialogOpen(true)
+    }
+
+    const handleBorderDialogClose = (values) => {
+        setBorderValues(values)
+        setIsBorderDialogOpen(false)
     }
 
     useEffect(() => {
         context.event.addEventListener("addTextField", handleAddTextField)
         context.event.addEventListener("generateImage", handleGenerateImage)
+        context.event.addEventListener("setBorder", handleSetBorder)
 
         return () => {
             context.event.removeEventListener("addTextField", handleAddTextField)
             context.event.removeEventListener("generateImage", handleGenerateImage)
+            context.event.removeEventListener("setBorder", handleSetBorder)
         }
     })
 
     return (
         <div className={classes.canvasWrapper}>
-            <div className={classes.canvas}>
-                <div className={classes.imageWrapper}>
-                    {context.image && <img alt="" src={context.image} className={classes.image} ref={image}/>}
+            <div className={classes.canvas} style={{
+                paddingTop: borderValues.top ? borderValues.size + "px" : null,
+                paddingBottom: borderValues.bottom ? borderValues.size + "px" : null,
+                backgroundColor: borderValues.color
+            }}>
+                {context.image && <img alt="" src={context.image} className={classes.image} ref={image}/>}
 
-                    {keys.map(key => (
-                        <Textbox
-                            key={key}
-                            id={key}
-                            onRemove={handleRemoveKey}
-                            handle={textboxes.current[key]}
-                        />
-                    ))}
-                </div>
+                {keys.map(key => (
+                    <Textbox
+                        key={key}
+                        id={key}
+                        onRemove={handleRemoveKey}
+                        handle={textboxes.current[key]}
+                    />
+                ))}
             </div>
+
+            <BorderDialog open={isBorderDialogOpen} onClose={handleBorderDialogClose} values={borderValues}/>
         </div>
     )
 }
