@@ -8,7 +8,6 @@ import MoreVertIcon from "@material-ui/icons/MoreVert"
 
 import Menu from "./Menu.js"
 
-import importFile, { fileToImage } from "../../utils/importFile.js"
 import { AppContext } from "../../App.js"
 
 const useStyles = makeStyles(theme => ({
@@ -40,20 +39,6 @@ function BottomBar() {
 
     const [isMenuOpen, setIsMenuOpen] = useState(false)
 
-    const handleImageImportClick = async () => {
-        const file = await importFile("image/*")
-        const base64Image = await fileToImage(file)
-        context.setImage(base64Image)
-    }
-
-    const handleTextFieldsClick = () => {
-        context.event.dispatchEvent(new CustomEvent("addTextField"))
-    }
-
-    const handleDoneClick = () => {
-        context.event.dispatchEvent(new CustomEvent("generateImage"))
-    }
-
     const handleMoreClick = () => {
         setIsMenuOpen(!isMenuOpen)
     }
@@ -62,20 +47,24 @@ function BottomBar() {
         setIsMenuOpen(false)
     }
 
+    const dispatchEvent = (name) => () => {
+        context.event.dispatchEvent(new CustomEvent(name))
+    }
+
     return (
         <AppBar position="fixed" className={classes.appBar}>
             <Toolbar>
                 <div className={classes.spacer}/>
 
-                <Fab color="primary" className={classes.fabButton} onClick={handleDoneClick}>
+                <Fab color="primary" className={classes.fabButton} onClick={dispatchEvent("generateImage")}>
                     <DoneIcon/>
                 </Fab>
 
-                <IconButton onClick={handleTextFieldsClick}>
+                <IconButton onClick={dispatchEvent("addTextField")}>
                     <TextFieldsIcon/>
                 </IconButton>
 
-                <IconButton onClick={handleImageImportClick}>
+                <IconButton onClick={dispatchEvent("importImage")}>
                     <PhotoLibraryIcon/>
                 </IconButton>
 

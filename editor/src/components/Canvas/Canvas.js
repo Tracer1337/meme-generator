@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useState, useRef } from "react"
+import { IconButton } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
+import PhotoLibraryIcon from "@material-ui/icons/PhotoLibrary"
 import html2canvas from "html2canvas"
 
 import Textbox from "./Textbox.js"
@@ -7,6 +9,7 @@ import BorderDialog from "./BorderDialog.js"
 
 import { AppContext } from "../../App.js"
 
+import importFile, { fileToImage } from "../../utils/importFile.js"
 import downloadImageSrc from "../../utils/downloadImageSrc.js"
 
 const showCanvas = (canvas) => {
@@ -89,6 +92,12 @@ function Canvas() {
         Object.values(textboxes.current).forEach(textbox => textbox.afterCapturing())
     }
 
+    const handleImportImage = async () => {
+        const file = await importFile("image/*")
+        const base64Image = await fileToImage(file)
+        context.setImage(base64Image)
+    }
+
     const handleGenerateImage = async () => {
         const container = document.querySelector(`.${classes.canvas}`)
 
@@ -96,12 +105,10 @@ function Canvas() {
 
         const canvas = await html2canvas(container)
 
-        showCanvas(canvas)
+        // showCanvas(canvas)
         
         afterCapturing(container)
         
-        return
-
         downloadImageSrc(canvas.toDataURL())
     }
 
@@ -115,11 +122,13 @@ function Canvas() {
     }
 
     useEffect(() => {
+        context.event.addEventListener("importImage", handleImportImage)
         context.event.addEventListener("addTextField", handleAddTextField)
         context.event.addEventListener("generateImage", handleGenerateImage)
         context.event.addEventListener("setBorder", handleSetBorder)
 
         return () => {
+            context.event.removeEventListener("importImage", handleImportImage)
             context.event.removeEventListener("addTextField", handleAddTextField)
             context.event.removeEventListener("generateImage", handleGenerateImage)
             context.event.removeEventListener("setBorder", handleSetBorder)
@@ -129,13 +138,20 @@ function Canvas() {
     return (
         <div className={classes.canvasWrapper}>
             <div className={classes.canvas} style={{
-                paddingTop: borderValues.top ? borderValues.size + "px" : null,
-                paddingBottom: borderValues.bottom ? borderValues.size + "px" : null,
-                paddingLeft: borderValues.left ? borderValues.size + "px" : null,
-                paddingRight: borderValues.right ? borderValues.size + "px" : null,
-                backgroundColor: borderValues.color
+                paddingTop: borderValues.top && borderValues.size + "px",
+                paddingBottom: borderValues.bottom && borderValues.size + "px",
+                paddingLeft: borderValues.left && borderValues.size + "px",
+                paddingRight: borderValues.right && borderValues.size + "px",
+                backgroundColor: context.image && borderValues.color,
+                width: !context.image && "unset"
             }}>
-                {context.image && <img alt="" src={context.image} className={classes.image} ref={image}/>}
+                {context.image ? (
+                    <img alt="" src={context.image} className={classes.image} ref={image}/>
+                ) : (
+                    <IconButton onClick={handleImportImage}>
+                        <PhotoLibraryIcon fontSize="large" />
+                    </IconButton>
+                )}
 
                 {keys.map(key => (
                     <Textbox
