@@ -69,6 +69,7 @@ const useStyles = makeStyles(theme => {
 
 const defaultSettings = {
     fontSize: 24,
+    textAlign: "left",
     color: "white"
 }
 
@@ -174,7 +175,7 @@ function Textbox({ id, onRemove, handle }) {
                 />
             ) : (
                 // Render div for capturing
-                <div className={classes.input} style={styles} >
+                <div id={`textbox-${id}`}className={classes.input} style={styles}>
                     {value}
                 </div>
             )}

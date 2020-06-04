@@ -90,7 +90,7 @@ function Canvas() {
         showCanvas(canvas)
         
         return
-
+        
         afterCapturing(container)
 
         downloadImageSrc(canvas.toDataURL())

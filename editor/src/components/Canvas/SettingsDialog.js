@@ -3,12 +3,16 @@ import { Dialog, DialogTitle, Button, TextField, MenuItem } from "@material-ui/c
 import { makeStyles } from "@material-ui/core/styles"
 import { useForm, Controller } from "react-hook-form"
 
-import colors from "../../config/colors.json"
+import settingsOptions from "../../config/settings-options.json"
 
 const useStyles = makeStyles(theme => ({
     form: {
         padding: theme.spacing(2),
         paddingTop: 0
+    },
+
+    text: {
+        whiteSpace: "pre"
     },
 
     applyButton: {
@@ -40,15 +44,16 @@ function SettingsDialog({ onClose, open, values, text }) {
     return (
         <Dialog onClose={handleClose} open={open}>
             <DialogTitle>
-                <span style={{
+                <div className={classes.text} style={{
                     ...watch(),
-                    fontSize: parseInt(watch("fontSize")),
+                    fontSize: parseInt(watch("fontSize"))
                 }}>
                     {text}
-                </span>
+                </div>
             </DialogTitle>
 
             <form onSubmit={handleSubmit(handleClose)} className={classes.form}>
+                {/* Font Size */}
                 <TextField
                     inputRef={register()}
                     name="fontSize"
@@ -58,6 +63,7 @@ function SettingsDialog({ onClose, open, values, text }) {
                     className={classes.input}
                 />
 
+                {/* Color */}
                 <Controller
                     as={props => (
                         <TextField
@@ -68,7 +74,7 @@ function SettingsDialog({ onClose, open, values, text }) {
                             value={watch("color")}
                             {...props}
                         >
-                            {Object.entries(colors).map(([label, code]) => (
+                            {Object.entries(settingsOptions.colors).map(([label, code]) => (
                                 <MenuItem key={code} value={code}>
                                     <span style={{ color: code }}>{label}</span>
                                 </MenuItem>
@@ -77,6 +83,28 @@ function SettingsDialog({ onClose, open, values, text }) {
                     )}
                     control={control}
                     name="color"
+                />
+                
+                {/* Text Align */}
+                <Controller
+                    as={props => (
+                        <TextField
+                            select
+                            label="Text Align"
+                            fullWidth
+                            className={classes.input}
+                            value={watch("textAlign")}
+                            {...props}
+                        >
+                            {Object.entries(settingsOptions.textAlign).map(([label, value]) => (
+                                <MenuItem key={value} value={value}>
+                                    {label}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                    )}
+                    control={control}
+                    name="textAlign"
                 />
 
                 <Button fullWidth className={classes.applyButton} type="submit">Apply</Button>
