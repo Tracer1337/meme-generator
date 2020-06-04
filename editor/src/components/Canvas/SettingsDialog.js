@@ -12,6 +12,7 @@ const useStyles = makeStyles(theme => ({
     },
 
     text: {
+        padding: `${theme.spacing(3)}px ${theme.spacing(2)}px`,
         whiteSpace: "pre"
     },
 
@@ -43,14 +44,12 @@ function SettingsDialog({ onClose, open, values, text }) {
 
     return (
         <Dialog onClose={handleClose} open={open}>
-            <DialogTitle>
-                <div className={classes.text} style={{
-                    ...watch(),
-                    fontSize: parseInt(watch("fontSize"))
-                }}>
-                    {text}
-                </div>
-            </DialogTitle>
+            <div className={classes.text} style={{
+                ...watch(),
+                fontSize: parseInt(watch("fontSize") || 0)
+            }}>
+                {text}
+            </div>
 
             <form onSubmit={handleSubmit(handleClose)} className={classes.form}>
                 {/* Font Size */}
@@ -105,6 +104,28 @@ function SettingsDialog({ onClose, open, values, text }) {
                     )}
                     control={control}
                     name="textAlign"
+                />
+
+                {/* Font Family */}
+                <Controller
+                    as={props => (
+                        <TextField
+                            select
+                            label="Font Family"
+                            fullWidth
+                            className={classes.input}
+                            value={watch("fontFamily")}
+                            {...props}
+                        >
+                            {Object.entries(settingsOptions.fontFamilies).map(([label, value]) => (
+                                <MenuItem key={value} value={value}>
+                                    <span style={{ fontFamily: value }}>{label}</span>
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                    )}
+                    control={control}
+                    name="fontFamily"
                 />
 
                 <Button fullWidth className={classes.applyButton} type="submit">Apply</Button>

@@ -13,5 +13,13 @@
         "Left": "left",
         "Right": "right",
         "Center": "center"
+    },
+
+    "fontFamilies": {
+        "Roboto": "Roboto",
+        "Times New Roman": "'Times New Roman', 'Times', serif",
+        "Courier": "'Courier', monospace",
+        "Comic Sans": "'Comic Sans MS', 'Comic Sans', cursive",
+        "Impact": "'Impact', fantasy"
     }
 }

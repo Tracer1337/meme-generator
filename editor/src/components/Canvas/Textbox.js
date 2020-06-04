@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react"
+import React, { useState, useRef, useMemo } from "react"
 import { DraggableCore } from "react-draggable"
 import { IconButton } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
@@ -49,6 +49,7 @@ const useStyles = makeStyles(theme => {
             color: "white",
             fontFamily: theme.typography.fontFamily,
             resize: "none",
+            whiteSpace: "pre",
 
             "&::placeholder": {
                 color: "white"
@@ -69,8 +70,9 @@ const useStyles = makeStyles(theme => {
 
 const defaultSettings = {
     fontSize: 24,
+    color: "white",
     textAlign: "left",
-    color: "white"
+    fontFamily: "Roboto"
 }
 
 function Textbox({ id, onRemove, handle }) {
@@ -150,14 +152,17 @@ function Textbox({ id, onRemove, handle }) {
     }
 
     // Expose methods for parent
-    handle.beforeCapturing = beforeCapturing
-    handle.afterCapturing = afterCapturing
+    if(handle) {
+        handle.beforeCapturing = beforeCapturing
+        handle.afterCapturing = afterCapturing
+    }
 
-    const styles = {
-        width: textWidth({ text: value, fontSize: settings.fontSize }) + "px",
+    // Generate stylings for textbox
+    const styles = useMemo(() => ({
+        width: textWidth(value, settings) + "px",
         height: height + "px",
         ...settings
-    }
+    }), [value, settings, height])
 
     return (
         <div className={classes.container} style={{
@@ -168,14 +173,14 @@ function Textbox({ id, onRemove, handle }) {
                 <textarea
                     id={`textbox-${id}`}
                     type="text"
-                    className={`${classes.input} input`}
+                    className={classes.input}
                     value={value}
                     onChange={handleChange}
                     style={styles}
                 />
             ) : (
                 // Render div for capturing
-                <div id={`textbox-${id}`}className={classes.input} style={styles}>
+                <div id={`textbox-${id}`} className={classes.input} style={styles}>
                     {value}
                 </div>
             )}
