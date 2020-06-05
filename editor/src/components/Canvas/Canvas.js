@@ -6,18 +6,16 @@ import html2canvas from "html2canvas"
 
 import Textbox from "./Textbox.js"
 import BorderDialog from "./BorderDialog.js"
+import ImageDialog from "./ImageDialog.js"
 
 import { AppContext } from "../../App.js"
 
 import importFile, { fileToImage } from "../../utils/importFile.js"
-import downloadImageSrc from "../../utils/downloadImageSrc.js"
 
 const showCanvas = (canvas) => {
     const newWindow = window.open("", "canvas")
     newWindow.document.body.appendChild(canvas)
 }
-
-const imagePadding = 10
 
 const defaultBorderValues = {
     size: 0,
@@ -42,7 +40,7 @@ const useStyles = makeStyles(theme => ({
     },
 
     canvas: {
-        width: `calc(100vw - ${imagePadding * 2}px)`,
+        width: `calc(100vw - ${theme.spacing(2)}px)`,
         position: "relative",
         display: "flex"
     },
@@ -61,10 +59,12 @@ function Canvas() {
 
     const image = useRef()
     const textboxes = useRef({})
+    const generatedImageData = useRef({})
 
     const [keys, setKeys] = useState([])
     const [borderValues, setBorderValues] = useState(defaultBorderValues)
     const [isBorderDialogOpen, setIsBorderDialogOpen] = useState(false)
+    const [isImageDialogOpen, setIsImageDialogOpen] = useState(false)
 
     for(let key of keys) {
         textboxes.current = {}
@@ -105,11 +105,11 @@ function Canvas() {
 
         const canvas = await html2canvas(container)
 
-        // showCanvas(canvas)
+        generatedImageData.current = canvas.toDataURL()
         
         afterCapturing(container)
-        
-        downloadImageSrc(canvas.toDataURL())
+
+        setIsImageDialogOpen(true)
     }
 
     const handleSetBorder = () => {
@@ -164,6 +164,7 @@ function Canvas() {
             </div>
 
             <BorderDialog open={isBorderDialogOpen} onClose={handleBorderDialogClose} values={borderValues}/>
+            <ImageDialog open={isImageDialogOpen} onClose={() => setIsImageDialogOpen(false)} imageData={generatedImageData.current}/>
         </div>
     )
 }

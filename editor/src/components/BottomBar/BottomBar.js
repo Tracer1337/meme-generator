@@ -56,7 +56,7 @@ function BottomBar() {
             <Toolbar>
                 <div className={classes.spacer}/>
 
-                <Fab color="primary" className={classes.fabButton} onClick={dispatchEvent("generateImage")}>
+                <Fab color="primary" className={classes.fabButton} onClick={dispatchEvent("generateImage")} disabled={!context.image}>
                     <DoneIcon/>
                 </Fab>
 

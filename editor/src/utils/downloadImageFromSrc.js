@@ -1,4 +1,4 @@
-export default function downloadImageSrc(src) {
+export default function downloadImageFromSrc(src) {
     const a = document.createElement("a")
     a.href = src
     a.download = "download.png"
