@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { Dialog, Button, CircularProgress, Paper, Typography } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import DownloadIcon from "@material-ui/icons/GetApp"
@@ -68,6 +68,13 @@ function ImageDialog({ open, onClose, imageData }) {
         setIsUploading(false)
         setLink(link)
     }
+
+    useEffect(() => {
+        if(!open) {
+            // Reset link when dialog closes
+            setLink(null)
+        }
+    }, [open])
 
     return (
         <Dialog open={open} onClose={onClose} PaperProps={{ className: classes.innerDialog }}>
