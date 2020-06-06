@@ -105,7 +105,12 @@ function Textbox({ id, onRemove, handle, grid, canvas }) {
 
         // Calculate new rotation
         const textboxToMouse = Math.atan2(textboxCenter.y - data.y, textboxCenter.x - data.x)
-        const newRotation = textboxToMouse - lastRotation.current
+        let newRotation = textboxToMouse - lastRotation.current
+
+        // Snap to 45°
+        if(grid.enabled) {
+            newRotation -= newRotation % (Math.PI / 4)
+        }
 
         return newRotation
     }
@@ -199,7 +204,8 @@ function Textbox({ id, onRemove, handle, grid, canvas }) {
         <div 
             className={classes.container}
             style={{
-                transform: `translate(${position.x}px, ${position.y}px) rotate(${rotation}rad)`
+                transform: `translate(${position.x}px, ${position.y}px) rotate(${rotation}rad)`,
+                transformOrigin: `center ${height / 2} px`
             }}
             ref={container}
         >

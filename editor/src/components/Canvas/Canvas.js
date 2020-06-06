@@ -29,9 +29,9 @@ const defaultBorderValues = {
 }
 
 const defaultGridValues = {
-    enabled: false,
+    enabled: true,
     spacing: 16,
-    color: "white"
+    color: "black"
 }
 
 const useStyles = makeStyles(theme => ({
