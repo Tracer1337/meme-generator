@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-function Grid({ config, canvas, image }) {
+function Grid({ config, canvas, image, border }) {
     const classes = useStyles()
 
     const grid = useRef()
@@ -50,7 +50,7 @@ function Grid({ config, canvas, image }) {
         setDimensions()
 
         renderGrid()
-    }, [canvas, config, image])
+    }, [canvas, config, image, border])
 
     return (
         <canvas

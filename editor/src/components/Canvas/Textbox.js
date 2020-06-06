@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo } from "react"
+import React, { useState, useRef, useMemo, useEffect } from "react"
 import { DraggableCore } from "react-draggable"
 import { IconButton } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
@@ -8,7 +8,7 @@ import SettingsIcon from "@material-ui/icons/Settings"
 import CloseIcon from "@material-ui/icons/Close"
 import HeightIcon from "@material-ui/icons/Height"
 
-import SettingsDialog from "./Dialogs/SettingsDialog.js"
+import SettingsDialog from "../Dialogs/SettingsDialog.js"
 
 import textWidth from "../../utils/textWidth.js"
 
@@ -64,19 +64,22 @@ const useStyles = makeStyles(theme => {
 
         action: {
             display: "flex",
-            alignItems: "center"
+            alignItems: "center",
+            backgroundColor: "rgba(0, 0, 0, 0.2)"
         }
     }
 })
 
-const defaultSettings = {
+let defaultSettings = {
     fontSize: 24,
-    color: "white",
+    color: "black",
     textAlign: "left",
     fontFamily: "Roboto"
 }
 
-function Textbox({ id, onRemove, handle, grid, canvas }) {
+function Textbox({ id, onRemove, handle, grid, canvas, template }) {
+    defaultSettings = { ...defaultSettings, ...template }
+
     const classes = useStyles()
 
     const lastRotation = useRef(0)
@@ -200,6 +203,24 @@ function Textbox({ id, onRemove, handle, grid, canvas }) {
         ...settings
     }), [value, settings, height])
 
+    useEffect(() => {
+        (async function() {
+            // Wait until canvas has resized proberly
+            await new Promise(requestAnimationFrame)
+
+            // Apply template position
+            if (template?.position) {
+                if (template.position === "top") {
+                    // Move to: center top
+                    setPosition({
+                        x: canvas.offsetWidth / 2 - container.current.offsetWidth / 2,
+                        y: 0
+                    })
+                }
+            }
+        })()
+    }, [])
+
     return (
         <div 
             className={classes.container}
@@ -226,7 +247,7 @@ function Textbox({ id, onRemove, handle, grid, canvas }) {
                 </div>
             )}
             
-            <div className={classes.action}>
+            <div className={classes.action} style={{ background: capture && "none" }}>
                 <DraggableCore onStart={handleRotationStart} onStop={handleRotationEnd} onDrag={handleRotationDrag}>
                     <RotateLeftIcon className={classes.rotationHandle} fontSize="large"/>
                 </DraggableCore>

@@ -1,0 +1,183 @@
+[
+    {
+        "label": "Savage Patrick",
+        "image": "savage-patrick.jpg",
+        "textboxes": [
+            {
+                "position": "top",
+                "color": "black"
+            }
+        ],
+        "border": {
+            "size": 50,
+            "top": true,
+            "color": "white"
+        }
+    },
+
+    {
+        "label": "Mocking Spongebob",
+        "image": "mocking-spongebob.jpg",
+        "textboxes": [
+            {
+                "position": "top",
+                "color": "black"
+            }
+        ],
+        "border": {
+            "size": 100,
+            "top": true,
+            "color": "white"
+        }
+    },
+
+    {
+        "label": "Distracted Boyfriend",
+        "image": "distracted-boyfriend.png"
+    },
+
+    {
+        "label": "Drake Hotline Bling",
+        "image": "drake-hotline-bling.png"
+    },
+
+    {
+        "label": "Two Buttons",
+        "image": "two-buttons.png"
+    },
+
+    {
+        "label": "Change My Mind",
+        "image": "change-my-mind.png"
+    },
+
+    {
+        "label": "Draw 25",
+        "image": "draw-25.png"
+    },
+
+    {
+        "label": "Running Away Balloon",
+        "image": "running-away-balloon.png"
+    },
+
+    {
+        "label": "Batman Slapping Robbin",
+        "image": "batman-slapping-robin.png"
+    },
+
+    {
+        "label": "Expanding Brain",
+        "image": "expanding-brain.png"
+    },
+
+    {
+        "label": "Left Exit 12 Off Ramp",
+        "image": "left-exit-12-off-ramp.png"
+    },
+
+    {
+        "label": "Woman yelling at cat",
+        "image": "woman-yelling-at-cat.png"
+    },
+
+    {
+        "label": "Is This A Pigeon?",
+        "image": "is-this-a-pigeon.png"
+    },
+
+    {
+        "label": "Meeting Suggestion",
+        "image": "meeting-suggestion.png"
+    },
+
+    {
+        "label": "Tuxedo Winnie The Pooh",
+        "image": "tuxedo-winnie-the-pooh.png"
+    },
+
+    {
+        "label": "Blank Nut Button",
+        "image": "blank-nut-button.png"
+    },
+
+    {
+        "label": "Inhaling Seagull",
+        "image": "inhaling-seagull.png"
+    },
+
+    {
+        "label": "Hide The Pain Harold",
+        "image": "hide-the-pain-harold.png"
+    },
+
+    {
+        "label": "Epic Handshake",
+        "image": "epic-handshake.png"
+    },
+
+    {
+        "label": "Mokey Puppet",
+        "image": "monkey-puppet.png"
+    },
+
+    {
+        "label": "Unsettled Tom",
+        "image": "unsettled-tom.png"
+    },
+
+    {
+        "label": "American Chopper Argument",
+        "image": "american-chopper-argument.png"
+    },
+
+    {
+        "label": "Panic Kalm Panic",
+        "image": "panic-kalm-panic.png"
+    },
+
+    {
+        "label": "Surprised Pikachu",
+        "image": "surprised-pikachu.png"
+    },
+
+    {
+        "label": "Roll Safe Think About It",
+        "image": "roll-safe-think-about-it.png"
+    },
+
+    {
+        "label": "One Does Not Simply",
+        "image": "one-does-not-simply.png"
+    },
+
+    {
+        "label": "X, X Everywhere",
+        "image": "x-everywhere.png"
+    },
+
+    {
+        "label": "The Rock Driving",
+        "image": "the-rock-driving.png"
+    },
+
+    {
+        "label": "Ancient Aliens",
+        "image": "ancient-aliens.png"
+    },
+
+    {
+        "label": "Sad Pablo Escobar",
+        "image": "sad-pablo-escobar.png"
+    },
+
+    {
+        "label": "Finding Neverland",
+        "image": "finding-neverland.png"
+    },
+
+    {
+        "label": "Futurama Fry",
+        "image": "futurama-fry.png"
+    }
+]

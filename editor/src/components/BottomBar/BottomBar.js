@@ -5,8 +5,10 @@ import DoneIcon from "@material-ui/icons/Done"
 import PhotoLibraryIcon from "@material-ui/icons/PhotoLibrary"
 import TextFieldsIcon from "@material-ui/icons/TextFields"
 import MoreVertIcon from "@material-ui/icons/MoreVert"
+import CloudDownloadIcon from "@material-ui/icons/CloudDownload"
 
 import Menu from "./Menu.js"
+import TemplatesDialog from "../Dialogs/TemplatesDialog.js"
 
 import { AppContext } from "../../App.js"
 
@@ -38,6 +40,7 @@ function BottomBar() {
     const openMenuButton = useRef()
 
     const [isMenuOpen, setIsMenuOpen] = useState(false)
+    const [isTemplatesOpen, setIsTemplatesOpen] = useState(false)
 
     const handleMoreClick = () => {
         setIsMenuOpen(!isMenuOpen)
@@ -47,6 +50,10 @@ function BottomBar() {
         setIsMenuOpen(false)
     }
 
+    const handleTemplatesClick = () => {
+        setIsTemplatesOpen(true)
+    }
+
     const dispatchEvent = (name) => () => {
         context.event.dispatchEvent(new CustomEvent(name))
     }
@@ -54,6 +61,10 @@ function BottomBar() {
     return (
         <AppBar position="fixed" className={classes.appBar}>
             <Toolbar>
+                <IconButton onClick={handleTemplatesClick}>
+                    <CloudDownloadIcon/>
+                </IconButton>
+
                 <div className={classes.spacer}/>
 
                 <Fab color="primary" className={classes.fabButton} onClick={dispatchEvent("generateImage")} disabled={!context.image}>
@@ -73,6 +84,8 @@ function BottomBar() {
                 </IconButton>
 
                 <Menu open={isMenuOpen} anchorEl={openMenuButton.current} onClose={handleMenuClose}/>
+
+                <TemplatesDialog open={isTemplatesOpen} onClose={() => setIsTemplatesOpen(false)}/>
             </Toolbar>
         </AppBar>
     )
