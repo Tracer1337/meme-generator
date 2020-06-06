@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react"
-import { Dialog, Button, CircularProgress, Paper, Typography } from "@material-ui/core"
+import { Dialog, Button, CircularProgress, Paper, Typography, IconButton } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import DownloadIcon from "@material-ui/icons/GetApp"
 import LinkIcon from "@material-ui/icons/Link"
+import ShareIcon from "@material-ui/icons/Share"
+
+import ShareDialog from "./ShareDialog.js"
 
 import downloadImageFromSrc from "../../../utils/downloadImageFromSrc.js"
 import dataURLToFile from "../../../utils/dataURLToFile.js"
@@ -41,9 +44,21 @@ const useStyles = makeStyles(theme => {
             margin: "-12px 0 0 -12px"
         },
 
-        link: {
+        linkWrapper: {
             margin: theme.spacing(2),
             marginTop: 0,
+            padding: `0 ${theme.spacing(1)}px`,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center"
+        },
+
+        link: {
+            overflowX: "scroll",
+            padding: `${theme.spacing(1)}px 0`
+        },
+
+        shareButton: {
             padding: theme.spacing(1)
         }
     }
@@ -54,6 +69,7 @@ function ImageDialog({ open, onClose, imageData }) {
 
     const [link, setLink] = useState()
     const [isUploading, setIsUploading] = useState(false)
+    const [isShareDialogOpen, setIsShareDialogOpen] = useState(false)
 
     const handleDownloadClick = () => {
         downloadImageFromSrc(imageData)
@@ -69,6 +85,10 @@ function ImageDialog({ open, onClose, imageData }) {
         setLink(link)
     }
 
+    const handleShareClick = () => {
+        setIsShareDialogOpen(true)
+    }
+
     useEffect(() => {
         if(!open) {
             // Reset link when dialog closes
@@ -80,26 +100,32 @@ function ImageDialog({ open, onClose, imageData }) {
         <Dialog open={open} onClose={onClose} PaperProps={{ className: classes.innerDialog }}>
             <img alt="" src={imageData} className={classes.image}/>
 
-            <Paper variant="outlined" className={classes.link} style={{ display: !link && "none" }}>
-                <Typography variant="body1">
+            <Paper variant="outlined" className={classes.linkWrapper} style={{ display: !link && "none" }}>
+                <Typography variant="body1" className={classes.link}>
                     {link}
                 </Typography>
+
+                <IconButton className={classes.shareButton} onClick={handleShareClick}>
+                    <ShareIcon/>
+                </IconButton>
             </Paper>
 
-            <div className={classes.uploadButtonWrapper}>
-                <Button
-                    startIcon={<LinkIcon />}
-                    color="primary"
-                    variant="outlined"
-                    onClick={handleUploadClick}
-                    disabled={isUploading}
-                    style={{ width: "100%" }}
-                >
-                    Create Link
+            {!link && (
+                <div className={classes.uploadButtonWrapper}>
+                    <Button
+                        startIcon={<LinkIcon />}
+                        color="primary"
+                        variant="outlined"
+                        onClick={handleUploadClick}
+                        disabled={isUploading}
+                        style={{ width: "100%" }}
+                    >
+                        Create Link
                 </Button>
 
-                {isUploading && <CircularProgress size={24} className={classes.buttonLoader}/>}
-            </div>
+                    {isUploading && <CircularProgress size={24} className={classes.buttonLoader} />}
+                </div>
+            )}
 
             <Button
                 startIcon={<DownloadIcon/>}
@@ -110,6 +136,13 @@ function ImageDialog({ open, onClose, imageData }) {
             >
                 Download
             </Button>
+
+            <ShareDialog
+                open={isShareDialogOpen}
+                link={link}
+                onOpen={handleShareClick}
+                onClose={() => setIsShareDialogOpen(false)}
+            />
         </Dialog>
     )
 }

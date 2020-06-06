@@ -29,7 +29,7 @@ const defaultBorderValues = {
 }
 
 const defaultGridValues = {
-    enabled: true,
+    enabled: false,
     spacing: 16,
     color: "black"
 }

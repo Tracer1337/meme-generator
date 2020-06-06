@@ -15,7 +15,7 @@ function App() {
     })
 
     useEffect(() => {
-        context.setImage(testImage)
+        // context.setImage(testImage)
     }, [])
 
     return (
