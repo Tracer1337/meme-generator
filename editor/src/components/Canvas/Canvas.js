@@ -40,7 +40,9 @@ const useStyles = makeStyles(theme => ({
         top: 0, bottom: 0,
         left: 0, right: 0,
         backgroundColor: theme.palette.background.default,
-        marginBottom: theme.mixins.toolbar.minHeight,
+        outline: `${theme.spacing(1)}px solid ${theme.palette.background.default}`,
+        margin: theme.spacing(1),
+        marginBottom: theme.mixins.toolbar.minHeight + theme.spacing(1),
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -48,13 +50,8 @@ const useStyles = makeStyles(theme => ({
     },
 
     canvas: {
-        width: `calc(100vw - ${theme.spacing(2)}px)`,
         position: "relative",
         display: "flex"
-    },
-
-    image: {
-        width: "100%"
     }
 }))
 
@@ -67,6 +64,7 @@ function Canvas() {
 
     const image = useRef()
     const canvas = useRef()
+    const container = useRef()
     const textboxes = useRef({})
     const generatedImageData = useRef({})
 
@@ -157,8 +155,43 @@ function Canvas() {
         }
     })
 
+    useEffect(() => {
+        if (!image.current || !container.current || !canvas.current) {
+            return
+        }
+
+        // Get image dimensions
+        const imgWidth = image.current.naturalWidth
+        const imgHeight = image.current.naturalHeight
+        const imgRatio = imgHeight / imgWidth
+
+        // Get container size
+        const maxWidth = container.current.offsetWidth
+        const maxHeight = container.current.offsetHeight
+
+        let newWidth, newHeight
+
+        if(maxWidth * imgRatio > maxHeight) {
+            // Height is larger than max height => Constrain height
+            newHeight = maxHeight + "px"
+            newWidth = maxHeight * (1 / imgRatio) + "px"
+        } else {
+            // Width is larger than max width => Constrain width
+            newWidth = maxWidth + "px"
+            newHeight = maxWidth * imgRatio + "px"
+        }
+
+        // Apply sizing to image
+        image.current.style.width = newWidth
+        image.current.style.height = newHeight
+
+        // Apply sizing to canvas
+        canvas.current.style.width = newWidth
+        canvas.current.style.height = newHeight
+    }, [context.image, image, container, canvas])
+
     return (
-        <div className={classes.canvasWrapper}>
+        <div className={classes.canvasWrapper} ref={container}>
             <div 
                 className={classes.canvas} 
                 style={{
