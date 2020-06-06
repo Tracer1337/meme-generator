@@ -5,8 +5,10 @@ import PhotoLibraryIcon from "@material-ui/icons/PhotoLibrary"
 import html2canvas from "html2canvas"
 
 import Textbox from "./Textbox.js"
-import BorderDialog from "./BorderDialog.js"
-import ImageDialog from "./ImageDialog.js"
+import Grid from "./Grid.js"
+import BorderDialog from "./Dialogs/BorderDialog.js"
+import ImageDialog from "./Dialogs/ImageDialog.js"
+import GridDialog from "./Dialogs/GridDialog.js"
 
 import { AppContext } from "../../App.js"
 
@@ -23,6 +25,12 @@ const defaultBorderValues = {
     bottom: true,
     left: false,
     right: false,
+    color: "white"
+}
+
+const defaultGridValues = {
+    enabled: false,
+    spacing: 16,
     color: "white"
 }
 
@@ -58,13 +66,16 @@ function Canvas() {
     const idCounter = useRef(0)
 
     const image = useRef()
+    const canvas = useRef()
     const textboxes = useRef({})
     const generatedImageData = useRef({})
 
     const [keys, setKeys] = useState([])
     const [borderValues, setBorderValues] = useState(defaultBorderValues)
+    const [gridValues, setGridValues] = useState(defaultGridValues)
     const [isBorderDialogOpen, setIsBorderDialogOpen] = useState(false)
     const [isImageDialogOpen, setIsImageDialogOpen] = useState(false)
+    const [isGridDialogOpen, setIsGridDialogOpen] = useState(false)
 
     for(let key of keys) {
         textboxes.current = {}
@@ -116,9 +127,18 @@ function Canvas() {
         setIsBorderDialogOpen(true)
     }
 
+    const handleSetGrid = () => {
+        setIsGridDialogOpen(true)
+    }
+
     const handleBorderDialogClose = (values) => {
         setBorderValues(values)
         setIsBorderDialogOpen(false)
+    }
+
+    const handleGridDialogClose = (values) => {
+        setGridValues(values)
+        setIsGridDialogOpen(false)
     }
 
     useEffect(() => {
@@ -126,25 +146,31 @@ function Canvas() {
         context.event.addEventListener("addTextField", handleAddTextField)
         context.event.addEventListener("generateImage", handleGenerateImage)
         context.event.addEventListener("setBorder", handleSetBorder)
-
+        context.event.addEventListener("setGrid", handleSetGrid)
+        
         return () => {
             context.event.removeEventListener("importImage", handleImportImage)
             context.event.removeEventListener("addTextField", handleAddTextField)
             context.event.removeEventListener("generateImage", handleGenerateImage)
             context.event.removeEventListener("setBorder", handleSetBorder)
+            context.event.removeEventListener("setGrid", handleSetGrid)
         }
     })
 
     return (
         <div className={classes.canvasWrapper}>
-            <div className={classes.canvas} style={{
-                paddingTop: borderValues.top && borderValues.size + "px",
-                paddingBottom: borderValues.bottom && borderValues.size + "px",
-                paddingLeft: borderValues.left && borderValues.size + "px",
-                paddingRight: borderValues.right && borderValues.size + "px",
-                backgroundColor: context.image && borderValues.color,
-                width: !context.image && "unset"
-            }}>
+            <div 
+                className={classes.canvas} 
+                style={{
+                    paddingTop: borderValues.top && borderValues.size + "px",
+                    paddingBottom: borderValues.bottom && borderValues.size + "px",
+                    paddingLeft: borderValues.left && borderValues.size + "px",
+                    paddingRight: borderValues.right && borderValues.size + "px",
+                    backgroundColor: context.image && borderValues.color,
+                    width: !context.image && "unset"
+                }}
+                ref={canvas}
+            >
                 {context.image ? (
                     <img alt="" src={context.image} className={classes.image} ref={image}/>
                 ) : (
@@ -159,11 +185,16 @@ function Canvas() {
                         id={key}
                         onRemove={handleRemoveKey}
                         handle={textboxes.current[key]}
+                        grid={gridValues}
+                        canvas={canvas.current}
                     />
                 ))}
             </div>
 
+            <Grid config={gridValues} canvas={canvas.current} image={context.image}/>
+
             <BorderDialog open={isBorderDialogOpen} onClose={handleBorderDialogClose} values={borderValues}/>
+            <GridDialog open={isGridDialogOpen} onClose={handleGridDialogClose} values={gridValues}/>
             <ImageDialog open={isImageDialogOpen} onClose={() => setIsImageDialogOpen(false)} imageData={generatedImageData.current}/>
         </div>
     )

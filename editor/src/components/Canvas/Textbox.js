@@ -8,7 +8,7 @@ import SettingsIcon from "@material-ui/icons/Settings"
 import CloseIcon from "@material-ui/icons/Close"
 import HeightIcon from "@material-ui/icons/Height"
 
-import SettingsDialog from "./SettingsDialog.js"
+import SettingsDialog from "./Dialogs/SettingsDialog.js"
 
 import textWidth from "../../utils/textWidth.js"
 
@@ -25,7 +25,8 @@ const useStyles = makeStyles(theme => {
             top: 0,
             display: "flex",
             flexDirection: "column",
-            alignItems: "center"
+            alignItems: "center",
+            zIndex: 10
         },
 
         handle,
@@ -75,10 +76,12 @@ const defaultSettings = {
     fontFamily: "Roboto"
 }
 
-function Textbox({ id, onRemove, handle }) {
+function Textbox({ id, onRemove, handle, grid, canvas }) {
     const classes = useStyles()
 
     const lastRotation = useRef(0)
+    const movementHandle = useRef()
+    const container = useRef()
 
     const [value, setValue] = useState("Enter Text...")
     const [dialogOpen, setDialogOpen] = useState(false)
@@ -120,7 +123,35 @@ function Textbox({ id, onRemove, handle }) {
     }
 
     const handleMovementDrag = (event, data) => {
-        setPosition({ x: position.x + data.deltaX, y: position.y + data.deltaY })
+        let newX, newY
+
+        if(grid.enabled) {
+            const canvasRect = canvas.getBoundingClientRect()
+            const movementHandleRect = movementHandle.current.getBoundingClientRect()
+            const containerRect = container.current.getBoundingClientRect()
+            const textareaRect = document.getElementById(`textbox-${id}`).getBoundingClientRect()
+
+            // Movement-Handle position relative to container
+            const offsetX = movementHandleRect.x - containerRect.x + movementHandleRect.width / 2
+            const offsetY = movementHandleRect.y - containerRect.y + movementHandleRect.height / 2
+            
+            // Textbox position relative to canvas
+            const relativeX = data.x - canvasRect.x - offsetX
+            const relativeY = data.y - canvasRect.y - offsetY
+
+            // Textarea position relative to textbox-container
+            const textareaX = textareaRect.x - containerRect.x
+            const textareaY = textareaRect.y - containerRect.y
+
+            // New textbox position inside the grid
+            newX = relativeX - (relativeX + textareaX) % grid.spacing
+            newY = relativeY - (relativeY + textareaY) % grid.spacing
+        } else {
+            newX = position.x + data.deltaX
+            newY = position.y + data.deltaY
+        }
+
+        setPosition({ x: newX, y: newY })
     }
 
     const handleHeightDrag = (event, data) => {
@@ -165,9 +196,13 @@ function Textbox({ id, onRemove, handle }) {
     }), [value, settings, height])
 
     return (
-        <div className={classes.container} style={{
-            transform: `translate(${position.x}px, ${position.y}px) rotate(${rotation}rad)`
-        }}>
+        <div 
+            className={classes.container}
+            style={{
+                transform: `translate(${position.x}px, ${position.y}px) rotate(${rotation}rad)`
+            }}
+            ref={container}
+        >
             {!capture ? (
                 // Render textarea for editing
                 <textarea
@@ -191,7 +226,7 @@ function Textbox({ id, onRemove, handle }) {
                 </DraggableCore>
 
                 <DraggableCore onDrag={handleMovementDrag}>
-                    <ZoomOutMapIcon className={classes.movementHandle}/>
+                    <ZoomOutMapIcon className={classes.movementHandle} ref={movementHandle}/>
                 </DraggableCore>
 
                 <DraggableCore onDrag={handleHeightDrag}>

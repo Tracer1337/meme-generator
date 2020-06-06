@@ -2,6 +2,7 @@ import React, { useContext } from "react"
 import { Menu as MuiMenu, MenuItem, ListItemIcon, ListItemText } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import BorderOuterIcon from "@material-ui/icons/BorderOuter"
+import GridIcon from "@material-ui/icons/GridOn"
 
 import { AppContext } from "../../App.js"
 
@@ -40,6 +41,13 @@ function Menu({ open, anchorEl, onClose }) {
                     <BorderOuterIcon fontSize="small"/>
                 </ListItemIcon>
                 <ListItemText primary="Border"/>
+            </MenuItem>
+
+            <MenuItem onClick={dispatchEvent("setGrid")}>
+                <ListItemIcon className={classes.icon}>
+                    <GridIcon fontSize="small"/>
+                </ListItemIcon>
+                <ListItemText primary="Grid"/>
             </MenuItem>
         </MuiMenu>
     )

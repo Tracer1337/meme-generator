@@ -4,9 +4,9 @@ import { makeStyles } from "@material-ui/core/styles"
 import DownloadIcon from "@material-ui/icons/GetApp"
 import LinkIcon from "@material-ui/icons/Link"
 
-import downloadImageFromSrc from "../../utils/downloadImageFromSrc.js"
-import dataURLToFile from "../../utils/dataURLToFile.js"
-import uploadImage from "../../utils/uploadImage.js"
+import downloadImageFromSrc from "../../../utils/downloadImageFromSrc.js"
+import dataURLToFile from "../../../utils/dataURLToFile.js"
+import uploadImage from "../../../utils/uploadImage.js"
 
 const useStyles = makeStyles(theme => {
     const button = {

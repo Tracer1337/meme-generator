@@ -5,7 +5,7 @@ import { useForm, FormContext } from "react-hook-form"
 
 import Select from "./Select.js"
 
-import settingsOptions from "../../config/settings-options.json"
+import settingsOptions from "../../../config/settings-options.json"
 
 const useStyles = makeStyles(theme => ({
     form: {

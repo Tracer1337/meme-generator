@@ -5,7 +5,7 @@ import { useForm, FormContext } from "react-hook-form"
 
 import Select from "./Select.js"
 
-import settingsOptions from "../../config/settings-options.json"
+import settingsOptions from "../../../config/settings-options.json"
 
 const useStyles = makeStyles(theme => ({
     form: {
@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-function SettingsDialog({ onClose, open, values }) {
+function BorderDialog({ onClose, open, values }) {
     const { register, getValues, handleSubmit, control, watch, reset, setValue } = useForm()
 
     const classes = useStyles()
@@ -129,4 +129,4 @@ function SettingsDialog({ onClose, open, values }) {
     )
 }
 
-export default SettingsDialog
+export default BorderDialog
