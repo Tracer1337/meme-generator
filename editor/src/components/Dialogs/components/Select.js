@@ -1,17 +1,8 @@
 import React from "react"
 import { TextField, MenuItem } from "@material-ui/core"
-import { makeStyles } from "@material-ui/core/styles"
 import { Controller, useFormContext } from "react-hook-form"
 
-const useStyles = makeStyles(theme => ({
-    input: {
-        marginTop: theme.spacing(1)
-    }
-}))
-
-function Select({ name, label, options, child }) {
-    const classes = useStyles()
-
+function Select({ name, label, options, child, className }) {
     const { control, watch } = useFormContext()
 
     return (
@@ -21,7 +12,7 @@ function Select({ name, label, options, child }) {
                     select
                     label={label}
                     fullWidth
-                    className={classes.input}
+                    className={className}
                     value={watch(name)}
                     {...props}
                 >

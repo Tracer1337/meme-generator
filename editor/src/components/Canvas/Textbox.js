@@ -50,6 +50,10 @@ const useStyles = makeStyles(theme => {
             }
         },
 
+        rotationHandle: {
+            cursor: "pointer"
+        },
+
         button: {
             padding: 0,
             marginLeft: theme.spacing(1),
@@ -94,27 +98,36 @@ const useStyles = makeStyles(theme => {
     }
 })
 
-let defaultSettings = {
+const globalDefaultSettings = {
     color: "black",
     textAlign: "left",
-    fontFamily: "Roboto"
+    fontFamily: "Roboto",
+    bold: false
 }
 
-function Textbox({ id, onRemove, handle, grid, canvas, template }) {
-    defaultSettings = { ...defaultSettings, ...template }
+function Textbox({ id, onRemove, handle, grid, template }) {
+    const defaultSettings = {...globalDefaultSettings}
+
+    if(template?.settings) {
+        for(let key in defaultSettings) {
+            if(template.settings[key]) {
+                defaultSettings[key] = template.settings[key]
+            }
+        }
+    }
 
     const classes = useStyles()
 
-    const lastRotation = useRef(0)
+    const lastRotation = useRef(template?.rotation || 0)
     const container = useRef()
 
     const [value, setValue] = useState(placeholder)
     const [dialogOpen, setDialogOpen] = useState(false)
     const [settings, setSettings] = useState(defaultSettings)
-    const [position, setPosition] = useState({ x: 0, y: 0 })
-    const [rotation, setRotation] = useState(0)
-    const [height, setHeight] = useState(24)
-    const [width, setWidth] = useState(160)
+    const [position, setPosition] = useState({ x: template?.x || 0, y: template?.y || 0 })
+    const [rotation, setRotation] = useState(template?.rotation || 0)
+    const [height, setHeight] = useState((template?.height && template.height - padding * 2) || 24)
+    const [width, setWidth] = useState((template?.width && template.width - padding * 2) || 160)
     const [capture, setCapture] = useState(false)
 
     // Keep track of width and height during resize in grid 
@@ -237,37 +250,41 @@ function Textbox({ id, onRemove, handle, grid, canvas, template }) {
         setCapture(false)
     }
 
+    const toObject = ({ image }) => {
+        const toPercentage = (value, useWidth = false) => value / (useWidth ? image.clientWidth : image.clientHeight) * 100 + "%"
+
+        const changedSettings = {}
+        for(let key in settings) {
+            if(settings[key] !== defaultSettings[key]) {
+                changedSettings[key] = settings[key]
+            }
+        }
+
+        return {
+            width: toPercentage(width + padding * 2, true),
+            height: toPercentage(height + padding * 2),
+            x: toPercentage(position.x, true),
+            y: toPercentage(position.y),
+            rotation,
+            settings: changedSettings
+        }
+    }
+
     // Expose methods for parent
     if(handle) {
         handle.beforeCapturing = beforeCapturing
         handle.afterCapturing = afterCapturing
+        handle.toObject = toObject
     }
 
     // Generate stylings for textbox
     const styles = useMemo(() => ({
+        ...settings,
         width: width + "px",
         height: height + "px",
         fontSize: fitText({ width, height, styles: settings, text: value }),
-        ...settings
+        fontWeight: settings.bold ? "bold" : null
     }), [value, settings, height, width])
-
-    useEffect(() => {
-        (async function() {
-            // Wait until canvas has resized proberly
-            await new Promise(requestAnimationFrame)
-
-            // Apply template position
-            if (template?.position) {
-                if (template.position === "top") {
-                    // Move to: center top
-                    setPosition({
-                        x: canvas.offsetWidth / 2 - container.current.offsetWidth / 2,
-                        y: 0
-                    })
-                }
-            }
-        })()
-    }, [])
 
     useEffect(() => {
         if(grid.enabled) {
@@ -338,7 +355,7 @@ function Textbox({ id, onRemove, handle, grid, canvas, template }) {
                 
                 <div className={classes.action}>
                     <DraggableCore onStart={handleRotationStart} onStop={handleRotationEnd} onDrag={handleRotationDrag}>
-                        <RotateLeftIcon/>
+                        <RotateLeftIcon className={classes.rotationHandle}/>
                     </DraggableCore>
 
                     <IconButton className={classes.button} onClick={handleEditClicked}>

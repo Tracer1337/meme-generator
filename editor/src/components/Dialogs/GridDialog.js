@@ -1,9 +1,10 @@
 import React, { useEffect } from "react"
-import { Dialog, DialogTitle, Button, TextField, FormControlLabel, Switch, FormGroup } from "@material-ui/core"
+import { Dialog, DialogTitle, Button, TextField, FormGroup } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import { useForm, FormContext } from "react-hook-form"
 
 import Select from "./components/Select.js"
+import Switch from "./components/Switch.js"
 
 import settingsOptions from "../../config/settings-options.json"
 
@@ -43,22 +44,11 @@ function GridDialog({ onClose, open, values }) {
         <Dialog onClose={handleClose} open={open}>
             <DialogTitle>Set Grid</DialogTitle>
 
-            <FormContext {...{ control, watch }}>
+            <FormContext {...{ control, watch, register, setValue }}>
                 <form onSubmit={handleSubmit(handleClose)} className={classes.form}>
                     <FormGroup>
                         {/* Enabled */}
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    name="enabled"
-                                    inputRef={register()}
-                                    onChange={(event, value) => setValue("enabled", value)}
-                                    checked={watch("enabled")}
-                                />
-                            }
-                            label="Enabled"
-                            className={classes.input}
-                        />
+                        <Switch name="enabled" label="Enabled" className={classes.input}/>
 
                         {/* Spacing */}
                         <TextField
@@ -75,6 +65,7 @@ function GridDialog({ onClose, open, values }) {
                             name="color"
                             label="Color"
                             options={settingsOptions.colors}
+                            className={classes.input}
                             child={({ label, value }) => (
                                 <span style={{ color: value }}>{label}</span>
                             )}

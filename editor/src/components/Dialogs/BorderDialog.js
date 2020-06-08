@@ -1,9 +1,10 @@
 import React, { useEffect } from "react"
-import { Dialog, DialogTitle, Button, TextField, FormControlLabel, Switch, FormGroup } from "@material-ui/core"
+import { Dialog, DialogTitle, Button, TextField, FormControlLabel, FormGroup } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import { useForm, FormContext } from "react-hook-form"
 
 import Select from "./components/Select.js"
+import Switch from "./components/Switch.js"
 
 import settingsOptions from "../../config/settings-options.json"
 
@@ -41,7 +42,7 @@ function BorderDialog({ onClose, open, values }) {
         <Dialog onClose={handleClose} open={open}>
                 <DialogTitle>Set Border</DialogTitle>
 
-                <FormContext {...{ control, watch }}>
+                <FormContext {...{ control, watch, register, setValue }}>
                     <form onSubmit={handleSubmit(handleClose)} className={classes.form}>
                         <FormGroup>
                             {/* Size */}
@@ -59,67 +60,23 @@ function BorderDialog({ onClose, open, values }) {
                                 name="color"
                                 label="Color"
                                 options={settingsOptions.colors}
+                                className={classes.input}
                                 child={({ label, value }) => (
                                     <span style={{ color: value }}>{label}</span>
                                 )}
                             />
 
                             {/* Top */}
-                            <FormControlLabel
-                                control={
-                                    <Switch
-                                        name="top"
-                                        inputRef={register()}
-                                        onChange={(event, value) => setValue("top", value)}
-                                        checked={watch("top")}
-                                    />
-                                }
-                                label="Top"
-                                className={classes.input}
-                            />
-                                
+                            <Switch name="top" label="Top" className={classes.input}/>
 
                             {/* Bottom */}
-                            <FormControlLabel
-                                control={
-                                    <Switch
-                                        name="bottom"
-                                        inputRef={register()}
-                                        onChange={(event, value) => setValue("bottom", value)}
-                                        checked={watch("bottom")}
-                                    />
-                                }
-                                label="Bottom"
-                                className={classes.input}
-                            />
+                            <Switch name="bottom" label="Bottom" className={classes.input}/>
 
                             {/* Left */}
-                            <FormControlLabel
-                                control={
-                                    <Switch
-                                        name="left"
-                                        inputRef={register()}
-                                        onChange={(event, value) => setValue("left", value)}
-                                        checked={watch("left")}
-                                    />
-                                }
-                                label="Left"
-                                className={classes.input}
-                            />
+                            <Switch name="left" label="Left" className={classes.input}/>
 
                             {/* Right */}
-                            <FormControlLabel
-                                control={
-                                    <Switch
-                                        name="right"
-                                        inputRef={register()}
-                                        onChange={(event, value) => setValue("right", value)}
-                                        checked={watch("right")}
-                                    />
-                                }
-                                label="Right"
-                                className={classes.input}
-                            />
+                            <Switch name="right" label="Right" className={classes.input}/>
 
                             <Button fullWidth className={classes.applyButton} type="submit">Apply</Button>
                         </FormGroup>

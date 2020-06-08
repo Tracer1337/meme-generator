@@ -68,6 +68,7 @@ function Canvas() {
     const textboxes = useRef({})
     const textboxTemplates = useRef({})
     const generatedImageData = useRef({})
+    const currentTemplate = useRef()
 
     let [keys, setKeys] = useState([])
     const [borderValues, setBorderValues] = useState(defaultBorderValues)
@@ -89,13 +90,16 @@ function Canvas() {
         delete textboxTemplates.current[removeKey]
     }
 
-    const handleAddTextField = ({ template }) => {
+    const handleAddTextbox = ({ template }) => {
         const newKey = idCounter.current++
-        setKeys([...keys, newKey])
-
+        
         if(template) {
             textboxTemplates.current[newKey] = template
         }
+
+        setKeys([...keys, newKey])
+
+        return newKey
     }
 
     const beforeCapturing = async container => {
@@ -112,6 +116,7 @@ function Canvas() {
     const handleImportImage = async () => {
         const file = await importFile("image/*")
         const base64Image = await fileToImage(file)
+        currentTemplate.current = null
         context.setImage(base64Image)
     }
 
@@ -148,6 +153,16 @@ function Canvas() {
     }
 
     const handleLoadTemplate = async ({ detail: { template } }) => {
+        currentTemplate.current = template
+        
+        // Check if value is given as percentage string and convert it if true
+        const formatPercentage = (object, selector, useWidth = false) => {
+            if(/\d+%/.test(object[selector])) {
+                const percentage = parseFloat(object[selector])
+                object[selector] = (useWidth ? image.current.clientWidth : image.current.clientHeight) * (percentage / 100)
+            }
+        }
+
         // Delete all textboxes
         keys.forEach(key => handleRemoveTextbox(key))
         keys = []
@@ -158,39 +173,63 @@ function Canvas() {
         // Wait until image is loaded into DOM
         await new Promise(requestAnimationFrame)
 
-        // Parse template border value
+        // Format border size
         if (typeof template.border?.size === "string") {
-            // Get percentage
-            if (/\d+%/.test(template.border.size)) {
-                const percentage = template.border.size.match(/\d+/)[0]
-                const pixel = image.current.clientHeight * (percentage / 100)
-                template.border.size = pixel
-            }
+            formatPercentage(template.border, "size")
         }
 
         // Set border
         setBorderValues(template.border || defaultBorderValues)
 
-        // Add textboxes
+        // Handle textboxes
         if(template.textboxes) {
-            template.textboxes.forEach(textbox => {
-                handleAddTextField({ template: textbox })
-            })
+            for(let textbox of template.textboxes){
+                // Format values
+                formatPercentage(textbox, "width", true)
+                formatPercentage(textbox, "height")
+                formatPercentage(textbox, "x", true)
+                formatPercentage(textbox, "y")
+
+                // Add textbox
+                const newKey = handleAddTextbox({ template: textbox })
+                keys.push(newKey)
+            }
         }
+
+        // Set new keys
+        setKeys(keys)
+    }
+
+    const handleStringifyTextboxes = (currentTemplates) => {
+        const formatted = Object.values(textboxes.current).map(textbox => textbox.toObject({ image: image.current }))
+
+        // Insert textboxes into corresponding template
+        if(currentTemplates) {
+            currentTemplates = JSON.parse(currentTemplates)
+            const selected = currentTemplates.find(t => t.label === currentTemplate.current.label)
+            if(selected) {
+                selected.textboxes = formatted
+            }
+            return JSON.stringify(currentTemplates)
+        }
+
+        return JSON.stringify(formatted)
     }
 
     // Set event listeners
     useEffect(() => {
         context.event.addEventListener("importImage", handleImportImage)
-        context.event.addEventListener("addTextField", handleAddTextField)
+        context.event.addEventListener("addTextField", handleAddTextbox)
         context.event.addEventListener("generateImage", handleGenerateImage)
         context.event.addEventListener("setBorder", handleSetBorder)
         context.event.addEventListener("setGrid", handleSetGrid)
         context.event.addEventListener("loadTemplate", handleLoadTemplate)
+
+        window.stringifyTextboxes = handleStringifyTextboxes
         
         return () => {
             context.event.removeEventListener("importImage", handleImportImage)
-            context.event.removeEventListener("addTextField", handleAddTextField)
+            context.event.removeEventListener("addTextField", handleAddTextbox)
             context.event.removeEventListener("generateImage", handleGenerateImage)
             context.event.removeEventListener("setBorder", handleSetBorder)
             context.event.removeEventListener("setGrid", handleSetGrid)
@@ -233,7 +272,7 @@ function Canvas() {
         canvas.current.style.width = newWidth
         canvas.current.style.height = newHeight
     }, [context.image, image, container, canvas])
-
+    
     return (
         <div className={classes.canvasWrapper} ref={container}>
             <div 
@@ -263,7 +302,6 @@ function Canvas() {
                         onRemove={handleRemoveTextbox}
                         handle={textboxes.current[key]}
                         grid={gridValues}
-                        canvas={canvas.current}
                         template={textboxTemplates.current[key]}
                     />
                 ))}

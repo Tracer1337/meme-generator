@@ -4,7 +4,8 @@
         "image": "savage-patrick.jpg",
         "textboxes": [
             {
-                "position": "top",
+                "width": "100%",
+                "height": "20%",
                 "color": "black"
             }
         ],
@@ -14,13 +15,13 @@
             "color": "white"
         }
     },
-
     {
         "label": "Mocking Spongebob",
         "image": "mocking-spongebob.jpg",
         "textboxes": [
             {
-                "position": "top",
+                "width": "100%",
+                "height": "30%",
                 "color": "black"
             }
         ],
@@ -30,154 +31,749 @@
             "color": "white"
         }
     },
-
     {
         "label": "Distracted Boyfriend",
-        "image": "distracted-boyfriend.png"
+        "image": "distracted-boyfriend.png",
+        "textboxes": [
+            {
+                "width": "40.11142061281337%",
+                "height": "25.10460251046025%",
+                "x": "7.520891364902507%",
+                "y": "73.22175732217573%",
+                "rotation": 0
+            },
+            {
+                "width": "29.247910863509752%",
+                "height": "20.502092050209207%",
+                "x": "46.51810584958218%",
+                "y": "47.69874476987448%",
+                "rotation": 0
+            },
+            {
+                "width": "28.133704735376046%",
+                "height": "18.828451882845187%",
+                "x": "68.24512534818942%",
+                "y": "74.05857740585773%",
+                "rotation": 0
+            }
+        ]
     },
-
     {
         "label": "Drake Hotline Bling",
-        "image": "drake-hotline-bling.png"
+        "image": "drake-hotline-bling.png",
+        "textboxes": [
+            {
+                "width": "49.58217270194986%",
+                "height": "49.58217270194986%",
+                "x": "50.13927576601671%",
+                "y": "0%",
+                "rotation": 0
+            },
+            {
+                "width": "50.69637883008357%",
+                "height": "49.86072423398329%",
+                "x": "50.13927576601671%",
+                "y": "49.86072423398329%",
+                "rotation": 0
+            }
+        ]
     },
-
     {
         "label": "Two Buttons",
-        "image": "two-buttons.png"
+        "image": "two-buttons.png",
+        "textboxes": [
+            {
+                "width": "33.605956518988656%",
+                "height": "11.565862295475842%",
+                "x": "8.635097493036211%",
+                "y": "9.208103130755065%",
+                "rotation": -0.39554017362458793
+            },
+            {
+                "width": "23.858732535090645%",
+                "height": "10.459447652960149%",
+                "x": "46.51810584958218%",
+                "y": "6.261510128913445%",
+                "rotation": -0.4522945348054401
+            }
+        ]
     },
-
     {
         "label": "Change My Mind",
-        "image": "change-my-mind.png"
+        "image": "change-my-mind.png",
+        "textboxes": [
+            {
+                "width": "46.668311492134876%",
+                "height": "25.947864839265456%",
+                "x": "41.78272980501393%",
+                "y": "57.99256505576208%",
+                "rotation": -0.10162714360307534
+            }
+        ]
     },
-
     {
         "label": "Draw 25",
-        "image": "draw-25.png"
+        "image": "draw-25.png",
+        "textboxes": [
+            {
+                "width": "27.298050139275766%",
+                "height": "25.98870056497175%",
+                "x": "18.105849582172702%",
+                "y": "26.55367231638418%",
+                "rotation": 0
+            }
+        ]
     },
-
     {
         "label": "Running Away Balloon",
-        "image": "running-away-balloon.png"
+        "image": "running-away-balloon.png",
+        "textboxes": [
+            {
+                "width": "36.211699164345404%",
+                "height": "19.502074688796682%",
+                "x": "61.55988857938719%",
+                "y": "10.78838174273859%",
+                "rotation": 0
+            },
+            {
+                "width": "40.11142061281337%",
+                "height": "9.95850622406639%",
+                "x": "-2.2284122562674096%",
+                "y": "38.17427385892116%",
+                "rotation": 0
+            },
+            {
+                "width": "35.65459610027855%",
+                "height": "9.95850622406639%",
+                "x": "-1.1142061281337048%",
+                "y": "74.48132780082987%",
+                "rotation": 0
+            }
+        ]
     },
-
     {
         "label": "Batman Slapping Robbin",
-        "image": "batman-slapping-robin.png"
+        "image": "batman-slapping-robin.png",
+        "textboxes": [
+            {
+                "width": "49.30362116991643%",
+                "height": "20.172910662824208%",
+                "x": "0.2785515320334262%",
+                "y": "0.2881844380403458%",
+                "rotation": 0
+            },
+            {
+                "width": "46.796657381615596%",
+                "height": "21.613832853025936%",
+                "x": "52.089136490250695%",
+                "y": "0.5763688760806917%",
+                "rotation": 0
+            }
+        ]
     },
-
     {
         "label": "Expanding Brain",
-        "image": "expanding-brain.png"
+        "image": "expanding-brain.png",
+        "textboxes": [
+            {
+                "width": "49.02506963788301%",
+                "height": "25.04970178926441%",
+                "x": "0%",
+                "y": "0%",
+                "rotation": 0
+            },
+            {
+                "width": "49.02506963788301%",
+                "height": "25.646123260437374%",
+                "x": "0%",
+                "y": "25.04970178926441%",
+                "rotation": 0
+            },
+            {
+                "width": "49.58217270194986%",
+                "height": "22.46520874751491%",
+                "x": "-0.2785515320334262%",
+                "y": "50.89463220675944%",
+                "rotation": 0
+            },
+            {
+                "width": "50.69637883008357%",
+                "height": "26.24254473161034%",
+                "x": "-1.392757660167131%",
+                "y": "73.95626242544732%",
+                "rotation": 0
+            }
+        ]
     },
-
     {
         "label": "Left Exit 12 Off Ramp",
-        "image": "left-exit-12-off-ramp.png"
+        "image": "left-exit-12-off-ramp.png",
+        "textboxes": [
+            {
+                "width": "25.62674094707521%",
+                "height": "12.573099415204677%",
+                "x": "13.09192200557103%",
+                "y": "18.128654970760234%",
+                "rotation": 0
+            },
+            {
+                "width": "33.70473537604457%",
+                "height": "21.929824561403507%",
+                "x": "51.81058495821726%",
+                "y": "12.573099415204677%",
+                "rotation": 0
+            },
+            {
+                "width": "51.25348189415042%",
+                "height": "14.035087719298245%",
+                "x": "19.498607242339833%",
+                "y": "80.4093567251462%",
+                "rotation": 0
+            }
+        ]
     },
-
     {
         "label": "Woman yelling at cat",
-        "image": "woman-yelling-at-cat.png"
+        "image": "woman-yelling-at-cat.png",
+        "textboxes": [
+            {
+                "width": "100%",
+                "height": "22.51082251082251%",
+                "x": "0%",
+                "y": "0%",
+                "rotation": 0
+            }
+        ]
     },
-
     {
         "label": "Is This A Pigeon?",
-        "image": "is-this-a-pigeon.png"
+        "image": "is-this-a-pigeon.png",
+        "textboxes": [
+            {
+                "width": "38.440111420612816%",
+                "height": "14.860681114551083%",
+                "x": "10.86350974930362%",
+                "y": "7.430340557275541%",
+                "rotation": 0
+            },
+            {
+                "width": "37.60445682451253%",
+                "height": "14.860681114551083%",
+                "x": "66.85236768802228%",
+                "y": "32.81733746130031%",
+                "rotation": 0
+            },
+            {
+                "width": "100.27855153203342%",
+                "height": "18.575851393188856%",
+                "x": "-0.8356545961002786%",
+                "y": "80.80495356037152%",
+                "rotation": 0
+            }
+        ]
     },
-
     {
         "label": "Meeting Suggestion",
-        "image": "meeting-suggestion.png"
+        "image": "meeting-suggestion.png",
+        "textboxes": [
+            {
+                "width": "60.44568245125348%",
+                "height": "8.798283261802576%",
+                "x": "30.362116991643457%",
+                "y": "0.2145922746781116%",
+                "rotation": 0
+            },
+            {
+                "width": "25.62674094707521%",
+                "height": "7.939914163090128%",
+                "x": "4.178272980501393%",
+                "y": "36.26609442060086%",
+                "rotation": 0
+            },
+            {
+                "width": "26.18384401114206%",
+                "height": "8.583690987124463%",
+                "x": "28.969359331476323%",
+                "y": "37.553648068669524%",
+                "rotation": 0
+            },
+            {
+                "width": "33.70473537604457%",
+                "height": "9.2274678111588%",
+                "x": "59.33147632311978%",
+                "y": "38.8412017167382%",
+                "rotation": 0
+            }
+        ]
     },
-
     {
         "label": "Tuxedo Winnie The Pooh",
-        "image": "tuxedo-winnie-the-pooh.png"
+        "image": "tuxedo-winnie-the-pooh.png",
+        "textboxes": [
+            {
+                "width": "56.824512534818936%",
+                "height": "50.57471264367817%",
+                "x": "43.17548746518106%",
+                "y": "0.38314176245210724%",
+                "rotation": 0
+            },
+            {
+                "width": "56.824512534818936%",
+                "height": "49.042145593869726%",
+                "x": "43.17548746518106%",
+                "y": "51.34099616858238%",
+                "rotation": 0
+            }
+        ]
     },
-
     {
         "label": "Blank Nut Button",
-        "image": "blank-nut-button.png"
+        "image": "blank-nut-button.png",
+        "textboxes": [
+            {
+                "width": "31.197771587743734%",
+                "height": "19.850187265917604%",
+                "x": "12.256267409470752%",
+                "y": "54.68164794007491%",
+                "rotation": 0
+            },
+            {
+                "width": "37.88300835654596%",
+                "height": "21.34831460674157%",
+                "x": "54.874651810584965%",
+                "y": "40.823970037453186%",
+                "rotation": 0
+            }
+        ]
     },
-
     {
         "label": "Inhaling Seagull",
-        "image": "inhaling-seagull.png"
+        "image": "inhaling-seagull.png",
+        "textboxes": [
+            {
+                "width": "99.09638554216868%",
+                "height": "6.486486486486487%",
+                "x": "0.6024096385542169%",
+                "y": "18.243243243243242%",
+                "rotation": 0,
+                "settings": {
+                    "color": "white"
+                }
+            },
+            {
+                "width": "99.3975903614458%",
+                "height": "6.486486486486487%",
+                "x": "0%",
+                "y": "42.567567567567565%",
+                "rotation": 0,
+                "settings": {
+                    "color": "white"
+                }
+            },
+            {
+                "width": "98.19277108433735%",
+                "height": "6.486486486486487%",
+                "x": "1.2048192771084338%",
+                "y": "68.24324324324324%",
+                "rotation": 0,
+                "settings": {
+                    "color": "white"
+                }
+            },
+            {
+                "width": "99.69879518072288%",
+                "height": "6.486486486486487%",
+                "x": "0.30120481927710846%",
+                "y": "93.37837837837839%",
+                "rotation": 0,
+                "settings": {
+                    "color": "white"
+                }
+            }
+        ]
     },
-
     {
         "label": "Hide The Pain Harold",
-        "image": "hide-the-pain-harold.png"
+        "image": "hide-the-pain-harold.png",
+        "textboxes": [
+            {
+                "width": "99.44289693593315%",
+                "height": "19.821826280623608%",
+                "x": "0.2785515320334262%",
+                "y": "30.734966592427615%",
+                "rotation": 0,
+                "settings": {}
+            },
+            {
+                "width": "101.11420612813372%",
+                "height": "19.37639198218263%",
+                "x": "-1.392757660167131%",
+                "y": "80.84632516703786%",
+                "rotation": 0,
+                "settings": {}
+            }
+        ]
     },
-
     {
         "label": "Epic Handshake",
-        "image": "epic-handshake.png"
+        "image": "epic-handshake.png",
+        "textboxes": [
+            {
+                "width": "33.98328690807799%",
+                "height": "24.8062015503876%",
+                "x": "-0.2785515320334262%",
+                "y": "50.775193798449614%",
+                "rotation": 0.6804606438002933,
+                "settings": {}
+            },
+            {
+                "width": "30.08356545961003%",
+                "height": "28.294573643410853%",
+                "x": "57.10306406685237%",
+                "y": "44.57364341085272%",
+                "rotation": -0.5521836104389273,
+                "settings": {}
+            },
+            {
+                "width": "39.27576601671309%",
+                "height": "30.23255813953488%",
+                "x": "24.233983286908078%",
+                "y": "6.2015503875969%",
+                "rotation": 0,
+                "settings": {}
+            }
+        ]
     },
-
     {
         "label": "Mokey Puppet",
-        "image": "monkey-puppet.png"
+        "image": "monkey-puppet.png",
+        "textboxes": [
+            {
+                "width": "49.58217270194986%",
+                "height": "37.45819397993311%",
+                "x": "0%",
+                "y": "0%",
+                "rotation": 0,
+                "settings": {}
+            },
+            {
+                "width": "49.58217270194986%",
+                "height": "36.45484949832776%",
+                "x": "49.86072423398329%",
+                "y": "0.33444816053511706%",
+                "rotation": 0,
+                "settings": {}
+            }
+        ]
     },
-
     {
         "label": "Unsettled Tom",
-        "image": "unsettled-tom.png"
+        "image": "unsettled-tom.png",
+        "border": {
+            "size": "40%",
+            "top": true,
+            "color": "white"
+        },
+        "textboxes": [
+            {
+                "width": "100.83565459610028%",
+                "height": "40%",
+                "x": "-0.5571030640668524%",
+                "y": "0%",
+                "rotation": 0,
+                "settings": {}
+            }
+        ]
     },
-
     {
         "label": "American Chopper Argument",
-        "image": "american-chopper-argument.png"
+        "image": "american-chopper-argument.png",
+        "textboxes": [
+            {
+                "width": "99.23954372623575%",
+                "height": "6.486486486486487%",
+                "x": "0%",
+                "y": "13.378378378378377%",
+                "rotation": 0,
+                "settings": {
+                    "color": "white"
+                }
+            },
+            {
+                "width": "99.61977186311786%",
+                "height": "6.486486486486487%",
+                "x": "0%",
+                "y": "33.513513513513516%",
+                "rotation": 0,
+                "settings": {
+                    "color": "white"
+                }
+            },
+            {
+                "width": "100%",
+                "height": "6.486486486486487%",
+                "x": "0.38022813688212925%",
+                "y": "53.37837837837838%",
+                "rotation": 0,
+                "settings": {
+                    "color": "white"
+                }
+            },
+            {
+                "width": "98.09885931558935%",
+                "height": "6.486486486486487%",
+                "x": "1.1406844106463878%",
+                "y": "73.1081081081081%",
+                "rotation": 0,
+                "settings": {
+                    "color": "white"
+                }
+            },
+            {
+                "width": "100%",
+                "height": "6.486486486486487%",
+                "x": "0%",
+                "y": "93.37837837837839%",
+                "rotation": 0,
+                "settings": {
+                    "color": "white"
+                }
+            }
+        ]
     },
-
     {
         "label": "Panic Kalm Panic",
-        "image": "panic-kalm-panic.png"
+        "image": "panic-kalm-panic.png",
+        "textboxes": [
+            {
+                "width": "46.239554317548745%",
+                "height": "33.40080971659919%",
+                "x": "1.392757660167131%",
+                "y": "0.4048582995951417%",
+                "rotation": 0,
+                "settings": {}
+            },
+            {
+                "width": "46.51810584958218%",
+                "height": "32.388663967611336%",
+                "x": "1.392757660167131%",
+                "y": "34.41295546558704%",
+                "rotation": 0,
+                "settings": {}
+            },
+            {
+                "width": "45.682451253481894%",
+                "height": "31.57894736842105%",
+                "x": "1.6713091922005572%",
+                "y": "68.0161943319838%",
+                "rotation": 0,
+                "settings": {}
+            }
+        ]
     },
-
     {
         "label": "Surprised Pikachu",
-        "image": "surprised-pikachu.png"
+        "image": "surprised-pikachu.png",
+        "textboxes": [
+            {
+                "width": "100%",
+                "height": "40.389972144846794%",
+                "x": "0%",
+                "y": "0%",
+                "rotation": 0,
+                "settings": {}
+            }
+        ]
     },
-
     {
         "label": "Roll Safe Think About It",
-        "image": "roll-safe-think-about-it.png"
+        "image": "roll-safe-think-about-it.png",
+        "textboxes": [
+            {
+                "width": "98.60724233983287%",
+                "height": "31.18811881188119%",
+                "x": "0.2785515320334262%",
+                "y": "0.49504950495049505%",
+                "rotation": 0,
+                "settings": {
+                    "color": "white",
+                    "textAlign": "center"
+                }
+            },
+            {
+                "width": "99.72144846796658%",
+                "height": "23.762376237623762%",
+                "x": "0.2785515320334262%",
+                "y": "75.24752475247524%",
+                "rotation": 0,
+                "settings": {
+                    "color": "white",
+                    "textAlign": "center"
+                }
+            }
+        ]
     },
-
     {
         "label": "One Does Not Simply",
-        "image": "one-does-not-simply.png"
+        "image": "one-does-not-simply.png",
+        "textboxes": [
+            {
+                "width": "99.72144846796658%",
+                "height": "22.748815165876778%",
+                "x": "0%",
+                "y": "0%",
+                "rotation": 0,
+                "settings": {
+                    "color": "white",
+                    "textAlign": "center"
+                }
+            },
+            {
+                "width": "99.72144846796658%",
+                "height": "22.748815165876778%",
+                "x": "0%",
+                "y": "77.25118483412322%",
+                "rotation": 0,
+                "settings": {
+                    "color": "white",
+                    "textAlign": "center"
+                }
+            }
+        ]
     },
-
     {
         "label": "X, X Everywhere",
-        "image": "x-everywhere.png"
+        "image": "x-everywhere.png",
+        "textboxes": [
+            {
+                "width": "99.72144846796658%",
+                "height": "24.18032786885246%",
+                "x": "-0.2785515320334262%",
+                "y": "0.819672131147541%",
+                "rotation": 0,
+                "settings": {
+                    "color": "white",
+                    "textAlign": "center"
+                }
+            }
+        ]
     },
-
     {
         "label": "The Rock Driving",
-        "image": "the-rock-driving.png"
+        "image": "the-rock-driving.png",
+        "textboxes": [
+            {
+                "width": "42.89693593314763%",
+                "height": "16.7420814479638%",
+                "x": "55.71030640668524%",
+                "y": "4.298642533936651%",
+                "rotation": 0,
+                "settings": {}
+            },
+            {
+                "width": "40.11142061281337%",
+                "height": "15.158371040723981%",
+                "x": "58.21727019498607%",
+                "y": "37.55656108597285%",
+                "rotation": 0,
+                "settings": {}
+            }
+        ]
     },
-
     {
         "label": "Ancient Aliens",
-        "image": "ancient-aliens.png"
+        "image": "ancient-aliens.png",
+        "textboxes": [
+            {
+                "width": "100.27855153203342%",
+                "height": "21.97452229299363%",
+                "x": "0%",
+                "y": "0%",
+                "rotation": 0,
+                "settings": {
+                    "color": "white",
+                    "textAlign": "center"
+                }
+            },
+            {
+                "width": "100.55710306406684%",
+                "height": "26.43312101910828%",
+                "x": "0%",
+                "y": "73.88535031847134%",
+                "rotation": 0,
+                "settings": {
+                    "color": "white",
+                    "textAlign": "center"
+                }
+            }
+        ]
     },
-
     {
         "label": "Sad Pablo Escobar",
-        "image": "sad-pablo-escobar.png"
+        "image": "sad-pablo-escobar.png",
+        "textboxes": [
+            {
+                "width": "99.16434540389972%",
+                "height": "27.683615819209038%",
+                "x": "0%",
+                "y": "35.59322033898305%",
+                "rotation": 0,
+                "settings": {}
+            }
+        ]
     },
-
     {
         "label": "Finding Neverland",
-        "image": "finding-neverland.png"
+        "image": "finding-neverland.png",
+        "textboxes": [
+            {
+                "width": "99.16434540389972%",
+                "height": "11.19842829076621%",
+                "x": "0.8356545961002786%",
+                "y": "22.20039292730845%",
+                "rotation": 0,
+                "settings": {
+                    "color": "white"
+                }
+            },
+            {
+                "width": "99.16434540389972%",
+                "height": "10.609037328094303%",
+                "x": "0.5571030640668524%",
+                "y": "56.97445972495089%",
+                "rotation": 0,
+                "settings": {
+                    "color": "white"
+                }
+            }
+        ]
     },
-
     {
         "label": "Futurama Fry",
-        "image": "futurama-fry.png"
+        "image": "futurama-fry.png",
+        "textboxes": [
+            {
+                "width": "100%",
+                "height": "24.53531598513011%",
+                "x": "0%",
+                "y": "0%",
+                "rotation": 0,
+                "settings": {
+                    "color": "white",
+                    "textAlign": "center"
+                }
+            },
+            {
+                "width": "100.55710306406684%",
+                "height": "26.765799256505574%",
+                "x": "0.5571030640668524%",
+                "y": "73.60594795539033%",
+                "rotation": 0,
+                "settings": {
+                    "color": "white",
+                    "textAlign": "center"
+                }
+            }
+        ]
     }
 ]

@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles"
 import { useForm, FormContext } from "react-hook-form"
 
 import Select from "./components/Select.js"
+import Switch from "./components/Switch.js"
 
 import settingsOptions from "../../config/settings-options.json"
 
@@ -28,7 +29,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 function SettingsDialog({ onClose, open, values, text }) {
-    const { getValues, handleSubmit, control, watch, reset } = useForm()
+    const { getValues, handleSubmit, control, watch, reset, register, setValue } = useForm()
 
     const classes = useStyles()
 
@@ -46,13 +47,14 @@ function SettingsDialog({ onClose, open, values, text }) {
                 {text}
             </div>
             
-            <FormContext {...{ control, watch }}>
+            <FormContext {...{ control, watch, register, setValue }}>
                 <form onSubmit={handleSubmit(handleClose)} className={classes.form}>
                     {/* Color */}
                     <Select
                         name="color"
                         label="Color"
                         options={settingsOptions.colors}
+                        className={classes.input}
                         child={({ label, value }) => (
                             <span style={{ color: value }}>{label}</span>
                         )}
@@ -63,6 +65,7 @@ function SettingsDialog({ onClose, open, values, text }) {
                         name="textAlign"
                         label="Text Align"
                         options={settingsOptions.textAlign}
+                        className={classes.input}
                         child={({ label }) => label}
                     />
 
@@ -71,10 +74,14 @@ function SettingsDialog({ onClose, open, values, text }) {
                         name="fontFamily"
                         label="Font Family"
                         options={settingsOptions.fontFamilies}
+                        className={classes.input}
                         child={({ label, value }) => (
                             <span style={{ fontFamily: value }}>{label}</span>
                         )}
                     />
+
+                    {/* Bold */}
+                    <Switch name="bold" label="Bold" className={classes.input}/>
 
                     <Button fullWidth className={classes.applyButton} type="submit">Apply</Button>
                 </form>
