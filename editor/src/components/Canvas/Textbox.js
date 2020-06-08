@@ -36,7 +36,7 @@ const useStyles = makeStyles(theme => {
         input: {
             background: "none",
             border: "none",
-            outline: "1px dashed white",
+            outline: "1px dashed gray",
             fontSize: 24,
             color: "white",
             fontFamily: theme.typography.fontFamily,
