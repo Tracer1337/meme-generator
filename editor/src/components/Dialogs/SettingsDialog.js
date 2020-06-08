@@ -28,16 +28,12 @@ const useStyles = makeStyles(theme => ({
 }))
 
 function SettingsDialog({ onClose, open, values, text }) {
-    const { register, getValues, handleSubmit, control, watch, reset } = useForm()
+    const { getValues, handleSubmit, control, watch, reset } = useForm()
 
     const classes = useStyles()
 
     const handleClose = () => {
-        const values = getValues()
-        
-        values.fontSize = parseInt(values.fontSize)
-
-        onClose(values)
+        onClose(getValues())
     }
 
     useEffect(() => {
@@ -46,25 +42,12 @@ function SettingsDialog({ onClose, open, values, text }) {
 
     return (
         <Dialog onClose={handleClose} open={open}>
-            <div className={classes.text} style={{
-                ...watch(),
-                fontSize: parseInt(watch("fontSize") || 0)
-            }}>
+            <div className={classes.text} style={watch()}>
                 {text}
             </div>
             
             <FormContext {...{ control, watch }}>
                 <form onSubmit={handleSubmit(handleClose)} className={classes.form}>
-                    {/* Font Size */}
-                    <TextField
-                        inputRef={register()}
-                        name="fontSize"
-                        type="number"
-                        label="Font Size"
-                        fullWidth
-                        className={classes.input}
-                    />
-
                     {/* Color */}
                     <Select
                         name="color"

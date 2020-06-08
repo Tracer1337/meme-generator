@@ -69,7 +69,7 @@ function Canvas() {
     const textboxTemplates = useRef({})
     const generatedImageData = useRef({})
 
-    const [keys, setKeys] = useState([])
+    let [keys, setKeys] = useState([])
     const [borderValues, setBorderValues] = useState(defaultBorderValues)
     const [gridValues, setGridValues] = useState(defaultGridValues)
     const [isBorderDialogOpen, setIsBorderDialogOpen] = useState(false)
@@ -149,8 +149,8 @@ function Canvas() {
 
     const handleLoadTemplate = async ({ detail: { template } }) => {
         // Delete all textboxes
-        // keys.forEach(key => handleRemoveTextbox(key))
-        // keys = []
+        keys.forEach(key => handleRemoveTextbox(key))
+        keys = []
 
         // Set image
         context.setImage(template.image)
