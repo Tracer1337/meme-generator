@@ -15,6 +15,8 @@ const theme = createMuiTheme({
 
 console.log(theme)
 
+document.body.style.overflow = "hidden"
+
 ReactDOM.render((
     <ThemeProvider theme={theme}>
         <App/>
