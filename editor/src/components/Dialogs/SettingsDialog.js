@@ -3,7 +3,7 @@ import { Dialog, Button, TextField } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import { useForm, FormContext } from "react-hook-form"
 
-import Select from "./Select.js"
+import Select from "./components/Select.js"
 
 import settingsOptions from "../../config/settings-options.json"
 

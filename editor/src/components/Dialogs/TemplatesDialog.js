@@ -1,5 +1,5 @@
-import React, { useContext } from "react"
-import { Dialog, AppBar, Toolbar, Typography, IconButton, Slide, GridList, GridListTile, GridListTileBar } from "@material-ui/core"
+import React, { useState, useContext } from "react"
+import { Dialog, AppBar, Toolbar, Typography, IconButton, Slide, GridList, GridListTile, GridListTileBar, InputBase, Paper } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import CloseIcon from "@material-ui/icons/Close"
 
@@ -12,15 +12,34 @@ templates.forEach(template => {
 })
 
 const useStyles = makeStyles(theme => ({
+    body: {
+        marginTop: theme.mixins.toolbar.minHeight
+    },
+
+    searchWrapper: {
+        margin: `${theme.spacing(2)}px ${theme.spacing(1)}px`,
+        padding: "2px 4px",
+        display: "flex"
+    },
+
+    search: {
+        marginLeft: theme.spacing(1),
+        flex: 1
+    },
+
+    searchClear: {
+        padding: theme.spacing(1)
+    },
+
     listWrapper: {
-        marginTop: theme.mixins.toolbar.minHeight,
         display: "flex",
         justifyContent: "center",
         overflow: "hidden"
     },
 
     list: {
-        maxWidth: 400
+        maxWidth: 400,
+        width: "100%"
     },
 
     tile: {
@@ -28,15 +47,17 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-function Templates({ onLoad }) {
+function Templates({ onLoad, search }) {
     const classes = useStyles()
+
+    const renderTemplates = templates.filter(({ label }) => label.includes(search))
 
     return (
         <div className={classes.listWrapper}>
             <GridList cellHeight={150} className={classes.list}>
-                {templates.map((template, i) => (
+                {renderTemplates.map((template, i) => (
                     <GridListTile key={i} onClick={() => onLoad(template)} className={classes.tile}>
-                        <img src={template.image} alt="Preview" />
+                        <img src={template.image} alt="Preview" loading="lazy"/>
 
                         <GridListTileBar title={template.label}/>
                     </GridListTile>
@@ -53,16 +74,29 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 function TemplatesDialog({ onClose, open }) {
     const context = useContext(AppContext)
 
-    const handleLoad = template => {
-        context.event.dispatchEvent(new CustomEvent("loadTemplate", { detail: { template } }))
+    const classes = useStyles()
+
+    const [search, setSearch] = useState("")
+
+    const handleClose = () => {
+        setSearch("")
         onClose()
     }
 
+    const handleLoad = template => {
+        context.event.dispatchEvent(new CustomEvent("loadTemplate", { detail: { template } }))
+        handleClose()
+    }
+
+    const handleSearchChange = event => {
+        setSearch(event.target.value)
+    }
+
     return (
-        <Dialog fullScreen onClose={onClose} open={open} TransitionComponent={Transition}>
+        <Dialog fullScreen onClose={handleClose} open={open} TransitionComponent={Transition}>
             <AppBar>
                 <Toolbar>
-                    <IconButton edge="start" color="inherit" onClick={onClose}>
+                    <IconButton edge="start" color="inherit" onClick={handleClose}>
                         <CloseIcon/>
                     </IconButton>
 
@@ -72,7 +106,17 @@ function TemplatesDialog({ onClose, open }) {
                 </Toolbar>
             </AppBar>
 
-            <Templates onLoad={handleLoad}/>
+            <div className={classes.body}>
+                <Paper variant="outlined" className={classes.searchWrapper}>
+                    <InputBase value={search} onChange={handleSearchChange} placeholder="Search" className={classes.search}/>
+
+                    <IconButton onClick={() => setSearch("")} className={classes.searchClear}>
+                        <CloseIcon/>
+                    </IconButton>
+                </Paper>
+
+                <Templates onLoad={handleLoad} search={search}/>
+            </div>
         </Dialog>
     )
 }
