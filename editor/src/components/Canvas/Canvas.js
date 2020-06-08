@@ -155,6 +155,19 @@ function Canvas() {
         // Set image
         context.setImage(template.image)
 
+        // Wait until image is loaded into DOM
+        await new Promise(requestAnimationFrame)
+
+        // Parse template border value
+        if (typeof template.border?.size === "string") {
+            // Get percentage
+            if (/\d+%/.test(template.border.size)) {
+                const percentage = template.border.size.match(/\d+/)[0]
+                const pixel = image.current.clientHeight * (percentage / 100)
+                template.border.size = pixel
+            }
+        }
+
         // Set border
         setBorderValues(template.border || defaultBorderValues)
 

@@ -14,8 +14,11 @@ import { AppContext } from "../../App.js"
 
 const useStyles = makeStyles(theme => ({
     appBar: {
-        top: "auto",
+        position: "absolute",
+        top: "unset",
         bottom: 0,
+        left: 0,
+        right: "unset",
         backgroundColor: theme.palette.background.paper
     },
 

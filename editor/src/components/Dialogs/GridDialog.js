@@ -67,7 +67,7 @@ function GridDialog({ onClose, open, values }) {
                             fullWidth
                             type="number"
                             name="spacing"
-                            label="Spacing"
+                            label="Spacing (px)"
                         />
 
                         {/* Color */}

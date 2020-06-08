@@ -9,7 +9,7 @@
             }
         ],
         "border": {
-            "size": 50,
+            "size": "20%",
             "top": true,
             "color": "white"
         }
@@ -25,7 +25,7 @@
             }
         ],
         "border": {
-            "size": 100,
+            "size": "30%",
             "top": true,
             "color": "white"
         }

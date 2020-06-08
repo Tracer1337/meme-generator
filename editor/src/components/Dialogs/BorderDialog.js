@@ -51,7 +51,7 @@ function BorderDialog({ onClose, open, values }) {
                                 fullWidth
                                 type="number"
                                 name="size"
-                                label="Size"
+                                label="Size (px)"
                             />
 
                             {/* Color */}
