@@ -52,6 +52,14 @@ const useStyles = makeStyles(theme => {
             whiteSpace: "pre",
             zIndex: 10,
             padding,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: props => (
+                props.settings.verticalTextAlign === "top" ? "flex-start" :
+                props.settings.verticalTextAlign === "bottom" ? "flex-end" :
+                props.settings.verticalTextAlign === "center" ? "center" :
+                null
+            ),
 
             "&::placeholder": {
                 color: "white"
@@ -113,7 +121,8 @@ const globalDefaultSettings = {
     textAlign: "left",
     fontFamily: "Roboto",
     bold: false,
-    backgroundColor: "transparent"
+    backgroundColor: "transparent",
+    verticalTextAlign: "center"
 }
 
 function Textbox({ id, onRemove, handle, grid, template }) {
@@ -129,6 +138,7 @@ function Textbox({ id, onRemove, handle, grid, template }) {
 
     const lastRotation = useRef(template?.rotation || 0)
     const container = useRef()
+    const textboxRef = useRef()
 
     const [value, setValue] = useState(placeholder)
     const [dialogOpen, setDialogOpen] = useState(false)
@@ -139,18 +149,14 @@ function Textbox({ id, onRemove, handle, grid, template }) {
     const [width, setWidth] = useState((template?.width && template.width - padding * 2) || 160)
     const [capture, setCapture] = useState(false)
 
-    const classes = useStyles({ capture })
+    const classes = useStyles({ capture, settings })
 
     // Keep track of width and height during resize in grid 
     const internalDimensions = useRef({ width, height })
 
-    const handleChange = event => {
-        setValue(event.target.value)
-    }
-
     const getRotationAngle = (event, data) => {
         // Get textbox center position
-        const textbox = document.getElementById(`textbox-${id}`).getBoundingClientRect()
+        const textbox = textboxRef.current.getBoundingClientRect()
         const textboxCenter = {
             x: textbox.x + textbox.width / 2,
             y: textbox.y + textbox.height / 2
@@ -244,11 +250,11 @@ function Textbox({ id, onRemove, handle, grid, template }) {
     }
 
     const handleEditClicked = () => {
-        const textbox = document.getElementById(`textbox-${id}`)
-        textbox.focus()
+        textboxRef.current.focus()
 
         // Clear the placeholder
         if(value === placeholder) {
+            textboxRef.current.textContent = ""
             setValue("")
         }
     }
@@ -317,6 +323,38 @@ function Textbox({ id, onRemove, handle, grid, template }) {
         }
     }, [grid.enabled])
 
+    useEffect(() => {
+        // Listen to content changes
+        const observer = new MutationObserver((mutations) => {
+            const textMutation = mutations.find(m => m.type === "characterData")
+            
+            if(textMutation) {
+                // Get new value from all children
+                let newValue = ""
+                for(let child of textboxRef.current.childNodes) {
+                    newValue += child.textContent + "\n"
+                }
+                
+                // Remove last "\n"
+                newValue = newValue.substr(0, newValue.length - 1)
+
+                setValue(newValue)
+            }
+        })
+        
+        const options = { attributes: true, childList: true, characterData: true, subtree: true }
+
+        observer.observe(textboxRef.current, options)
+
+        return () => observer.disconnect()
+    })
+
+    useEffect(() => {
+        textboxRef.current.textContent = value
+    }, [capture])
+
+    console.log(settings)
+
     return (
         <DraggableCore onDrag={handleMovementDrag} grid={grid.enabled ? [grid.spacing, grid.spacing] : null} handle={`#textbox-${id}`}>
             <div 
@@ -329,17 +367,17 @@ function Textbox({ id, onRemove, handle, grid, template }) {
             >
                 {!capture ? (
                     // Render textarea for editing
-                    <textarea
+                    <div
+                        contentEditable
                         id={`textbox-${id}`}
                         type="text"
                         className={classes.input}
-                        value={value}
-                        onChange={handleChange}
                         style={styles}
+                        ref={textboxRef}
                     />
                 ) : (
                     // Render div for capturing
-                    <div id={`textbox-${id}`} className={classes.input} style={styles}>
+                    <div id={`textbox-${id}`} className={classes.input} style={styles} ref={textboxRef}>
                         {value}
                     </div>
                 )}

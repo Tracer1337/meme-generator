@@ -262,21 +262,24 @@ function Canvas() {
 
         if(maxWidth * imgRatio > maxHeight) {
             // Height is larger than max height => Constrain height
-            newHeight = maxHeight + "px"
-            newWidth = maxHeight * (1 / imgRatio) + "px"
+            newHeight = maxHeight
+            newWidth = maxHeight * (1 / imgRatio)
         } else {
             // Width is larger than max width => Constrain width
-            newWidth = maxWidth + "px"
-            newHeight = maxWidth * imgRatio + "px"
+            newWidth = maxWidth
+            newHeight = maxWidth * imgRatio
         }
+        
+        newWidth = Math.floor(newWidth)
+        newHeight = Math.floor(newHeight)
 
         // Apply sizing to image
-        image.current.style.width = newWidth
-        image.current.style.height = newHeight
+        image.current.style.width = newWidth + "px"
+        image.current.style.height = newHeight + "px"
 
         // Apply sizing to canvas
-        canvas.current.style.width = newWidth
-        canvas.current.style.height = newHeight
+        canvas.current.style.width = newWidth + "px"
+        canvas.current.style.height = newHeight + "px"
     }, [context.image, image, container, canvas])
     
     return (

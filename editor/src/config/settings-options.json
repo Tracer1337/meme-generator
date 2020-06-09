@@ -15,6 +15,12 @@
         "Center": "center"
     },
 
+    "verticalTextAlign": {
+        "Top": "top",
+        "Bottom": "bottom",
+        "Center": "center"
+    },
+
     "fontFamilies": {
         "Roboto": "Roboto",
         "Times New Roman": "'Times New Roman', 'Times', serif",

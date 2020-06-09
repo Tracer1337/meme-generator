@@ -83,6 +83,15 @@ function SettingsDialog({ onClose, open, values, text }) {
                         child={({ label }) => label}
                     />
 
+                    {/* Vertical Text Align */}
+                    <Select
+                        name="verticalTextAlign"
+                        label="Vertical Text Align"
+                        options={settingsOptions.verticalTextAlign}
+                        className={classes.input}
+                        child={({ label }) => label}
+                    />
+
                     {/* Font Family */}
                     <Select
                         name="fontFamily"
