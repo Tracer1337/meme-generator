@@ -102,7 +102,8 @@ const globalDefaultSettings = {
     color: "black",
     textAlign: "left",
     fontFamily: "Roboto",
-    bold: false
+    bold: false,
+    backgroundColor: "transparent"
 }
 
 function Textbox({ id, onRemove, handle, grid, template }) {

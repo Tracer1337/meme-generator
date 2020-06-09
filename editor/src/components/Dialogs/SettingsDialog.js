@@ -60,6 +60,20 @@ function SettingsDialog({ onClose, open, values, text }) {
                         )}
                     />
 
+                    {/* Background Color */}
+                    <Select
+                        name="backgroundColor"
+                        label="Background Color"
+                        options={{
+                            "Transparent": "transparent",
+                            ...settingsOptions.colors
+                        }}
+                        className={classes.input}
+                        child={({ label, value }) => (
+                            <span style={{ color: value }}>{label}</span>
+                        )}
+                    />
+
                     {/* Text Align */}
                     <Select
                         name="textAlign"

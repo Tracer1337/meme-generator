@@ -36,25 +36,34 @@
         "image": "distracted-boyfriend.png",
         "textboxes": [
             {
-                "width": "40.11142061281337%",
-                "height": "25.10460251046025%",
+                "width": "39.55431754874652%",
+                "height": "22.17573221757322%",
                 "x": "7.520891364902507%",
                 "y": "73.22175732217573%",
-                "rotation": 0
+                "rotation": 0,
+                "settings": {
+                    "backgroundColor": "white"
+                }
             },
             {
                 "width": "29.247910863509752%",
                 "height": "20.502092050209207%",
                 "x": "46.51810584958218%",
                 "y": "47.69874476987448%",
-                "rotation": 0
+                "rotation": 0,
+                "settings": {
+                    "backgroundColor": "white"
+                }
             },
             {
                 "width": "28.133704735376046%",
                 "height": "18.828451882845187%",
                 "x": "68.24512534818942%",
                 "y": "74.05857740585773%",
-                "rotation": 0
+                "rotation": 0,
+                "settings": {
+                    "backgroundColor": "white"
+                }
             }
         ]
     },
