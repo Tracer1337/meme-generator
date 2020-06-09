@@ -27,7 +27,10 @@ function Grid({ config, canvas, border }) {
 
     let renderContext;
 
-    const setDimensions = () => {
+    const setDimensions = async () => {
+        // Wait until canvas has resized proberly
+        await new Promise(requestAnimationFrame)
+
         const canvasRect = canvas.getBoundingClientRect()
 
         grid.current.width = canvasRect.width
@@ -82,9 +85,9 @@ function Grid({ config, canvas, border }) {
             return
         }
 
-        setDimensions()
+        setDimensions().then(renderGrid)
 
-        renderGrid()
+        // renderGrid()
     }, [canvas, config, context.image, border])
 
     return (
