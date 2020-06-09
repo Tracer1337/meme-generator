@@ -13,7 +13,9 @@ const theme = createMuiTheme({
     }
 })
 
-console.log(theme)
+if(process.env.NODE_ENV === "development") {
+    console.log(theme)
+}
 
 document.body.style.overflow = "hidden"
 

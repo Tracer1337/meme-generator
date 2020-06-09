@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import { Dialog, DialogTitle, Button, TextField, FormGroup } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import { useForm, FormContext } from "react-hook-form"
@@ -28,8 +28,18 @@ function GridDialog({ onClose, open, values }) {
 
     const classes = useStyles()
 
+    const [spacingError, setSpacingError] = useState(false)
+
     const handleClose = () => {
         const values = getValues()
+
+        // Missing value "Spacing"
+        if(values.fixedSpacing && !values.spacing) {
+            setSpacingError(true)
+            return
+        } else {
+            setSpacingError(false)
+        }
 
         values.spacing = parseInt(values.spacing)
 
@@ -50,15 +60,8 @@ function GridDialog({ onClose, open, values }) {
                         {/* Enabled */}
                         <Switch name="enabled" label="Enabled" className={classes.input}/>
 
-                        {/* Spacing */}
-                        <TextField
-                            inputRef={register()}
-                            className={classes.input}
-                            fullWidth
-                            type="number"
-                            name="spacing"
-                            label="Spacing (px)"
-                        />
+                        {/* Use Fixed Spacing */}
+                        <Switch name="fixedSpacing" label="Fixed Spacing" className={classes.input}/>
 
                         {/* Color */}
                         <Select
@@ -69,6 +72,37 @@ function GridDialog({ onClose, open, values }) {
                             child={({ label, value }) => (
                                 <span style={{ color: value }}>{label}</span>
                             )}
+                        />
+
+                        {/* Columns */}
+                        <TextField
+                            inputRef={register()}
+                            className={classes.input}
+                            fullWidth
+                            type="number"
+                            name="columns"
+                            label="Columns"
+                        />
+
+                        {/* Rows */}
+                        <TextField
+                            inputRef={register()}
+                            className={classes.input}
+                            fullWidth
+                            type="number"
+                            name="rows"
+                            label="Rows"
+                        />
+
+                        {/* Spacing */}
+                        <TextField
+                            inputRef={register()}
+                            className={classes.input}
+                            fullWidth
+                            type="number"
+                            name="spacing"
+                            label="Spacing (px)"
+                            error={spacingError}
                         />
 
                         <Button fullWidth className={classes.applyButton} type="submit">Apply</Button>

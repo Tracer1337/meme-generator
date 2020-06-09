@@ -36,8 +36,11 @@ const defaultBorderValues = {
 
 const defaultGridValues = {
     enabled: false,
-    spacing: 16,
-    color: "black"
+    fixedSpacing: false,
+    color: "black",
+    spacing: undefined,
+    columns: 16,
+    rows: 16
 }
 
 const useStyles = makeStyles(theme => ({
@@ -312,11 +315,12 @@ function Canvas() {
                         handle={textboxes.current[key]}
                         grid={gridValues}
                         template={textboxTemplates.current[key]}
+                        canvas={canvas.current}
                     />
                 ))}
             </div>
 
-            <Grid config={gridValues} canvas={canvas.current} image={context.image} border={borderValues}/>
+            <Grid config={gridValues} canvas={canvas.current} border={borderValues}/>
 
             <BorderDialog open={isBorderDialogOpen} onClose={handleBorderDialogClose} values={borderValues}/>
             <GridDialog open={isGridDialogOpen} onClose={handleGridDialogClose} values={gridValues}/>

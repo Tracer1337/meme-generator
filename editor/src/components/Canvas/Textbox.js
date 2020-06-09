@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo, useEffect } from "react"
+import React, { useState, useRef, useMemo, useEffect, useContext } from "react"
 import { DraggableCore } from "react-draggable"
 import { IconButton } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
@@ -10,10 +10,20 @@ import EditIcon from "@material-ui/icons/Edit"
 
 import SettingsDialog from "../Dialogs/SettingsDialog.js"
 
+import { AppContext } from "../../App.js"
 import fitText from "../../utils/fitText.js"
 
 const padding = 6
 const placeholder = "Enter Text..."
+
+const globalDefaultSettings = {
+    color: "black",
+    textAlign: "center",
+    fontFamily: "Roboto",
+    bold: false,
+    backgroundColor: "transparent",
+    verticalTextAlign: "center"
+}
 
 const useStyles = makeStyles(theme => {
     const highlight = {
@@ -116,16 +126,7 @@ const useStyles = makeStyles(theme => {
     }
 })
 
-const globalDefaultSettings = {
-    color: "black",
-    textAlign: "left",
-    fontFamily: "Roboto",
-    bold: false,
-    backgroundColor: "transparent",
-    verticalTextAlign: "center"
-}
-
-function Textbox({ id, onRemove, handle, grid, template }) {
+function Textbox({ id, onRemove, handle, grid, template, canvas }) {
     const defaultSettings = {...globalDefaultSettings}
 
     if(template?.settings) {
@@ -135,6 +136,8 @@ function Textbox({ id, onRemove, handle, grid, template }) {
             }
         }
     }
+
+    const context = useContext(AppContext)
 
     const lastRotation = useRef(template?.rotation || 0)
     const container = useRef()
@@ -151,8 +154,20 @@ function Textbox({ id, onRemove, handle, grid, template }) {
 
     const classes = useStyles({ capture, settings })
 
-    // Keep track of width and height during resize in grid 
-    const internalDimensions = useRef({ width, height })
+    // Set grid for movement drag
+    const dragGrid = useMemo(() => {
+        if (grid.enabled) {
+            if (grid.fixedSize) {
+                // Fixed size
+                return [grid.spacing, grid.spacing]
+            } else {
+                // Relative size
+                const cellWidth = canvas.clientWidth / grid.columns
+                const cellHeight = canvas.clientHeight / grid.rows
+                return [cellWidth, cellHeight]
+            }
+        }
+    }, [grid, context.image])
 
     const getRotationAngle = (event, data) => {
         // Get textbox center position
@@ -190,30 +205,14 @@ function Textbox({ id, onRemove, handle, grid, template }) {
         // Calculate new delta-y with the following rotation matrix: https://en.wikipedia.org/wiki/Rotation_matrix
         const angle = -rotation
         const dy = data.deltaX * Math.sin(angle) + data.deltaY * Math.cos(angle)
-        internalDimensions.current.height += dy
-
-        // Snap to grid
-        const boxHeight = Math.floor(internalDimensions.current.height) + padding * 2
-        if(grid.enabled && boxHeight % grid.spacing !== 0) {
-            return
-        }
-
-        setHeight(internalDimensions.current.height)
+        setHeight(height + dy)
     }
 
     const calcNewWidth = (data) => {
         // Calculate new delta-x with the following rotation matrix: https://en.wikipedia.org/wiki/Rotation_matrix
         const angle = -rotation
         const dx = data.deltaX * Math.cos(angle) - data.deltaY * Math.sin(angle)
-        internalDimensions.current.width += dx
-
-        // Snap to grid
-        const boxWidth = Math.floor(internalDimensions.current.width) + padding * 2
-        if (grid.enabled && boxWidth % grid.spacing !== 0) {
-            return
-        }
-
-        setWidth(internalDimensions.current.width)
+        setWidth(width + dx)
     }
 
     const handleVerticalDrag = (event, data) => {
@@ -307,21 +306,19 @@ function Textbox({ id, onRemove, handle, grid, template }) {
         if(grid.enabled) {
             // Init position in grid
             setPosition({
-                x: position.x - position.x % grid.spacing,
-                y: position.y - position.y % grid.spacing
+                x: position.x - position.x % dragGrid[0],
+                y: position.y - position.y % dragGrid[1]
             })
 
-            // Init height in grid
-            const newHeight = height - (height + padding * 2) % grid.spacing
-            internalDimensions.current.height = newHeight
-            setHeight(newHeight)
-
             // Init width in grid
-            const newWidth = width - (width + padding * 2) % grid.spacing
-            internalDimensions.current.width = newWidth
+            const newWidth = width - (width + padding * 2) % dragGrid[0]
             setWidth(newWidth)
+            
+            // Init height in grid
+            const newHeight = height - (height + padding * 2) % dragGrid[1]
+            setHeight(newHeight)
         }
-    }, [grid.enabled])
+    }, [grid])
 
     useEffect(() => {
         // Listen to content changes
@@ -353,10 +350,8 @@ function Textbox({ id, onRemove, handle, grid, template }) {
         textboxRef.current.textContent = value
     }, [capture])
 
-    console.log(settings)
-
     return (
-        <DraggableCore onDrag={handleMovementDrag} grid={grid.enabled ? [grid.spacing, grid.spacing] : null} handle={`#textbox-${id}`}>
+        <DraggableCore onDrag={handleMovementDrag} grid={dragGrid} handle={`#textbox-${id}`}>
             <div 
                 className={classes.container}
                 style={{
@@ -383,19 +378,19 @@ function Textbox({ id, onRemove, handle, grid, template }) {
                 )}
 
                 <div className={classes.resizeHandles}>
-                    <DraggableCore onDrag={handleVerticalDrag}>
+                    <DraggableCore onDrag={handleVerticalDrag} grid={dragGrid}>
                         <div className={classes.vertical}>
                             <HeightIcon/>
                         </div>
                     </DraggableCore>
 
-                    <DraggableCore onDrag={handleHorizontalDrag}>
+                    <DraggableCore onDrag={handleHorizontalDrag} grid={dragGrid}>
                         <div className={classes.horizontal}>
                             <HeightIcon/>
                         </div>
                     </DraggableCore>
 
-                    <DraggableCore onDrag={handleDiagonalDrag}>
+                    <DraggableCore onDrag={handleDiagonalDrag} grid={dragGrid}>
                         <div className={classes.diagonal}>
                             <HeightIcon/>
                         </div>
