@@ -19,6 +19,12 @@ const showCanvas = (canvas) => {
     newWindow.document.body.appendChild(canvas)
 }
 
+const waitFrames = async (amount = 1) => {
+    for(let i = 0; i < amount; i++) {
+        await new Promise(requestAnimationFrame)
+    }
+}
+
 const defaultBorderValues = {
     size: 0,
     top: true,
@@ -106,7 +112,7 @@ function Canvas() {
         Object.values(textboxes.current).forEach(textbox => textbox.beforeCapturing())
 
         // Wait until the dom changes have applied
-        await new Promise(requestAnimationFrame)
+        await waitFrames(3)
     }
 
     const afterCapturing = container => {

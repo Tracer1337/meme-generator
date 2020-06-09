@@ -12,11 +12,19 @@ import SettingsDialog from "../Dialogs/SettingsDialog.js"
 
 import fitText from "../../utils/fitText.js"
 
-const padding = 12
+const padding = 6
 const placeholder = "Enter Text..."
 
 const useStyles = makeStyles(theme => {
+    const highlight = {
+        backgroundColor: "rgba(255, 255, 255, .5)",
+        border: "1px solid black",
+        borderRadius: theme.shape.borderRadius,
+        display: props => props.capture && "none"
+    }
+
     const handle = {
+        ...highlight,
         zIndex: 20,
         height: 24,
         position: "absolute",
@@ -36,7 +44,7 @@ const useStyles = makeStyles(theme => {
         input: {
             background: "none",
             border: "none",
-            outline: "1px dashed gray",
+            outline: props => !props.capture && "1px dashed gray",
             fontSize: 24,
             color: "white",
             fontFamily: theme.typography.fontFamily,
@@ -51,10 +59,12 @@ const useStyles = makeStyles(theme => {
         },
 
         rotationHandle: {
+            ...highlight,
             cursor: "pointer"
         },
 
         button: {
+            ...highlight,
             padding: 0,
             marginLeft: theme.spacing(1),
             color: "black"
@@ -117,8 +127,6 @@ function Textbox({ id, onRemove, handle, grid, template }) {
         }
     }
 
-    const classes = useStyles()
-
     const lastRotation = useRef(template?.rotation || 0)
     const container = useRef()
 
@@ -130,6 +138,8 @@ function Textbox({ id, onRemove, handle, grid, template }) {
     const [height, setHeight] = useState((template?.height && template.height - padding * 2) || 24)
     const [width, setWidth] = useState((template?.width && template.width - padding * 2) || 160)
     const [capture, setCapture] = useState(false)
+
+    const classes = useStyles({ capture })
 
     // Keep track of width and height during resize in grid 
     const internalDimensions = useRef({ width, height })
