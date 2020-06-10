@@ -92,12 +92,16 @@ function Canvas() {
     }
 
     const handleBorderDialogClose = (values) => {
-        setBorderValues(values)
+        if(values) {
+            setBorderValues(values)
+        }
         setIsBorderDialogOpen(false)
     }
 
     const handleGridDialogClose = (values) => {
-        setGridValues(values)
+        if(values) {
+            setGridValues(values)
+        }
         setIsGridDialogOpen(false)
     }
 

@@ -241,7 +241,9 @@ function Textbox({ id, onRemove, handle, grid, template, canvas }) {
     }
 
     const handleSettingsApply = values => {
-        setSettings(values)
+        if(values) {
+            setSettings(values)
+        }
         setDialogOpen(false)
     }
 

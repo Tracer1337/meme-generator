@@ -98,13 +98,3 @@ function ShareDialog({ open, link, onClose, onOpen }) {
 }
 
 export default ShareDialog
-
-/*
-
-https://www.tumblr.com/widgets/share/tool?
-posttype=link&
-canonicalUrl=https%3A%2F%2Ftoppng.com%2Freddit-logo-reddit-icon-PNG-free-PNG-Images_164895&
-title=reddit%20logo%20-%20reddit%20icon%20PNG%20image%20with%20transparent%20background&
-caption=
-
-*/

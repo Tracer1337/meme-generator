@@ -7,6 +7,7 @@ import Select from "./components/Select.js"
 import Switch from "./components/Switch.js"
 
 import settingsOptions from "../../config/settings-options.json"
+import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
 
 const useStyles = makeStyles(theme => ({
     form: {
@@ -86,4 +87,4 @@ function BorderDialog({ onClose, open, values }) {
     )
 }
 
-export default BorderDialog
+export default withBackButtonSupport(BorderDialog, "border")

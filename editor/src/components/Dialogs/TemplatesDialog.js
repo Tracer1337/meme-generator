@@ -5,6 +5,7 @@ import CloseIcon from "@material-ui/icons/Close"
 
 import { AppContext } from "../../App.js"
 import templates from "../../config/templates.json"
+import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
 
 // Format templates
 templates.forEach(template => {
@@ -121,4 +122,4 @@ function TemplatesDialog({ onClose, open }) {
     )
 }
 
-export default TemplatesDialog
+export default withBackButtonSupport(TemplatesDialog, "templates")

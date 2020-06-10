@@ -3,6 +3,7 @@ import { Dialog, ClickAwayListener, Tooltip } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 
 import data from "../../config/help-overlay-data.json"
+import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
 
 const useStyles = makeStyles(theme => ({
     innerDialog: {
@@ -53,4 +54,4 @@ function HelpDialog({ open, onClose }) {
     )
 }
 
-export default HelpDialog
+export default withBackButtonSupport(HelpDialog, "help")

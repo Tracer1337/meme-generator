@@ -10,6 +10,7 @@ import ShareDialog from "./ShareDialog.js"
 import downloadImageFromSrc from "../../utils/downloadImageFromSrc.js"
 import dataURLToFile from "../../utils/dataURLToFile.js"
 import uploadImage from "../../utils/uploadImage.js"
+import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
 
 const useStyles = makeStyles(theme => {
     const button = {
@@ -158,4 +159,4 @@ function ImageDialog({ open, onClose, imageData }) {
     )
 }
 
-export default ImageDialog
+export default withBackButtonSupport(ImageDialog, "image")
