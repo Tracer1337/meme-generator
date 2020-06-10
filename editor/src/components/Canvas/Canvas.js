@@ -76,7 +76,6 @@ function Canvas() {
     const container = useRef()
     const textboxes = useRef({})
     const textboxTemplates = useRef({})
-    const generatedImageData = useRef({})
     const currentTemplate = useRef()
 
     let [keys, setKeys] = useState([])
@@ -85,10 +84,26 @@ function Canvas() {
     const [isBorderDialogOpen, setIsBorderDialogOpen] = useState(false)
     const [isImageDialogOpen, setIsImageDialogOpen] = useState(false)
     const [isGridDialogOpen, setIsGridDialogOpen] = useState(false)
+    const [generatedImage, setGeneratedImage] = useState(null)
 
     textboxes.current = {}
     for(let key of keys) {
         textboxes.current[key] = {}
+    }
+
+    const handleBorderDialogClose = (values) => {
+        setBorderValues(values)
+        setIsBorderDialogOpen(false)
+    }
+
+    const handleGridDialogClose = (values) => {
+        setGridValues(values)
+        setIsGridDialogOpen(false)
+    }
+
+    const handleImageDialogClose = () => {
+        setIsImageDialogOpen(false)
+        setGeneratedImage(null)
     }
 
     const handleRemoveTextbox = (removeKey) => {
@@ -130,17 +145,17 @@ function Canvas() {
     }
 
     const handleGenerateImage = async () => {
+        setIsImageDialogOpen(true)
+
         const container = document.querySelector(`.${classes.canvas}`)
 
         await beforeCapturing(container)
 
         const canvas = await html2canvas(container)
 
-        generatedImageData.current = canvas.toDataURL()
+        setGeneratedImage(canvas.toDataURL())
         
         afterCapturing(container)
-
-        setIsImageDialogOpen(true)
     }
 
     const handleSetBorder = () => {
@@ -149,16 +164,6 @@ function Canvas() {
 
     const handleSetGrid = () => {
         setIsGridDialogOpen(true)
-    }
-
-    const handleBorderDialogClose = (values) => {
-        setBorderValues(values)
-        setIsBorderDialogOpen(false)
-    }
-
-    const handleGridDialogClose = (values) => {
-        setGridValues(values)
-        setIsGridDialogOpen(false)
     }
 
     const handleLoadTemplate = async ({ detail: { template } }) => {
@@ -324,7 +329,7 @@ function Canvas() {
 
             <BorderDialog open={isBorderDialogOpen} onClose={handleBorderDialogClose} values={borderValues}/>
             <GridDialog open={isGridDialogOpen} onClose={handleGridDialogClose} values={gridValues}/>
-            <ImageDialog open={isImageDialogOpen} onClose={() => setIsImageDialogOpen(false)} imageData={generatedImageData.current}/>
+            <ImageDialog open={isImageDialogOpen} onClose={handleImageDialogClose} imageData={generatedImage}/>
         </div>
     )
 }

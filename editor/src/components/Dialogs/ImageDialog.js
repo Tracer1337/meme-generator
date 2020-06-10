@@ -25,7 +25,12 @@ const useStyles = makeStyles(theme => {
         },
 
         innerDialog: {
-            margin: theme.spacing(1)
+            margin: theme.spacing(1),
+            width: props => !props.imageData && "100%",
+            height: props => !props.imageData && "50%",
+            display: props => !props.imageData && "flex",
+            justifyContent: "center",
+            alignItems: "center"
         },
 
         image: {
@@ -65,7 +70,7 @@ const useStyles = makeStyles(theme => {
 })
 
 function ImageDialog({ open, onClose, imageData }) {
-    const classes = useStyles()
+    const classes = useStyles({ imageData })
 
     const [link, setLink] = useState()
     const [isUploading, setIsUploading] = useState(false)
@@ -98,51 +103,57 @@ function ImageDialog({ open, onClose, imageData }) {
 
     return (
         <Dialog open={open} onClose={onClose} PaperProps={{ className: classes.innerDialog }}>
-            <img alt="" src={imageData} className={classes.image}/>
+            {!imageData ? (
+                <CircularProgress/>
+            ) : (
+                <>
+                    <img alt = "" src = { imageData } className = {classes.image}/>
 
-            <Paper variant="outlined" className={classes.linkWrapper} style={{ display: !link && "none" }}>
-                <Typography variant="body1" className={classes.link}>
-                    {link}
-                </Typography>
+                    <Paper variant="outlined" className={classes.linkWrapper} style={{ display: !link && "none" }}>
+                        <Typography variant="body1" className={classes.link}>
+                            {link}
+                        </Typography>
 
-                <IconButton className={classes.shareButton} onClick={handleShareClick}>
-                    <ShareIcon/>
-                </IconButton>
-            </Paper>
+                        <IconButton className={classes.shareButton} onClick={handleShareClick}>
+                            <ShareIcon />
+                        </IconButton>
+                    </Paper>
 
-            {!link && (
-                <div className={classes.uploadButtonWrapper}>
+                    {!link && (
+                        <div className={classes.uploadButtonWrapper}>
+                            <Button
+                                startIcon={<LinkIcon />}
+                                color="primary"
+                                variant="outlined"
+                                onClick={handleUploadClick}
+                                disabled={isUploading}
+                                style={{ width: "100%" }}
+                            >
+                                Create Link
+                        </Button>
+
+                            {isUploading && <CircularProgress size={24} className={classes.buttonLoader} />}
+                        </div>
+                    )}
+
                     <Button
-                        startIcon={<LinkIcon />}
+                        startIcon={<DownloadIcon />}
                         color="primary"
                         variant="outlined"
-                        onClick={handleUploadClick}
-                        disabled={isUploading}
-                        style={{ width: "100%" }}
+                        className={classes.button}
+                        onClick={handleDownloadClick}
                     >
-                        Create Link
-                </Button>
+                        Download
+                    </Button>
 
-                    {isUploading && <CircularProgress size={24} className={classes.buttonLoader} />}
-                </div>
+                    <ShareDialog
+                        open={isShareDialogOpen}
+                        link={link}
+                        onOpen={handleShareClick}
+                        onClose={() => setIsShareDialogOpen(false)}
+                    />
+                </>
             )}
-
-            <Button
-                startIcon={<DownloadIcon/>}
-                color="primary"
-                variant="outlined"
-                className={classes.button}
-                onClick={handleDownloadClick}
-            >
-                Download
-            </Button>
-
-            <ShareDialog
-                open={isShareDialogOpen}
-                link={link}
-                onOpen={handleShareClick}
-                onClose={() => setIsShareDialogOpen(false)}
-            />
         </Dialog>
     )
 }

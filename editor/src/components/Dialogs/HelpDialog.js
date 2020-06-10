@@ -6,7 +6,8 @@ import data from "../../config/help-overlay-data.json"
 
 const useStyles = makeStyles(theme => ({
     innerDialog: {
-        background: "none"
+        background: "none",
+        overflow: "hidden"
     }
 }))
 
