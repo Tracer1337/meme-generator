@@ -153,6 +153,9 @@ function Canvas() {
     const handleGenerateImage = async () => {
         setIsImageDialogOpen(true)
 
+        // Wait until component got rendered and the textbox handles got applied
+        await waitFrames(1)
+
         const container = document.querySelector(`.${classes.canvas}`)
 
         await beforeCapturing(container)
