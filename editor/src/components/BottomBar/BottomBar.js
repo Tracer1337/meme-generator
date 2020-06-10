@@ -6,9 +6,11 @@ import PhotoLibraryIcon from "@material-ui/icons/PhotoLibrary"
 import TextFieldsIcon from "@material-ui/icons/TextFields"
 import MoreVertIcon from "@material-ui/icons/MoreVert"
 import CloudDownloadIcon from "@material-ui/icons/CloudDownload"
+import HelpIcon from "@material-ui/icons/Help"
 
 import Menu from "./Menu.js"
 import TemplatesDialog from "../Dialogs/TemplatesDialog.js"
+import HelpDialog from "../Dialogs/HelpDialog.js"
 
 import { AppContext } from "../../App.js"
 
@@ -44,6 +46,7 @@ function BottomBar() {
 
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [isTemplatesOpen, setIsTemplatesOpen] = useState(false)
+    const [isHelpOpen, setIsHelpOpen] = useState(false)
 
     const handleMoreClick = () => {
         setIsMenuOpen(!isMenuOpen)
@@ -57,6 +60,10 @@ function BottomBar() {
         setIsTemplatesOpen(true)
     }
 
+    const handleHelpClick = () => {
+        setIsHelpOpen(true)
+    }
+
     const dispatchEvent = (name) => () => {
         context.event.dispatchEvent(new CustomEvent(name))
     }
@@ -64,7 +71,11 @@ function BottomBar() {
     return (
         <AppBar position="fixed" className={classes.appBar}>
             <Toolbar>
-                <IconButton onClick={handleTemplatesClick}>
+                <IconButton onClick={handleHelpClick}>
+                    <HelpIcon/>
+                </IconButton>
+
+                <IconButton onClick={handleTemplatesClick} id="templates-button">
                     <CloudDownloadIcon/>
                 </IconButton>
 
@@ -74,11 +85,11 @@ function BottomBar() {
                     <DoneIcon/>
                 </Fab>
 
-                <IconButton onClick={dispatchEvent("addTextField")}>
+                <IconButton onClick={dispatchEvent("addTextField")} id="textbox-button">
                     <TextFieldsIcon/>
                 </IconButton>
 
-                <IconButton onClick={dispatchEvent("importImage")}>
+                <IconButton onClick={dispatchEvent("importImage")} id="library-button">
                     <PhotoLibraryIcon/>
                 </IconButton>
 
@@ -89,6 +100,7 @@ function BottomBar() {
                 <Menu open={isMenuOpen} anchorEl={openMenuButton.current} onClose={handleMenuClose}/>
 
                 <TemplatesDialog open={isTemplatesOpen} onClose={() => setIsTemplatesOpen(false)}/>
+                <HelpDialog open={isHelpOpen} onClose={() => setIsHelpOpen(false)}/>
             </Toolbar>
         </AppBar>
     )

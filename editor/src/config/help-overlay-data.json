@@ -1,0 +1,14 @@
+[
+    {
+        "selector": "#templates-button",
+        "content": "Templates"
+    },
+    {
+        "selector": "#textbox-button",
+        "content": "Textbox"
+    },
+    {
+        "selector": "#library-button",
+        "content": "Import"
+    }
+]
