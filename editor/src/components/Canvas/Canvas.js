@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState, useRef } from "react"
 import { IconButton } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import PhotoLibraryIcon from "@material-ui/icons/PhotoLibrary"
-import html2canvas from "html2canvas"
 
 import Textbox from "./Textbox.js"
 import Grid from "./Grid.js"
@@ -13,6 +12,7 @@ import GridDialog from "../Dialogs/GridDialog.js"
 import { AppContext } from "../../App.js"
 
 import importFile, { fileToImage } from "../../utils/importFile.js"
+import generateImage from "../../utils/generateImage.js"
 
 const showCanvas = (canvas) => {
     const newWindow = window.open("", "canvas")
@@ -101,8 +101,10 @@ function Canvas() {
         setIsGridDialogOpen(false)
     }
 
-    const handleImageDialogClose = () => {
+    const handleImageDialogClose = async () => {
         setIsImageDialogOpen(false)
+        // Wait until dialog is closed
+        await waitFrames(3)
         setGeneratedImage(null)
     }
 
@@ -151,9 +153,9 @@ function Canvas() {
 
         await beforeCapturing(container)
 
-        const canvas = await html2canvas(container)
+        const imageData = await generateImage(container)
 
-        setGeneratedImage(canvas.toDataURL())
+        setGeneratedImage(imageData)
         
         afterCapturing(container)
     }

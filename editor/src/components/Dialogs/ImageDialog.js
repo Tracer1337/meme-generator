@@ -29,8 +29,8 @@ const useStyles = makeStyles(theme => {
             width: props => !props.imageData && "100%",
             height: props => !props.imageData && "50%",
             display: props => !props.imageData && "flex",
-            justifyContent: "center",
-            alignItems: "center"
+            justifyContent: props => !props.imageData && "center",
+            alignItems: props => !props.imageData && "center"
         },
 
         image: {
