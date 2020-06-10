@@ -151,6 +151,7 @@ function Textbox({ id, onRemove, handle, grid, template, canvas }) {
     const [height, setHeight] = useState((template?.height && template.height - padding * 2) || 24)
     const [width, setWidth] = useState((template?.width && template.width - padding * 2) || 160)
     const [capture, setCapture] = useState(false)
+    const [isEditing, setIsEditing] = useState(false)
 
     const classes = useStyles({ capture, settings })
 
@@ -249,7 +250,15 @@ function Textbox({ id, onRemove, handle, grid, template, canvas }) {
     }
 
     const handleEditClicked = () => {
+        const handleFocusOut = () => {
+            setIsEditing(false)
+            textboxRef.current.removeEventListener("focusout", handleFocusOut)
+        }
+        textboxRef.current.addEventListener("focusout", handleFocusOut)
+
         textboxRef.current.focus()
+        setIsEditing(true)
+
 
         // Clear the placeholder
         if(value === placeholder) {
@@ -351,7 +360,7 @@ function Textbox({ id, onRemove, handle, grid, template, canvas }) {
     }, [capture])
 
     return (
-        <DraggableCore onDrag={handleMovementDrag} grid={dragGrid} handle={`#textbox-${id}`}>
+        <DraggableCore onDrag={handleMovementDrag} grid={dragGrid} handle={`#textbox-${id}`} disabled={isEditing}>
             <div 
                 className={classes.container}
                 style={{
