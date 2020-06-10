@@ -50,7 +50,7 @@ const useStyles = makeStyles(theme => ({
 function Templates({ onLoad, search }) {
     const classes = useStyles()
 
-    const renderTemplates = templates.filter(({ label }) => label.includes(search))
+    const renderTemplates = templates.filter(({ label }) => label.toLowerCase().includes(search.toLowerCase()))
 
     return (
         <div className={classes.listWrapper}>
