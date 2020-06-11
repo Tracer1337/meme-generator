@@ -4,7 +4,7 @@ async function uploadImage(image) {
     // Create formData object
     const formData = new FormData()
     formData.append("image", image)
-    formData.append("title", "Uploaded using Meme Generator")
+    formData.append("title", "Created with http://easymeme69.com")
 
     // Upload image to imgur
     const res = await fetch("https://api.imgur.com/3/image", {
