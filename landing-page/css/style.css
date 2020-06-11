@@ -1,0 +1,131 @@
+@font-face {
+    font-family: "Roboto";
+    src: url("fonts/Roboto-Regular.ttf") format("true-type");
+}
+
+@font-face {
+    font-family: "Roboto";
+    font-weight: "bold";
+    src: url("fonts/Roboto-Medium.ttf") format("true-type");
+}
+
+html {
+    font-family: "Roboto", sans-serif;
+    color: white;
+    scroll-behavior: smooth;
+}
+
+body {
+    background-image: linear-gradient(to bottom right, #764BA2, #667EEA);
+    background-repeat: no-repeat;
+}
+
+h4 {
+    margin: 0;
+    font-size: 24px;
+    text-align: center;
+}
+
+.divider {
+    background-color: white;
+    opacity: .2;
+}
+
+
+header {
+    height: 64px;
+    padding: 0 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h4 {
+    margin: 0;
+    font-size: 18px;
+}
+
+header a {
+    font-size: 12px;
+    margin-left: 16px;
+    color: white;
+}
+
+header a:first-child {
+    margin-left: 0;
+}
+
+
+main, section {
+    margin: 64px 42px;
+}
+
+main {
+    margin-top: 32px;
+    height: calc(100vh - 64px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+main .btn {
+    margin-top: 16px;
+}
+
+
+section h4 {
+    margin-bottom: 32px;
+}
+
+section a {
+    color: white;
+    text-decoration: underline;
+}
+
+section li {
+    font-size: 16px;
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+section li:last-child {
+    margin-bottom: 0;
+}
+
+
+.preview {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    overflow: hidden;
+    z-index: -1;
+}
+
+.screenshot-iphone {
+    width: 196px;
+    height: 390px;
+    position: absolute;
+    bottom: 54px;
+    left: 49px;
+    transform: rotate(-22.5deg);
+}
+
+.screenshot-1, .screenshot-2 {
+    width: 190px;
+    height: 412px;
+    position: absolute;
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+
+.screenshot-1 {
+    bottom: 96px;
+    left: 112px;
+    transform: rotate(-17.5deg);
+}
+
+.screenshot-2 {
+    bottom: 160px;
+    left: 176px;
+    transform: rotate(-27.5deg);
+}
