@@ -4,20 +4,19 @@
 }
 
 @font-face {
-    font-family: "Roboto";
-    font-weight: "bold";
-    src: url("fonts/Roboto-Medium.ttf") format("true-type");
+    font-family: "Raleway";
+    src: url("fonts/Raleway-Regular.ttf") format("true-type");
 }
 
 html {
-    font-family: "Roboto", sans-serif;
+    font-family: "Raleway", sans-serif;
     color: white;
-    scroll-behavior: smooth;
 }
 
 body {
     background-image: linear-gradient(to bottom right, #764BA2, #667EEA);
     background-repeat: no-repeat;
+    overflow-x: hidden;
 }
 
 h4 {
@@ -29,6 +28,10 @@ h4 {
 .divider {
     background-color: white;
     opacity: .2;
+}
+
+.btn {
+    font-family: "Roboto", sans-serif;
 }
 
 
@@ -93,13 +96,28 @@ section li:last-child {
 }
 
 
-.preview {
+.outer-preview {
     position: absolute;
     width: 100vw;
     height: 100vh;
     top: 0;
     overflow: hidden;
     z-index: -1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.inner-preview {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    max-width: 475px;
+    max-height: 600px;
+}
+
+.inner-preview img {
+    user-select: none;
 }
 
 .screenshot-iphone {
@@ -107,8 +125,8 @@ section li:last-child {
     height: 390px;
     position: absolute;
     bottom: 54px;
-    left: 49px;
-    transform: rotate(-22.5deg);
+    left: 59px;
+    transform: perspective(200px) rotateZ(-45deg) rotateY(22.5deg);
 }
 
 .screenshot-1, .screenshot-2 {
@@ -120,12 +138,53 @@ section li:last-child {
 
 .screenshot-1 {
     bottom: 96px;
-    left: 112px;
+    left: 122px;
     transform: rotate(-17.5deg);
+    transform: perspective(200px) rotateZ(-40deg) rotateY(22.5deg);
 }
 
 .screenshot-2 {
     bottom: 160px;
-    left: 176px;
+    left: 186px;
     transform: rotate(-27.5deg);
+    transform: perspective(200px) rotateZ(-50deg) rotateY(22.5deg);
+}
+
+@media only screen and (min-width: 420px) {
+    #about p {
+        text-align: center;
+    }
+}
+
+@media only screen and (min-width: 1050px) {
+    header {
+        margin: 0 auto;
+        padding: 0 32px;
+        max-width: 1100px;
+    }
+
+    header h4 {
+        font-size: 28px;
+    }
+
+    header a {
+        font-size: 18px;
+    }
+
+    main {
+        margin: 0 auto 64px auto;
+        padding-left: 32px;
+        max-width: 1100px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+    }
+
+    .outer-preview {
+        max-width: 1100px;
+        left: 50%;
+        transform: translateX(-50%);
+        justify-content: flex-end;
+        align-items: center;
+    }
 }
