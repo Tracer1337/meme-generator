@@ -169,6 +169,7 @@ section li:last-child {
 
     header a {
         font-size: 18px;
+        margin-left: 64px;
     }
 
     main {

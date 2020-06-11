@@ -12,9 +12,30 @@
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>Easy Meme</title>
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-162994094-2"></script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+
+    <!-- Load Google Analytics -->
+    <script>
+       (function loadAnalytics() {
+          if (window.location.hostname === "localhost") {
+            console.log("[GoogleAnalytics] Initialization called")
+            return
+          }
+
+          window.ga = window.ga || function () { (ga.q = ga.q || []).push(arguments) }; ga.l = +new Date;
+          ga('create', 'UA-162994094-2', 'auto');
+          ga('send', 'pageview');
+          var gascript = document.createElement("script");
+          gascript.async = true;
+          gascript.src = "https://www.google-analytics.com/analytics.js";
+          document.getElementsByTagName("head")[0].appendChild(gascript, document.getElementsByTagName("head")[0]);
+        })()
+    </script>
   </body>
 </html>
