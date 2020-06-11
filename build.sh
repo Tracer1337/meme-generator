@@ -8,4 +8,5 @@ npm run build
 
 cd ..
 
+rm -r ./dist/editor
 mv ./editor/build/* ./dist/editor
