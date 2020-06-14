@@ -54,7 +54,7 @@ const useStyles = makeStyles(theme => {
         input: {
             background: "none",
             border: "none",
-            outline: props => !props.capture && "1px dashed gray",
+            outline: props => !props.capture && props.isFocused ? "1px dashed gray" : "none",
             fontSize: 24,
             color: "white",
             fontFamily: theme.typography.fontFamily,
@@ -152,8 +152,9 @@ function Textbox({ id, onRemove, handle, grid, template, canvas }) {
     const [width, setWidth] = useState((template?.width && template.width - padding * 2) || 160)
     const [capture, setCapture] = useState(false)
     const [isEditing, setIsEditing] = useState(false)
+    const [isFocused, setIsFocused] = useState(false)
 
-    const classes = useStyles({ capture, settings })
+    const classes = useStyles({ capture, settings, isFocused })
 
     // Set grid for movement drag
     const dragGrid = useMemo(() => {
@@ -230,6 +231,10 @@ function Textbox({ id, onRemove, handle, grid, template, canvas }) {
     }
 
     const handleMovementDrag = (event, data) => {
+        if(!isFocused) {
+            return
+        }
+        
         setPosition({
             x: position.x + data.deltaX,
             y: position.y + data.deltaY
@@ -266,6 +271,20 @@ function Textbox({ id, onRemove, handle, grid, template, canvas }) {
         if(value === placeholder) {
             textboxRef.current.textContent = ""
             setValue("")
+        }
+    }
+
+    const handleFocus = () => {
+        setIsFocused(true)
+    }
+
+    const handleBlur = () => {
+        setIsFocused(false)
+
+        // Insert placeholder if textbox is empty
+        if(!value) {
+            setValue(placeholder)
+            textboxRef.current.textContent = placeholder
         }
     }
 
@@ -361,6 +380,23 @@ function Textbox({ id, onRemove, handle, grid, template, canvas }) {
         textboxRef.current.textContent = value
     }, [capture])
 
+    useEffect(() => {
+        // Handle click-away event
+        const handleClick = (event) => {
+            if(isFocused && !container.current.contains(event.target)) {
+                handleBlur()
+            }
+        }
+
+        window.addEventListener("click", handleClick)
+        window.addEventListener("touchstart", handleClick)
+        
+        return () => {
+            window.removeEventListener("click", handleClick)
+            window.removeEventListener("touchstart", handleClick)
+        }
+    })
+
     return (
         <DraggableCore onDrag={handleMovementDrag} grid={dragGrid} handle={`#textbox-${id}`} disabled={isEditing}>
             <div 
@@ -380,6 +416,8 @@ function Textbox({ id, onRemove, handle, grid, template, canvas }) {
                         className={classes.input}
                         style={styles}
                         ref={textboxRef}
+                        onClick={handleFocus}
+                        onTouchStart={handleFocus}
                     />
                 ) : (
                     // Render div for capturing
@@ -388,43 +426,48 @@ function Textbox({ id, onRemove, handle, grid, template, canvas }) {
                     </div>
                 )}
 
-                <div className={classes.resizeHandles}>
-                    <DraggableCore onDrag={handleVerticalDrag} grid={dragGrid}>
-                        <div className={classes.vertical}>
-                            <HeightIcon/>
+                {isFocused && (
+                    // Render controls if the textbox is focused
+                    <>
+                        <div className={classes.resizeHandles}>
+                            <DraggableCore onDrag={handleVerticalDrag} grid={dragGrid}>
+                                <div className={classes.vertical}>
+                                    <HeightIcon />
+                                </div>
+                            </DraggableCore>
+
+                            <DraggableCore onDrag={handleHorizontalDrag} grid={dragGrid}>
+                                <div className={classes.horizontal}>
+                                    <HeightIcon />
+                                </div>
+                            </DraggableCore>
+
+                            <DraggableCore onDrag={handleDiagonalDrag} grid={dragGrid}>
+                                <div className={classes.diagonal}>
+                                    <HeightIcon />
+                                </div>
+                            </DraggableCore>
                         </div>
-                    </DraggableCore>
 
-                    <DraggableCore onDrag={handleHorizontalDrag} grid={dragGrid}>
-                        <div className={classes.horizontal}>
-                            <HeightIcon/>
+                        <div className={classes.action}>
+                            <DraggableCore onStart={handleRotationStart} onStop={handleRotationEnd} onDrag={handleRotationDrag}>
+                                <RotateLeftIcon className={classes.rotationHandle} />
+                            </DraggableCore>
+
+                            <IconButton className={classes.button} onClick={handleEditClicked}>
+                                <EditIcon />
+                            </IconButton>
+
+                            <IconButton className={classes.button} onClick={handleSettingsClicked}>
+                                <SettingsIcon />
+                            </IconButton>
+
+                            <IconButton className={classes.button} onClick={handleRemoveClicked}>
+                                <CloseIcon />
+                            </IconButton>
                         </div>
-                    </DraggableCore>
-
-                    <DraggableCore onDrag={handleDiagonalDrag} grid={dragGrid}>
-                        <div className={classes.diagonal}>
-                            <HeightIcon/>
-                        </div>
-                    </DraggableCore>
-                </div>
-                
-                <div className={classes.action}>
-                    <DraggableCore onStart={handleRotationStart} onStop={handleRotationEnd} onDrag={handleRotationDrag}>
-                        <RotateLeftIcon className={classes.rotationHandle}/>
-                    </DraggableCore>
-
-                    <IconButton className={classes.button} onClick={handleEditClicked}>
-                        <EditIcon/>
-                    </IconButton>
-
-                    <IconButton className={classes.button} onClick={handleSettingsClicked}>
-                        <SettingsIcon/>
-                    </IconButton>
-
-                    <IconButton className={classes.button} onClick={handleRemoveClicked}>
-                        <CloseIcon/>
-                    </IconButton>
-                </div>
+                    </>
+                )}
 
                 <SettingsDialog open={dialogOpen} onClose={handleSettingsApply} values={settings} text={value}/>
             </div>
