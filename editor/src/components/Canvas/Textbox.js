@@ -20,9 +20,10 @@ const globalDefaultSettings = {
     color: "black",
     textAlign: "center",
     fontFamily: "'Impact', fantasy",
-    bold: false,
     backgroundColor: "transparent",
-    verticalTextAlign: "center"
+    verticalTextAlign: "center",
+    bold: false,
+    caps: true
 }
 
 const useStyles = makeStyles(theme => {
@@ -58,6 +59,7 @@ const useStyles = makeStyles(theme => {
             fontSize: 24,
             color: "white",
             fontFamily: theme.typography.fontFamily,
+            textTransform: props => props.settings.caps && "uppercase",
             resize: "none",
             whiteSpace: "pre",
             zIndex: 10,
@@ -268,7 +270,7 @@ function Textbox({ id, onRemove, handle, grid, template, canvas }) {
 
 
         // Clear the placeholder
-        if(value === placeholder) {
+        if(value.toLowerCase() === placeholder.toLowerCase()) {
             textboxRef.current.textContent = ""
             setValue("")
         }
@@ -286,6 +288,11 @@ function Textbox({ id, onRemove, handle, grid, template, canvas }) {
             setValue(placeholder)
             textboxRef.current.textContent = placeholder
         }
+    }
+
+    const handleValueChange = (event) => {
+        const newValue = event.target.textContent
+        setValue(newValue)
     }
 
     const beforeCapturing = () => {
@@ -351,36 +358,6 @@ function Textbox({ id, onRemove, handle, grid, template, canvas }) {
     }, [grid])
 
     useEffect(() => {
-        // Listen to content changes
-        const observer = new MutationObserver((mutations) => {
-            const textMutation = mutations.find(m => m.type === "characterData")
-            
-            if(textMutation) {
-                // Get new value from all children
-                let newValue = ""
-                for(let child of textboxRef.current.childNodes) {
-                    newValue += child.textContent + "\n"
-                }
-                
-                // Remove last "\n"
-                newValue = newValue.substr(0, newValue.length - 1)
-
-                setValue(newValue)
-            }
-        })
-        
-        const options = { attributes: true, childList: true, characterData: true, subtree: true }
-
-        observer.observe(textboxRef.current, options)
-
-        return () => observer.disconnect()
-    })
-
-    useEffect(() => {
-        textboxRef.current.textContent = value
-    }, [capture])
-
-    useEffect(() => {
         // Handle click-away event
         const handleClick = (event) => {
             if(isFocused && !container.current.contains(event.target)) {
@@ -397,6 +374,11 @@ function Textbox({ id, onRemove, handle, grid, template, canvas }) {
         }
     })
 
+    useEffect(() => {
+        // Set initial value
+        textboxRef.current.textContent = value
+    }, [])
+
     return (
         <DraggableCore onDrag={handleMovementDrag} grid={dragGrid} handle={`#textbox-${id}`} disabled={isEditing}>
             <div 
@@ -407,24 +389,16 @@ function Textbox({ id, onRemove, handle, grid, template, canvas }) {
                 }}
                 ref={container}
             >
-                {!capture ? (
-                    // Render textarea for editing
-                    <div
-                        contentEditable
-                        id={`textbox-${id}`}
-                        type="text"
-                        className={classes.input}
-                        style={styles}
-                        ref={textboxRef}
-                        onClick={handleFocus}
-                        onTouchStart={handleFocus}
-                    />
-                ) : (
-                    // Render div for capturing
-                    <div id={`textbox-${id}`} className={classes.input} style={styles} ref={textboxRef}>
-                        {value}
-                    </div>
-                )}
+                <div
+                    contentEditable
+                    id={`textbox-${id}`}
+                    className={classes.input}
+                    style={styles}
+                    ref={textboxRef}
+                    onClick={handleFocus}
+                    onTouchStart={handleFocus}
+                    onInput={handleValueChange}
+                />
 
                 {isFocused && (
                     // Render controls if the textbox is focused

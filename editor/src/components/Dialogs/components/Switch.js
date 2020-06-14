@@ -1,9 +1,18 @@
 import React from "react"
 import { Switch, FormControlLabel } from "@material-ui/core"
+import { makeStyles } from "@material-ui/core/styles"
 import { useFormContext } from "react-hook-form"
+
+const useStyles = makeStyles(theme => ({
+    switch: {
+        width: "100%"
+    }
+}))
 
 function Select({ name, label, className }) {
     const { register, watch, setValue } = useFormContext()
+
+    const classes = useStyles()
 
     return (
         <FormControlLabel
@@ -16,7 +25,7 @@ function Select({ name, label, className }) {
                 />
             }
             label={label}
-            className={className}
+            className={`${classes.switch} ${className}`}
         />
     )
 }

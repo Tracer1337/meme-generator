@@ -107,6 +107,9 @@ function SettingsDialog({ onClose, open, values, text }) {
                     {/* Bold */}
                     <Switch name="bold" label="Bold" className={classes.input}/>
 
+                    {/* Caps */}
+                    <Switch name="caps" label="Caps" className={classes.input}/>
+
                     <Button fullWidth className={classes.applyButton} type="submit">Apply</Button>
                 </form>
             </FormContext>

@@ -1,3 +1,5 @@
+git pull
+
 cd editor
 
 if [ "$1" = "install" ]
