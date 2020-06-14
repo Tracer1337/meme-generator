@@ -3,6 +3,7 @@ import ReactDOM from "react-dom"
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles"
 
 import App from "./App.js"
+import "./index.css"
 
 const theme = createMuiTheme({
     palette: {

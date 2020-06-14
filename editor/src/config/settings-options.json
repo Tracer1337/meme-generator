@@ -22,10 +22,10 @@
     },
 
     "fontFamilies": {
-        "Roboto": "Roboto",
-        "Times New Roman": "'Times New Roman', 'Times', serif",
+        "Impact": "'Impact', fantasy",
+        "Arial": "Arial",
+        "Comic Sans": "'Comic Sans', cursive",
         "Courier": "'Courier', monospace",
-        "Comic Sans": "'Comic Sans MS', 'Comic Sans', cursive",
-        "Impact": "'Impact', fantasy"
+        "Times New Roman": "'Times New Roman', 'Times', serif"
     }
 }

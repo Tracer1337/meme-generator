@@ -19,7 +19,7 @@ const placeholder = "Enter Text..."
 const globalDefaultSettings = {
     color: "black",
     textAlign: "center",
-    fontFamily: "Roboto",
+    fontFamily: "'Impact', fantasy",
     bold: false,
     backgroundColor: "transparent",
     verticalTextAlign: "center"

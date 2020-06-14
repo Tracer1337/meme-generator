@@ -1,0 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+@font-face {
+    font-family: "Impact";
+    src: url(./assets/fonts/impact.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: "Comic Sans";
+    src: url(./assets/fonts/comic-sans.ttf) format("truetype");
+}
