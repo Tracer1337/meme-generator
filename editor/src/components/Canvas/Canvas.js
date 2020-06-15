@@ -3,7 +3,8 @@ import { IconButton } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import PhotoLibraryIcon from "@material-ui/icons/PhotoLibrary"
 
-import Textbox from "./Textbox.js"
+import Textbox from "./Elements/Textbox.js"
+import Image from "./Elements/Image.js"
 import Grid from "./Grid.js"
 import BorderDialog from "../Dialogs/BorderDialog.js"
 import ImageDialog from "../Dialogs/ImageDialog.js"
@@ -74,11 +75,10 @@ function Canvas() {
     const image = useRef()
     const canvas = useRef()
     const container = useRef()
-    const textboxes = useRef({})
-    const textboxTemplates = useRef({})
+    const elementRefs = useRef({})
     const currentTemplate = useRef()
 
-    let [keys, setKeys] = useState([])
+    let [elementKeys, setElementKeys] = useState([])
     const [borderValues, setBorderValues] = useState(defaultBorderValues)
     const [gridValues, setGridValues] = useState(defaultGridValues)
     const [isBorderDialogOpen, setIsBorderDialogOpen] = useState(false)
@@ -86,9 +86,9 @@ function Canvas() {
     const [isGridDialogOpen, setIsGridDialogOpen] = useState(false)
     const [generatedImage, setGeneratedImage] = useState(null)
 
-    textboxes.current = {}
-    for(let key of keys) {
-        textboxes.current[key] = {}
+    elementRefs.current = {}
+    for (let element of elementKeys) {
+        elementRefs.current[element.key] = {}
     }
 
     const handleBorderDialogClose = (values) => {
@@ -112,35 +112,48 @@ function Canvas() {
         setGeneratedImage(null)
     }
 
-    const handleRemoveTextbox = (removeKey) => {
-        const newKeys = keys.filter(key => key !== removeKey)
-        setKeys(newKeys)
+    const handleRemoveElement = (removeKey) => {
+        const newKeys = elementKeys.filter(({ key }) => key !== removeKey)
+        setElementKeys(newKeys)
 
-        delete textboxes.current[removeKey]
-        delete textboxTemplates.current[removeKey]
+        delete elementRefs.current[removeKey]
+    }
+
+    const createNewElement = (type, data) => {
+        const newElementKey = {
+            type,
+            data,
+            key: idCounter.current++
+        }
+
+        return newElementKey
     }
 
     const handleAddTextbox = ({ template }) => {
-        const newKey = idCounter.current++
-        
-        if(template) {
-            textboxTemplates.current[newKey] = template
-        }
+        const newElementKey = createNewElement("textbox", { template })
 
-        setKeys([...keys, newKey])
+        setElementKeys([...elementKeys, newElementKey])
 
-        return newKey
+        return newElementKey
+    }
+
+    const handleAddImage = async () => {
+        const file = await importFile("image/*")
+        const base64Image = await fileToImage(file)
+
+        const newElementKey = createNewElement("image", { src: base64Image })
+        setElementKeys([...elementKeys, newElementKey])
     }
 
     const beforeCapturing = async container => {
-        Object.values(textboxes.current).forEach(textbox => textbox.beforeCapturing())
-
+        Object.values(elementRefs.current).forEach(textbox => textbox.beforeCapturing())
+        
         // Wait until the dom changes have applied
         await waitFrames(3)
     }
 
     const afterCapturing = container => {
-        Object.values(textboxes.current).forEach(textbox => textbox.afterCapturing())
+        Object.values(elementRefs.current).forEach(textbox => textbox.afterCapturing())
     }
 
     const handleImportImage = async () => {
@@ -187,8 +200,8 @@ function Canvas() {
         }
 
         // Delete all textboxes
-        keys.forEach(key => handleRemoveTextbox(key))
-        keys = []
+        elementKeys.forEach(({ key }) => handleRemoveElement(key))
+        elementKeys = []
 
         // Set image
         context.setImage(template.image)
@@ -215,16 +228,16 @@ function Canvas() {
 
                 // Add textbox
                 const newKey = handleAddTextbox({ template: textbox })
-                keys.push(newKey)
+                elementKeys.push(newKey)
             }
         }
 
         // Set new keys
-        setKeys(keys)
+        setElementKeys(elementKeys)
     }
 
     const handleStringifyTextboxes = (currentTemplates) => {
-        const formatted = Object.values(textboxes.current).map(textbox => textbox.toObject({ image: image.current }))
+        const formatted = Object.values(elementRefs.current).map(textbox => textbox.toObject({ image: image.current }))
 
         // Insert textboxes into corresponding template
         if(currentTemplates) {
@@ -242,7 +255,8 @@ function Canvas() {
     // Set event listeners
     useEffect(() => {
         context.event.addEventListener("importImage", handleImportImage)
-        context.event.addEventListener("addTextField", handleAddTextbox)
+        context.event.addEventListener("addTextbox", handleAddTextbox)
+        context.event.addEventListener("addImage", handleAddImage)
         context.event.addEventListener("generateImage", handleGenerateImage)
         context.event.addEventListener("setBorder", handleSetBorder)
         context.event.addEventListener("setGrid", handleSetGrid)
@@ -252,7 +266,8 @@ function Canvas() {
         
         return () => {
             context.event.removeEventListener("importImage", handleImportImage)
-            context.event.removeEventListener("addTextField", handleAddTextbox)
+            context.event.removeEventListener("addTextbox", handleAddTextbox)
+            context.event.removeEventListener("addImage", handleAddImage)
             context.event.removeEventListener("generateImage", handleGenerateImage)
             context.event.removeEventListener("setBorder", handleSetBorder)
             context.event.removeEventListener("setGrid", handleSetGrid)
@@ -298,7 +313,7 @@ function Canvas() {
         canvas.current.style.width = newWidth + "px"
         canvas.current.style.height = newHeight + "px"
     }, [context.image, image, container, canvas])
-    
+
     return (
         <div className={classes.canvasWrapper} ref={container}>
             <div 
@@ -321,17 +336,35 @@ function Canvas() {
                     </IconButton>
                 )}
 
-                {keys.map(key => (
-                    <Textbox
-                        key={key}
-                        id={key}
-                        onRemove={handleRemoveTextbox}
-                        handle={textboxes.current[key]}
-                        grid={gridValues}
-                        template={textboxTemplates.current[key]}
-                        canvas={canvas.current}
-                    />
-                ))}
+                {elementKeys.map(({ type, key, data }) => {
+                    if(type === "textbox") {
+                        return (
+                            <Textbox
+                                key={key}
+                                id={key}
+                                onRemove={handleRemoveElement}
+                                handle={elementRefs.current[key]}
+                                grid={gridValues}
+                                template={data.template}
+                                canvas={canvas.current}
+                            />
+                        )
+                    } else if (type === "image") {
+                        return (
+                            <Image
+                                key={key}
+                                id={key}
+                                onRemove={handleRemoveElement}
+                                handle={elementRefs.current[key]}
+                                grid={gridValues}
+                                canvas={canvas.current}
+                                src={data.src}
+                            />
+                        )
+                    }
+
+                    throw new Error("Type " + type + " is not defined")
+                })}
             </div>
 
             <Grid config={gridValues} canvas={canvas.current} border={borderValues}/>

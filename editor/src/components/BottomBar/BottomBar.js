@@ -85,7 +85,7 @@ function BottomBar() {
                     <DoneIcon/>
                 </Fab>
 
-                <IconButton onClick={dispatchEvent("addTextField")} id="textbox-button">
+                <IconButton onClick={dispatchEvent("addTextbox")} id="textbox-button">
                     <TextFieldsIcon/>
                 </IconButton>
 

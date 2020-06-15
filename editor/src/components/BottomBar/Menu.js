@@ -3,6 +3,7 @@ import { Menu as MuiMenu, MenuItem, ListItemIcon, ListItemText } from "@material
 import { makeStyles } from "@material-ui/core/styles"
 import BorderOuterIcon from "@material-ui/icons/BorderOuter"
 import GridIcon from "@material-ui/icons/GridOn"
+import AddPhotoIcon from "@material-ui/icons/AddPhotoAlternate"
 
 import { AppContext } from "../../App.js"
 
@@ -48,6 +49,13 @@ function Menu({ open, anchorEl, onClose }) {
                     <GridIcon fontSize="small"/>
                 </ListItemIcon>
                 <ListItemText primary="Grid"/>
+            </MenuItem>
+
+            <MenuItem onClick={dispatchEvent("addImage")}>
+                <ListItemIcon className={classes.icon}>
+                    <AddPhotoIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText primary="Add Image" />
             </MenuItem>
         </MuiMenu>
     )
