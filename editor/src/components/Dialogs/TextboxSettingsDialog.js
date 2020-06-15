@@ -29,7 +29,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-function SettingsDialog({ onClose, open, values, text }) {
+function TextboxSettingsDialog({ onClose, open, values, text }) {
     const { getValues, handleSubmit, control, watch, reset, register, setValue } = useForm()
 
     const classes = useStyles()
@@ -117,4 +117,4 @@ function SettingsDialog({ onClose, open, values, text }) {
     )
 }
 
-export default withBackButtonSupport(SettingsDialog, "settings")
+export default withBackButtonSupport(TextboxSettingsDialog, "settings")

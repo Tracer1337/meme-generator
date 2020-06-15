@@ -1,7 +1,7 @@
 import React, { useState, useRef, useMemo, useEffect } from "react"
 import { makeStyles } from "@material-ui/core/styles"
 
-import SettingsDialog from "../../Dialogs/SettingsDialog.js"
+import TextboxSettingsDialog from "../../Dialogs/TextboxSettingsDialog.js"
 
 import makeElement from "./makeElement.js"
 import fitText from "../../../utils/fitText.js"
@@ -160,7 +160,7 @@ function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dim
                 onInput={handleValueChange}
             />
 
-            <SettingsDialog open={dialogOpen} onClose={handleSettingsApply} values={settings} text={value}/>
+            <TextboxSettingsDialog open={dialogOpen} onClose={handleSettingsApply} values={settings} text={value}/>
         </>
     )
 }

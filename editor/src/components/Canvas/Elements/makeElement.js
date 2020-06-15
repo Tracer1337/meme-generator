@@ -102,8 +102,8 @@ function makeElement({
 
         const [position, setPosition] = useState({ x: template?.x || 0, y: template?.y || 0 })
         const [rotation, setRotation] = useState(template?.rotation || 0)
-        const [height, setHeight] = useState((template?.height && template.height - padding * 2) || defaultValues.height || 0)
-        const [width, setWidth] = useState((template?.width && template.width - padding * 2) || defaultValues.width || 0)
+        const [height, setHeight] = useState((template?.height && template.height - padding * 2) || defaultValues.height)
+        const [width, setWidth] = useState((template?.width && template.width - padding * 2) || defaultValues.width)
         const [capture, setCapture] = useState(false)
         const [isFocused, setIsFocused] = useState(false)
         const [shouldMove, setShouldMove] = useState(true)
@@ -161,14 +161,26 @@ function makeElement({
             // Calculate new delta-y with the following rotation matrix: https://en.wikipedia.org/wiki/Rotation_matrix
             const angle = -rotation
             const dy = data.deltaX * Math.sin(angle) + data.deltaY * Math.cos(angle)
-            setHeight(height + dy)
+            const newHeight = height + dy
+            setHeight(newHeight)
+
+            if(handle.aspectRatio) {
+                const newWidth = newHeight * (1 / handle.aspectRatio)
+                setWidth(newWidth)
+            }
         }
 
         const calcNewWidth = (data) => {
             // Calculate new delta-x with the following rotation matrix: https://en.wikipedia.org/wiki/Rotation_matrix
             const angle = -rotation
             const dx = data.deltaX * Math.cos(angle) - data.deltaY * Math.sin(angle)
+            const newWidth = width + dx
             setWidth(width + dx)
+
+            if(handle.aspectRatio) {
+                const newHeight = newWidth * handle.aspectRatio
+                setHeight(newHeight)
+            }
         }
 
         const handleVerticalDrag = (event, data) => {
@@ -227,8 +239,6 @@ function makeElement({
 
         useEffect(() => {
             if (grid.enabled) {
-                console.log({ width, height, ...position, dragGrid })
-                
                 // Init position in grid
                 setPosition({
                     x: position.x - position.x % dragGrid[0],
@@ -261,6 +271,22 @@ function makeElement({
                 window.removeEventListener("touchstart", handleClick)
             }
         })
+
+        useEffect(() => {
+            (async () => {
+                // Wait until handle received all props
+                await new Promise(requestAnimationFrame)
+
+                // Init dimensions
+                if (handle.aspectRatio) {
+                    if (width) {
+                        setHeight(width * handle.aspectRatio)
+                    } else if (height) {
+                        setWidth(height * (1 / handle.aspectRatio))
+                    }
+                }
+            })()
+        }, [])
 
         return (
             <DraggableCore onDrag={handleMovementDrag} grid={dragGrid} handle={`#element-${id}`} disabled={!shouldMove}>
