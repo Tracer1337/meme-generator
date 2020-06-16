@@ -237,7 +237,8 @@ function Canvas() {
     }
 
     const handleStringifyTextboxes = (currentTemplates) => {
-        const formatted = Object.values(elementRefs.current).map(textbox => textbox.toObject({ image: image.current }))
+        const textboxKeys = elementKeys.filter(({ type }) => type === "textbox").map(({ key }) => key)
+        const formatted = textboxKeys.map(key => elementRefs.current[key].toObject({ image: image.current }))
 
         // Insert textboxes into corresponding template
         if(currentTemplates) {
