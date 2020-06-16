@@ -9,8 +9,7 @@ import HeightIcon from "@material-ui/icons/Height"
 import EditIcon from "@material-ui/icons/Edit"
 
 import { AppContext } from "../../../App.js"
-
-import { MAX_SNAPSHOTS } from "../../../config/constants.js"
+import useSnapshots from "../../../utils/useSnapshots.js"
 
 const padding = 6
 
@@ -129,38 +128,24 @@ function makeElement({
                 }
             }
         }, [grid, context.image])
-        
-        const addSnapshot = () => {
-            // Create the new snapshot object
-            const newSnapshot = { width, height, position, rotation }
-            snapshots.current.push(newSnapshot)
 
-            // Apply size constraint
-            if(snapshots.current.length > MAX_SNAPSHOTS) {
-                snapshots.current.shift()
-            }
-        }
+        const addSnapshot = useSnapshots({
+            createSnapshot: () => ({ width, height, position, rotation }),
 
-        const applySnapshot = (snapshot) => {
-            setWidth(snapshot.width)
-            setHeight(snapshot.height)
-            setPosition(snapshot.position)
-            setRotation(snapshot.rotation)
-        }
+            applySnapshot: (snapshot) => {
+                setWidth(snapshot.width)
+                setHeight(snapshot.height)
+                setPosition(snapshot.position)
+                setRotation(snapshot.rotation)
+            },
 
-        const handleUndo = () => {
-            if(snapshots.current.length === 0) {
-                // Remove element if does not come from template
-                if(!template) {
+            onSnapshotsEmpty: () => {
+                // Remove element if it does not come from template
+                if (!template) {
                     onRemove(id)
                 }
-                return
             }
-
-            // Apply snapshot
-            const snapshot = snapshots.current.pop()
-            applySnapshot(snapshot)
-        }
+        })
 
         const getRotationAngle = (event, data) => {
             // Get child center position
@@ -234,13 +219,13 @@ function makeElement({
         }
 
         const handleMovementDrag = (event, data) => {
-            if (!isFocused) {
+            if(!isFocused) {
                 return
             }
 
             // Add snapshot when dragging starts
             if(!hasCreatedSnapshot.current) {
-                emitAddSnapshot()
+                addSnapshot()
                 hasCreatedSnapshot.current = true
             }
 
@@ -248,6 +233,10 @@ function makeElement({
                 x: position.x + data.deltaX,
                 y: position.y + data.deltaY
             })
+        }
+
+        const handleMovementStop = () => {
+            hasCreatedSnapshot.current = false
         }
 
         const handleRemoveClicked = () => {
@@ -272,10 +261,6 @@ function makeElement({
 
         const afterCapturing = () => {
             setCapture(false)
-        }
-
-        const emitAddSnapshot = () => {
-            context.event.dispatchEvent(new CustomEvent("addSnapshot"))
         }
 
         // Expose methods to parent
@@ -312,14 +297,10 @@ function makeElement({
 
             window.addEventListener("click", handleClick)
             window.addEventListener("touchstart", handleClick)
-            context.event.addEventListener("undo", handleUndo)
-            context.event.addEventListener("addSnapshot", addSnapshot)
             
             return () => {
                 window.removeEventListener("click", handleClick)
                 window.removeEventListener("touchstart", handleClick)
-                context.event.removeEventListener("undo", handleUndo)
-                context.event.removeEventListener("addSnapshot", addSnapshot)
             }
         })
 
@@ -340,7 +321,7 @@ function makeElement({
         }, [])
 
         return (
-            <DraggableCore onDrag={handleMovementDrag} onStop={() => hasCreatedSnapshot.current = false} grid={dragGrid} handle={`#element-${id}`} disabled={!shouldMove}>
+            <DraggableCore onDrag={handleMovementDrag} onStop={handleMovementStop} grid={dragGrid} handle={`#element-${id}`} disabled={!shouldMove}>
                 <div
                     className={classes.container}
                     style={{
@@ -368,19 +349,19 @@ function makeElement({
                         <>
                             {controls.includes("resize") && (
                                 <div className={classes.resizeHandles}>
-                                    <DraggableCore onDrag={handleVerticalDrag} onStart={emitAddSnapshot} grid={dragGrid}>
+                                    <DraggableCore onDrag={handleVerticalDrag} onStart={addSnapshot} grid={dragGrid}>
                                         <div className={classes.vertical}>
                                             <HeightIcon />
                                         </div>
                                     </DraggableCore>
 
-                                    <DraggableCore onDrag={handleHorizontalDrag} onStart={emitAddSnapshot} grid={dragGrid}>
+                                    <DraggableCore onDrag={handleHorizontalDrag} onStart={addSnapshot} grid={dragGrid}>
                                         <div className={classes.horizontal}>
                                             <HeightIcon />
                                         </div>
                                     </DraggableCore>
 
-                                    <DraggableCore onDrag={handleDiagonalDrag} onStart={emitAddSnapshot} grid={dragGrid}>
+                                    <DraggableCore onDrag={handleDiagonalDrag} onStart={addSnapshot} grid={dragGrid}>
                                         <div className={classes.diagonal}>
                                             <HeightIcon />
                                         </div>
@@ -392,7 +373,7 @@ function makeElement({
                                 {controls.includes("rotate") && (
                                     <DraggableCore onStart={(...args) => {
                                         handleRotationStart(...args)
-                                        emitAddSnapshot()
+                                        addSnapshot()
                                     }} onStop={handleRotationEnd} onDrag={handleRotationDrag}>
                                         <RotateLeftIcon className={classes.rotationHandle} />
                                     </DraggableCore>
