@@ -101,6 +101,7 @@ function makeElement({
         const lastRotation = useRef(template?.rotation || 0)
         const container = useRef()
         const childRef = useRef()
+        const hasCreatedSnapshot = useRef(false)
         // Store states to be applied on undo
         const snapshots = useRef([])
 
@@ -237,6 +238,12 @@ function makeElement({
                 return
             }
 
+            // Add snapshot when dragging starts
+            if(!hasCreatedSnapshot.current) {
+                emitAddSnapshot()
+                hasCreatedSnapshot.current = true
+            }
+
             setPosition({
                 x: position.x + data.deltaX,
                 y: position.y + data.deltaY
@@ -333,7 +340,7 @@ function makeElement({
         }, [])
 
         return (
-            <DraggableCore onDrag={handleMovementDrag} onStart={emitAddSnapshot} grid={dragGrid} handle={`#element-${id}`} disabled={!shouldMove}>
+            <DraggableCore onDrag={handleMovementDrag} onStop={() => hasCreatedSnapshot.current = false} grid={dragGrid} handle={`#element-${id}`} disabled={!shouldMove}>
                 <div
                     className={classes.container}
                     style={{

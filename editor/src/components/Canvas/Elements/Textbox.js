@@ -1,12 +1,12 @@
-import React, { useState, useRef, useMemo, useEffect } from "react"
+import React, { useState, useRef, useMemo, useEffect, useContext } from "react"
 import { makeStyles } from "@material-ui/core/styles"
 
 import TextboxSettingsDialog from "../../Dialogs/TextboxSettingsDialog.js"
 
+import { AppContext } from "../../../App.js"
 import makeElement from "./makeElement.js"
 import fitText from "../../../utils/fitText.js"
-
-import { TEXTBOX_PLACEHOLDER } from "../../../config/constants.js"
+import { TEXTBOX_PLACEHOLDER, MAX_SNAPSHOTS } from "../../../config/constants.js"
 
 const globalDefaultSettings = {
     color: "black",
@@ -54,7 +54,11 @@ function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dim
         }
     }
 
+    const context = useContext(AppContext)
+
     const textboxRef = useRef()
+    const snapshots = useRef([])
+    const shouldEmitSnapshot = useRef(false)
 
     const [value, setValue] = useState(TEXTBOX_PLACEHOLDER)
     const [dialogOpen, setDialogOpen] = useState(false)
@@ -62,12 +66,49 @@ function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dim
 
     const classes = useStyles({ settings, isFocused, padding })
 
+    const addSnapshot = () => {
+        console.log("Add snapshot")
+        // Create new snapshot
+        const newSnapshot = { value, settings }
+        snapshots.current.push(newSnapshot)
+
+        // Apply size constraint
+        if(snapshots.current.length > MAX_SNAPSHOTS) {
+            snapshots.current.shift()
+        }
+    }
+
+    const applySnapshot = (snapshot) => {
+        setValue(snapshot.value)
+        textboxRef.current.textContent = snapshot.value
+        setSettings(snapshot.settings)
+    }
+
+    const handleUndo = () => {
+        console.log("Undo")
+        if(snapshots.current.length === 0) {
+            // Set initial values
+            setValue(TEXTBOX_PLACEHOLDER)
+            setSettings(defaultSettings)
+            return
+        }
+
+        // Apply snapshot
+        const snapshot = snapshots.current.pop()
+        applySnapshot(snapshot)
+    }
+
+    const emitAddSnapshot = () => {
+        context.event.dispatchEvent(new CustomEvent("addSnapshot"))
+    }
+
     const handleSettingsClicked = () => {
         setDialogOpen(true)
     }
 
     const handleSettingsApply = values => {
         if(values) {
+            emitAddSnapshot()
             setSettings(values)
         }
         setDialogOpen(false)
@@ -78,6 +119,8 @@ function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dim
             toggleMovement(true)
             textboxRef.current.removeEventListener("focusout", handleFocusOut)
         }
+        
+        shouldEmitSnapshot.current = true
         toggleMovement(false)
         textboxRef.current.addEventListener("focusout", handleFocusOut)
 
@@ -86,11 +129,15 @@ function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dim
         // Clear the placeholder
         if(value.toLowerCase() === TEXTBOX_PLACEHOLDER.toLowerCase()) {
             textboxRef.current.textContent = ""
-            setValue("")
         }
     }
 
     const handleValueChange = (event) => {
+        if(shouldEmitSnapshot.current) {
+            shouldEmitSnapshot.current = false
+            emitAddSnapshot()
+        }
+
         const newValue = event.target.textContent
         setValue(newValue)
     }
@@ -137,8 +184,18 @@ function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dim
     }, [])
 
     useEffect(() => {
-        // Insert placeholder if textbox is empty
-        if(!value && !isFocused) {
+        context.event.addEventListener("addSnapshot", addSnapshot)
+        context.event.addEventListener("undo", handleUndo)
+        
+        return () => {         
+            context.event.removeEventListener("addSnapshot", addSnapshot)
+            context.event.removeEventListener("undo", handleUndo)
+        }
+    })
+
+    useEffect(() => {
+        if(!isFocused && !value) {
+            // Insert placeholder if textbox is empty
             setValue(TEXTBOX_PLACEHOLDER)
             textboxRef.current.textContent = TEXTBOX_PLACEHOLDER
         }
