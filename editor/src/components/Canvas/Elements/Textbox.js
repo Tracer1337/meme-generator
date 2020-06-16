@@ -6,7 +6,7 @@ import TextboxSettingsDialog from "../../Dialogs/TextboxSettingsDialog.js"
 import makeElement from "./makeElement.js"
 import fitText from "../../../utils/fitText.js"
 
-const placeholder = "Enter Text..."
+import { TEXTBOX_PLACEHOLDER } from "../../../config/constants.js"
 
 const globalDefaultSettings = {
     color: "black",
@@ -56,7 +56,7 @@ function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dim
 
     const textboxRef = useRef()
 
-    const [value, setValue] = useState(placeholder)
+    const [value, setValue] = useState(TEXTBOX_PLACEHOLDER)
     const [dialogOpen, setDialogOpen] = useState(false)
     const [settings, setSettings] = useState(defaultSettings)
 
@@ -84,7 +84,7 @@ function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dim
         textboxRef.current.focus()
 
         // Clear the placeholder
-        if(value.toLowerCase() === placeholder.toLowerCase()) {
+        if(value.toLowerCase() === TEXTBOX_PLACEHOLDER.toLowerCase()) {
             textboxRef.current.textContent = ""
             setValue("")
         }
@@ -139,8 +139,8 @@ function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dim
     useEffect(() => {
         // Insert placeholder if textbox is empty
         if(!value && !isFocused) {
-            setValue(placeholder)
-            textboxRef.current.textContent = placeholder
+            setValue(TEXTBOX_PLACEHOLDER)
+            textboxRef.current.textContent = TEXTBOX_PLACEHOLDER
         }
     }, [isFocused])
 

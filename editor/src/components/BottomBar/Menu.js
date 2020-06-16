@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles"
 import BorderOuterIcon from "@material-ui/icons/BorderOuter"
 import GridIcon from "@material-ui/icons/GridOn"
 import AddPhotoIcon from "@material-ui/icons/AddPhotoAlternate"
+import PhotoLibraryIcon from "@material-ui/icons/PhotoLibrary"
 
 import { AppContext } from "../../App.js"
 
@@ -56,6 +57,13 @@ function Menu({ open, anchorEl, onClose }) {
                     <AddPhotoIcon fontSize="small" />
                 </ListItemIcon>
                 <ListItemText primary="Add Image" />
+            </MenuItem>
+
+            <MenuItem onClick={dispatchEvent("importImage")}>
+                <ListItemIcon className={classes.icon}>
+                    <PhotoLibraryIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText primary={context.image ? "Replace Meme" : "Import Meme"} />
             </MenuItem>
         </MuiMenu>
     )

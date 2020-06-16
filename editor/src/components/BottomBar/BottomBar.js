@@ -2,11 +2,11 @@ import React, { useContext, useState, useRef } from "react"
 import { AppBar, Toolbar, Fab, IconButton } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import DoneIcon from "@material-ui/icons/Done"
-import PhotoLibraryIcon from "@material-ui/icons/PhotoLibrary"
 import TextFieldsIcon from "@material-ui/icons/TextFields"
 import MoreVertIcon from "@material-ui/icons/MoreVert"
 import CloudDownloadIcon from "@material-ui/icons/CloudDownload"
 import HelpIcon from "@material-ui/icons/Help"
+import UndoIcon from "@material-ui/icons/Undo"
 
 import Menu from "./Menu.js"
 import TemplatesDialog from "../Dialogs/TemplatesDialog.js"
@@ -89,8 +89,8 @@ function BottomBar() {
                     <TextFieldsIcon/>
                 </IconButton>
 
-                <IconButton onClick={dispatchEvent("importImage")} id="library-button">
-                    <PhotoLibraryIcon/>
+                <IconButton onClick={dispatchEvent("undo")} id="undo-button">
+                    <UndoIcon/>
                 </IconButton>
 
                 <IconButton onClick={handleMoreClick} ref={openMenuButton}>

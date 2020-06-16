@@ -8,7 +8,7 @@
         "content": "Textbox"
     },
     {
-        "selector": "#library-button",
-        "content": "Import"
+        "selector": "#undo-button",
+        "content": "Undo"
     }
 ]

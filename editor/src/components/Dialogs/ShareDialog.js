@@ -38,7 +38,7 @@ function ShareDialog({ open, link, onClose, onOpen }) {
     
     const classes = useStyles()
 
-    const bindLink = href => () => window.open(href.replace(/{}/g, link))
+    const openLink = href => () => window.open(href.replace(/{}/g, link))
 
     return (
         <SwipeableDrawer
@@ -53,43 +53,43 @@ function ShareDialog({ open, link, onClose, onOpen }) {
             <DialogTitle className={classes.title}>Share Link</DialogTitle>
 
             <div className={classes.iconsContainer}>
-                <IconButton onClick={bindLink("whatsapp://send?text={}")}>
+                <IconButton onClick={openLink("whatsapp://send?text={}")}>
                     <img src={WhatsAppIcon} alt="WhatsApp" className={classes.icon}/>
                 </IconButton>
 
-                <IconButton onClick={bindLink("https://www.facebook.com/sharer/sharer.php?u={}")}>
+                <IconButton onClick={openLink("https://www.facebook.com/sharer/sharer.php?u={}")}>
                     <img src={FacebookIcon} alt="Facebook" className={classes.icon}/>
                 </IconButton>
 
-                <IconButton onClick={bindLink("http://twitter.com/intent/tweet?text={}")}>
+                <IconButton onClick={openLink("http://twitter.com/intent/tweet?text={}")}>
                     <img src={TwitterIcon} alt="Twitter" className={classes.icon}/>
                 </IconButton>
 
-                <IconButton onClick={bindLink("https://telegram.me/share?url={}")}>
+                <IconButton onClick={openLink("https://telegram.me/share?url={}")}>
                     <img src={TelegramIcon} alt="Telegram" className={classes.icon}/>
                 </IconButton>
 
-                <IconButton onClick={bindLink("https://web.skype.com/share?url={}")}>
+                <IconButton onClick={openLink("https://web.skype.com/share?url={}")}>
                     <img src={SkypeIcon} alt="Skype" className={classes.icon}/>
                 </IconButton>
 
-                <IconButton onClick={bindLink("fb-messenger://share?link={}")}>
+                <IconButton onClick={openLink("fb-messenger://share?link={}")}>
                     <img src={FBMessengerIcon} alt="Messenger" className={classes.icon}/>
                 </IconButton>
 
-                <IconButton onClick={bindLink("https://www.pinterest.com/pin/create/button?url={}")}>
+                <IconButton onClick={openLink("https://www.pinterest.com/pin/create/button?url={}")}>
                     <img src={PinterestIcon} alt="Pinterest" className={classes.icon}/>
                 </IconButton>
 
-                <IconButton onClick={bindLink("https://www.reddit.com/submit?url={}")}>
+                <IconButton onClick={openLink("https://www.reddit.com/submit?url={}")}>
                     <img src={RedditIcon} alt="Reddit" className={classes.icon}/>
                 </IconButton>
 
-                <IconButton onClick={bindLink("https://www.tumblr.com/widgets/share/tool?posttype=link&canonicalUrl={}")}>
+                <IconButton onClick={openLink("https://www.tumblr.com/widgets/share/tool?posttype=link&canonicalUrl={}")}>
                     <img src={TumblrIcon} alt="Tumblr" className={classes.icon}/>
                 </IconButton>
 
-                <IconButton onClick={bindLink("mailto:?body={}")}>
+                <IconButton onClick={openLink("mailto:?body={}")}>
                     <img src={GmailIcon} alt="Email" className={classes.icon}/>
                 </IconButton>
             </div>
