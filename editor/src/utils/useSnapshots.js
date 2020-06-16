@@ -33,13 +33,17 @@ function useSnapshots({ createSnapshot, applySnapshot, onSnapshotsEmpty }) {
 
     useEffect(() => {
         context.event.addEventListener("undo", handleUndo)
+        context.event.addEventListener("addSnapshot", addSnapshot)
 
         return () => {
             context.event.removeEventListener("undo", handleUndo)
+            context.event.removeEventListener("addSnapshot", addSnapshot)
         }
     })
 
-    return addSnapshot
+    return () => {
+        context.event.dispatchEvent(new CustomEvent("addSnapshot"))
+    }
 }
 
 export default useSnapshots
