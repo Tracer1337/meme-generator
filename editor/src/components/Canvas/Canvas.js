@@ -204,22 +204,30 @@ function Canvas() {
         elementKeys = []
 
         // Set image
-        context.setImage(template.image)
+        context.setImage(template.image_url)
+
+        // Stop if no metadata exists
+        if(!template.meta_data) {
+            return
+        }
+
+        const border = template.meta_data.border
+        const textboxes = template.meta_data.textboxes
 
         // Wait until image is loaded into DOM
         await new Promise(requestAnimationFrame)
 
         // Format border size
-        if (typeof template.border?.size === "string") {
-            formatPercentage(template.border, "size")
+        if (typeof border?.size === "string") {
+            formatPercentage(border, "size")
         }
 
         // Set border
-        setBorderValues(template.border || defaultBorderValues)
+        setBorderValues(border || defaultBorderValues)
 
         // Handle textboxes
-        if(template.textboxes) {
-            for(let textbox of template.textboxes){
+        if(textboxes) {
+            for(let textbox of textboxes){
                 // Format values
                 formatPercentage(textbox, "width", true)
                 formatPercentage(textbox, "height")
@@ -236,21 +244,15 @@ function Canvas() {
         setElementKeys(elementKeys)
     }
 
-    const handleStringifyTextboxes = (currentTemplates) => {
+    const handleGetTextboxes = () => {
         const textboxKeys = elementKeys.filter(({ type }) => type === "textbox").map(({ key }) => key)
         const formatted = textboxKeys.map(key => elementRefs.current[key].toObject({ image: image.current }))
 
-        // Insert textboxes into corresponding template
-        if(currentTemplates) {
-            currentTemplates = JSON.parse(currentTemplates)
-            const selected = currentTemplates.find(t => t.label === currentTemplate.current.label)
-            if(selected) {
-                selected.textboxes = formatted
-            }
-            return JSON.stringify(currentTemplates)
-        }
+        return formatted
+    }
 
-        return JSON.stringify(formatted)
+    const handleGetBorder = () => {
+        return borderValues
     }
 
     // Set event listeners
@@ -263,7 +265,8 @@ function Canvas() {
         context.event.addEventListener("setGrid", handleSetGrid)
         context.event.addEventListener("loadTemplate", handleLoadTemplate)
 
-        window.stringifyTextboxes = handleStringifyTextboxes
+        window.getTextboxes = handleGetTextboxes
+        window.getBorder = handleGetBorder
         
         return () => {
             context.event.removeEventListener("importImage", handleImportImage)
@@ -372,7 +375,7 @@ function Canvas() {
 
             <BorderDialog open={isBorderDialogOpen} onClose={handleBorderDialogClose} values={borderValues}/>
             <GridDialog open={isGridDialogOpen} onClose={handleGridDialogClose} values={gridValues}/>
-            <ImageDialog open={isImageDialogOpen} onClose={handleImageDialogClose} imageData={generatedImage}/>
+            <ImageDialog open={isImageDialogOpen} onClose={handleImageDialogClose} imageData={generatedImage} isTemplate={!!currentTemplate.current}/>
         </div>
     )
 }

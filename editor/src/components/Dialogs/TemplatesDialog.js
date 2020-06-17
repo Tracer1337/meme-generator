@@ -1,16 +1,11 @@
-import React, { useState, useContext } from "react"
-import { Dialog, AppBar, Toolbar, Typography, IconButton, Slide, GridList, GridListTile, GridListTileBar, InputBase, Paper } from "@material-ui/core"
+import React, { useState, useContext, useEffect } from "react"
+import { Dialog, AppBar, Toolbar, Typography, IconButton, Slide, GridList, GridListTile, GridListTileBar, InputBase, Paper, CircularProgress } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import CloseIcon from "@material-ui/icons/Close"
 
 import { AppContext } from "../../App.js"
-import templates from "../../config/templates.json"
 import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
-
-// Format templates
-templates.forEach(template => {
-    template.image = require("../../assets/images/templates/" + template.image)
-})
+import { getTemplates } from "../../utils/API.js"
 
 const useStyles = makeStyles(theme => ({
     body: {
@@ -51,6 +46,17 @@ const useStyles = makeStyles(theme => ({
 function Templates({ onLoad, search }) {
     const classes = useStyles()
 
+    const [templates, setTemplates] = useState()
+
+    useEffect(() => {
+        getTemplates()
+            .then(data => setTemplates(data))
+    }, [])
+
+    if(!templates) {
+        return <CircularProgress/>
+    }
+
     const renderTemplates = templates.filter(({ label }) => label.toLowerCase().includes(search.toLowerCase()))
 
     return (
@@ -58,7 +64,7 @@ function Templates({ onLoad, search }) {
             <GridList cellHeight={150} className={classes.list}>
                 {renderTemplates.map((template, i) => (
                     <GridListTile key={i} onClick={() => onLoad(template)} className={classes.tile}>
-                        <img src={template.image} alt="Preview" loading="lazy"/>
+                        <img src={template.image_url} alt="Preview" loading="lazy"/>
 
                         <GridListTileBar title={template.label}/>
                     </GridListTile>

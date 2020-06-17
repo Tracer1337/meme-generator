@@ -9,8 +9,13 @@ function App() {
     const [context, setContext] = useState({
         event: new EventTarget(),
         image: null,
-        setImage: image => setContext({...context, image})
+        password: "123"
     })
+
+    const setter = {
+        setImage: image => setContext({ ...context, image }),
+        setPassword: password => setContext({ ...context, password })
+    }
 
     useEffect(() => {
         const handleUndo = (event) => {
@@ -26,7 +31,7 @@ function App() {
     }, [])
 
     return (
-        <AppContext.Provider value={context}>
+        <AppContext.Provider value={{ ...context, ...setter }}>
             <Canvas/>
             <BottomBar/>
         </AppContext.Provider>

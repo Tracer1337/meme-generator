@@ -1,16 +1,21 @@
-import React, { useState, useEffect } from "react"
-import { Dialog, Button, CircularProgress, Paper, Typography, IconButton } from "@material-ui/core"
+import React, { useState, useEffect, useContext } from "react"
+import { useForm } from "react-hook-form"
+import { Dialog, Button, CircularProgress, Paper, Typography, IconButton, TextField, Snackbar } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import DownloadIcon from "@material-ui/icons/GetApp"
 import LinkIcon from "@material-ui/icons/Link"
 import ShareIcon from "@material-ui/icons/Share"
+import PublishIcon from "@material-ui/icons/Publish"
+import CloseIcon from "@material-ui/icons/Close"
 
 import ShareDialog from "./ShareDialog.js"
 
+import { AppContext } from "../../App.js"
 import downloadImageFromSrc from "../../utils/downloadImageFromSrc.js"
 import dataURLToFile from "../../utils/dataURLToFile.js"
 import uploadImage from "../../utils/uploadImage.js"
 import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
+import { uploadTemplate } from "../../utils/API.js"
 
 const useStyles = makeStyles(theme => {
     const button = {
@@ -66,16 +71,25 @@ const useStyles = makeStyles(theme => {
 
         shareButton: {
             padding: theme.spacing(1)
+        },
+
+        snackbarClose: {
+            color: theme.palette.primary.variant
         }
     }
 })
 
-function ImageDialog({ open, onClose, imageData }) {
+function ImageDialog({ open, onClose, imageData, isTemplate }) {
+    const context = useContext(AppContext)
+
+    const { register, getValues } = useForm()
+
     const classes = useStyles({ imageData })
 
     const [link, setLink] = useState()
     const [isUploading, setIsUploading] = useState(false)
     const [isShareDialogOpen, setIsShareDialogOpen] = useState(false)
+    const [isUploadSnackbarOpen, setIsUploadSnackbarOpen] = useState(false)
 
     const handleDownloadClick = () => {
         downloadImageFromSrc(imageData)
@@ -95,6 +109,34 @@ function ImageDialog({ open, onClose, imageData }) {
         setIsShareDialogOpen(true)
     }
 
+    const handleTemplateClick = async () => {
+        if(!getValues("label")) {
+            return
+        }
+
+        // Collect image data
+        const label = getValues("label")
+        const image = dataURLToFile(context.image, "image.png")
+        const metaData = {
+            textboxes: window.getTextboxes(),
+            border: window.getBorder()
+        }
+
+        // Create form data
+        const formData = new FormData()
+        formData.append("password", context.password)
+        formData.append("image", image)
+        formData.append("label", label)
+        formData.append("meta_data", JSON.stringify(metaData))
+
+        // Upload data
+        uploadTemplate(formData).then(res => {
+            if(res.ok) {
+                setIsUploadSnackbarOpen(true)
+            }
+        })
+    }
+
     useEffect(() => {
         if(!open) {
             // Reset link when dialog closes
@@ -103,59 +145,98 @@ function ImageDialog({ open, onClose, imageData }) {
     }, [open])
 
     return (
-        <Dialog open={open} onClose={onClose} PaperProps={{ className: classes.innerDialog }}>
-            {!imageData ? (
-                <CircularProgress/>
-            ) : (
-                <>
-                    <img alt = "" src = { imageData } className = {classes.image}/>
+        <>
+            <Dialog open={open} onClose={onClose} PaperProps={{ className: classes.innerDialog }}>
+                {!imageData ? (
+                    <CircularProgress/>
+                ) : (
+                    <>
+                        <img alt = "" src = { imageData } className = {classes.image}/>
 
-                    <Paper variant="outlined" className={classes.linkWrapper} style={{ display: !link && "none" }}>
-                        <Typography variant="body1" className={classes.link}>
-                            {link}
-                        </Typography>
+                        <Paper variant="outlined" className={classes.linkWrapper} style={{ display: !link && "none" }}>
+                            <Typography variant="body1" className={classes.link}>
+                                {link}
+                            </Typography>
 
-                        <IconButton className={classes.shareButton} onClick={handleShareClick}>
-                            <ShareIcon />
-                        </IconButton>
-                    </Paper>
+                            <IconButton className={classes.shareButton} onClick={handleShareClick}>
+                                <ShareIcon />
+                            </IconButton>
+                        </Paper>
 
-                    {!link && (
-                        <div className={classes.uploadButtonWrapper}>
-                            <Button
-                                startIcon={<LinkIcon />}
-                                color="primary"
-                                variant="outlined"
-                                onClick={handleUploadClick}
-                                disabled={isUploading}
-                                style={{ width: "100%" }}
-                            >
-                                Create Link
+                        {!link && (
+                            <div className={classes.uploadButtonWrapper}>
+                                <Button
+                                    startIcon={<LinkIcon />}
+                                    color="primary"
+                                    variant="outlined"
+                                    onClick={handleUploadClick}
+                                    disabled={isUploading}
+                                    style={{ width: "100%" }}
+                                >
+                                    Create Link
+                            </Button>
+
+                                {isUploading && <CircularProgress size={24} className={classes.buttonLoader} />}
+                            </div>
+                        )}
+
+                        <Button
+                            startIcon={<DownloadIcon />}
+                            color="primary"
+                            variant="outlined"
+                            className={classes.button}
+                            onClick={handleDownloadClick}
+                        >
+                            Download
                         </Button>
 
-                            {isUploading && <CircularProgress size={24} className={classes.buttonLoader} />}
-                        </div>
-                    )}
+                        {context.password && !isTemplate && (
+                            <>
+                                <TextField
+                                    inputRef={register()}
+                                    name="label"
+                                    label="Label"
+                                    className={classes.button}
+                                    variant="outlined"
+                                />
+                                <Button
+                                    startIcon={<PublishIcon />}
+                                    color="primary"
+                                    variant="outlined"
+                                    className={classes.button}
+                                    onClick={handleTemplateClick}
+                                >
+                                    Publish Template
+                                </Button>
+                            </>
+                        )}
 
-                    <Button
-                        startIcon={<DownloadIcon />}
-                        color="primary"
-                        variant="outlined"
-                        className={classes.button}
-                        onClick={handleDownloadClick}
-                    >
-                        Download
-                    </Button>
+                        <ShareDialog
+                            open={isShareDialogOpen}
+                            link={link}
+                            onOpen={handleShareClick}
+                            onClose={() => setIsShareDialogOpen(false)}
+                        />
+                    </>
+                )}
+            </Dialog>
 
-                    <ShareDialog
-                        open={isShareDialogOpen}
-                        link={link}
-                        onOpen={handleShareClick}
-                        onClose={() => setIsShareDialogOpen(false)}
-                    />
-                </>
-            )}
-        </Dialog>
+            <Snackbar
+                anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "left"
+                }}
+                open={isUploadSnackbarOpen}
+                autoHideDuration={3000}
+                onClose={() => setIsUploadSnackbarOpen(false)}
+                message="Uploaded"
+                action={
+                    <IconButton onClick={() => setIsUploadSnackbarOpen(false)} className={classes.snackbarClose}>
+                        <CloseIcon/>
+                    </IconButton>
+                }
+            />
+        </>
     )
 }
 

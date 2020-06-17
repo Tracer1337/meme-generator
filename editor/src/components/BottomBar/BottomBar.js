@@ -11,8 +11,10 @@ import UndoIcon from "@material-ui/icons/Undo"
 import Menu from "./Menu.js"
 import TemplatesDialog from "../Dialogs/TemplatesDialog.js"
 import HelpDialog from "../Dialogs/HelpDialog.js"
+import AuthDialog from "../Dialogs/AuthDialog.js"
 
 import { AppContext } from "../../App.js"
+import { LONG_PRESS_DURATION } from "../../config/constants.js"
 
 const useStyles = makeStyles(theme => ({
     appBar: {
@@ -43,10 +45,12 @@ function BottomBar() {
     const classes = useStyles()
 
     const openMenuButton = useRef()
+    const helpButtonTimer = useRef()
 
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [isTemplatesOpen, setIsTemplatesOpen] = useState(false)
     const [isHelpOpen, setIsHelpOpen] = useState(false)
+    const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false)
 
     const handleMoreClick = () => {
         setIsMenuOpen(!isMenuOpen)
@@ -64,6 +68,20 @@ function BottomBar() {
         setIsHelpOpen(true)
     }
 
+    const handleTouchStart = () => {
+        if(context.password) {
+            return
+        }
+
+        helpButtonTimer.current = setTimeout(() => {
+            setIsAuthDialogOpen(true)
+        }, LONG_PRESS_DURATION)
+    }
+
+    const handleTouchEnd = () => {
+        clearTimeout(helpButtonTimer.current)
+    }
+
     const dispatchEvent = (name) => () => {
         context.event.dispatchEvent(new CustomEvent(name))
     }
@@ -71,7 +89,7 @@ function BottomBar() {
     return (
         <AppBar position="fixed" className={classes.appBar}>
             <Toolbar>
-                <IconButton onClick={handleHelpClick}>
+                <IconButton onClick={handleHelpClick} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
                     <HelpIcon/>
                 </IconButton>
 
@@ -101,6 +119,7 @@ function BottomBar() {
 
                 <TemplatesDialog open={isTemplatesOpen} onClose={() => setIsTemplatesOpen(false)}/>
                 <HelpDialog open={isHelpOpen} onClose={() => setIsHelpOpen(false)}/>
+                <AuthDialog open={isAuthDialogOpen} onClose={() => setIsAuthDialogOpen(false)}/>
             </Toolbar>
         </AppBar>
     )
