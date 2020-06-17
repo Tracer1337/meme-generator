@@ -116,9 +116,15 @@ app.post("/api/template/:id", (req, res) => {
     })
 })
 
-// API: Register template download
-app.post("/api/download", (req, res) => {
-    const sql = "UPDATE templates SET amount_downloads = amount_downloads + 1 WHERE id = " + req.body.id
+// API: Register template use
+app.post("/api/register-use", (req, res) => {
+    if(!req.body.id) {
+        res.status(400)
+        res.end()
+        return
+    }
+
+    const sql = "UPDATE templates SET amount_uses = amount_uses + 1 WHERE id = " + req.body.id
 
     db.query(sql, (error) => {
         if(error) throw error

@@ -40,3 +40,11 @@ export const deleteTemplate = (password, id) => fetch(url("/template/" + id), {
         isMethodDelete: true
     })
 })
+
+export const registerTemplateUse = (id) => fetch(url("/register-use"), {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ id })
+})

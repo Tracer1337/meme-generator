@@ -375,7 +375,7 @@ function Canvas() {
 
             <BorderDialog open={isBorderDialogOpen} onClose={handleBorderDialogClose} values={borderValues}/>
             <GridDialog open={isGridDialogOpen} onClose={handleGridDialogClose} values={gridValues}/>
-            <ImageDialog open={isImageDialogOpen} onClose={handleImageDialogClose} imageData={generatedImage} isTemplate={!!currentTemplate.current}/>
+            <ImageDialog open={isImageDialogOpen} onClose={handleImageDialogClose} imageData={generatedImage} template={currentTemplate.current}/>
         </div>
     )
 }

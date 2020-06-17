@@ -10,6 +10,14 @@ import { AppContext } from "../../App.js"
 import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
 import { getTemplates, deleteTemplate } from "../../utils/API.js"
 
+const getSubtitle = (count) => {
+    if (count === 1) {
+        return "1 Meme Created"
+    } else {
+        return count + " Memes Created"
+    }
+}
+
 const useStyles = makeStyles(theme => ({
     body: {
         marginTop: theme.mixins.toolbar.minHeight
@@ -43,6 +51,10 @@ const useStyles = makeStyles(theme => ({
 
     tile: {
         cursor: "pointer"
+    },
+    
+    tilebar: {
+        height: 56
     },
 
     deleteButton: {
@@ -82,6 +94,13 @@ function Templates({ onLoad, search }) {
         }
     }
 
+    const handleClick = (event, template) => {
+        // Prevent loading when delete icon got clicked
+        if(event.target.tagName === "DIV" || event.target.tagName === "IMG") {
+            onLoad(template)
+        }
+    }
+
     useEffect(() => {
         fetchTemplates()
     }, [])
@@ -90,16 +109,20 @@ function Templates({ onLoad, search }) {
         return <CircularProgress/>
     }
 
+    // Filter by search string
     const renderTemplates = templates.filter(({ label }) => label.toLowerCase().includes(search.toLowerCase()))
+
+    // Sort by usage => Push most used memes to the top
+    renderTemplates.sort((a, b) => b.amount_uses - a.amount_uses)
 
     return (
         <div className={classes.listWrapper}>
             <GridList cellHeight={150} className={classes.list}>
                 {renderTemplates.map((template, i) => (
-                    <GridListTile key={i} className={classes.tile}>
-                        <img src={template.image_url} alt="Preview" loading="lazy" onClick={() => onLoad(template)}/>
+                    <GridListTile key={i} className={classes.tile} onClick={e => handleClick(e, template)}>
+                        <img src={template.image_url} alt="Preview" loading="lazy"/>
 
-                        <GridListTileBar title={template.label}/>
+                        <GridListTileBar title={template.label} subtitle={getSubtitle(template.amount_uses)} className={classes.tilebar}/>
 
                         {context.password && (
                             <IconButton onClick={() => handleDeleteClick(template)} className={classes.deleteButton}>

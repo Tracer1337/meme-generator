@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react"
+import React, { useState, useEffect, useContext, useRef } from "react"
 import { useForm } from "react-hook-form"
 import { Dialog, Button, CircularProgress, Paper, Typography, IconButton, TextField, Snackbar } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
@@ -15,7 +15,7 @@ import downloadImageFromSrc from "../../utils/downloadImageFromSrc.js"
 import dataURLToFile from "../../utils/dataURLToFile.js"
 import uploadImage from "../../utils/uploadImage.js"
 import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
-import { uploadTemplate } from "../../utils/API.js"
+import { uploadTemplate, registerTemplateUse } from "../../utils/API.js"
 
 const useStyles = makeStyles(theme => {
     const button = {
@@ -79,30 +79,52 @@ const useStyles = makeStyles(theme => {
     }
 })
 
-function ImageDialog({ open, onClose, imageData, isTemplate }) {
+function ImageDialog({ open, onClose, imageData, template }) {
     const context = useContext(AppContext)
 
     const { register, getValues } = useForm()
 
     const classes = useStyles({ imageData })
 
+    // Increase the usage-counter only once
+    const isRegistered = useRef(false)
+
     const [link, setLink] = useState()
     const [isUploading, setIsUploading] = useState(false)
     const [isShareDialogOpen, setIsShareDialogOpen] = useState(false)
     const [isUploadSnackbarOpen, setIsUploadSnackbarOpen] = useState(false)
 
+    const registerUsage = async () => {
+        if(!template) {
+            return
+        }
+
+        // Register template-usage
+        if(!isRegistered.current) {
+            await registerTemplateUse(template.id)
+            isRegistered.current = true
+        }
+    }
+
+    const handleClose = () => {
+        isRegistered.current = false
+        onClose()
+    }
+
     const handleDownloadClick = () => {
         downloadImageFromSrc(imageData)
+        registerUsage()
     }
 
     const handleUploadClick = async () => {
         setIsUploading(true)
-
+        
         const file = dataURLToFile(imageData, "image.png")
         const link = await uploadImage(file)
-
+        
         setIsUploading(false)
         setLink(link)
+        registerUsage()
     }
 
     const handleShareClick = () => {
@@ -146,7 +168,7 @@ function ImageDialog({ open, onClose, imageData, isTemplate }) {
 
     return (
         <>
-            <Dialog open={open} onClose={onClose} PaperProps={{ className: classes.innerDialog }}>
+            <Dialog open={open} onClose={handleClose} PaperProps={{ className: classes.innerDialog }}>
                 {!imageData ? (
                     <CircularProgress/>
                 ) : (
@@ -190,7 +212,7 @@ function ImageDialog({ open, onClose, imageData, isTemplate }) {
                             Download
                         </Button>
 
-                        {context.password && !isTemplate && (
+                        {context.password && !template && (
                             <>
                                 <TextField
                                     inputRef={register()}
