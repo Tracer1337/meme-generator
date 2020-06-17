@@ -1,3 +1,4 @@
 dist/editor
 node_modules/
 storage/*
+.env

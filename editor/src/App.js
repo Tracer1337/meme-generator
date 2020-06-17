@@ -9,12 +9,16 @@ function App() {
     const [context, setContext] = useState({
         event: new EventTarget(),
         image: null,
-        password: null
+        password: localStorage.getItem("password")
     })
 
     const setter = {
         setImage: image => setContext({ ...context, image }),
-        setPassword: password => setContext({ ...context, password })
+        setPassword: password => {
+            // Store password in localstorage
+            localStorage.setItem("password", password)
+            setContext({ ...context, password })
+        }
     }
 
     useEffect(() => {
