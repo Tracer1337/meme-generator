@@ -9,7 +9,7 @@ function App() {
     const [context, setContext] = useState({
         event: new EventTarget(),
         image: null,
-        password: "123"
+        password: null
     })
 
     const setter = {

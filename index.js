@@ -92,7 +92,14 @@ app.post("/api/template", upload.single("image"), (req, res) => {
 })
 
 // API: Delete template
-app.delete("/api/template/:id", (req, res) => {
+app.post("/api/template/:id", (req, res) => {
+    // Check if delete flag is set
+    if(!req.body.isMethodDelete) {
+        res.status(404)
+        res.end()
+        return
+    }
+
     // Authorize
     if(!authorize(req)) {
         res.status(403)

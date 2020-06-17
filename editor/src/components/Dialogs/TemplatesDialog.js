@@ -1,11 +1,14 @@
-import React, { useState, useContext, useEffect } from "react"
+import React, { useState, useContext, useEffect, useRef } from "react"
 import { Dialog, AppBar, Toolbar, Typography, IconButton, Slide, GridList, GridListTile, GridListTileBar, InputBase, Paper, CircularProgress } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import CloseIcon from "@material-ui/icons/Close"
+import DeleteIcon from "@material-ui/icons/Delete"
+
+import ConfirmDialog from "./ConfirmDialog.js"
 
 import { AppContext } from "../../App.js"
 import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
-import { getTemplates } from "../../utils/API.js"
+import { getTemplates, deleteTemplate } from "../../utils/API.js"
 
 const useStyles = makeStyles(theme => ({
     body: {
@@ -40,17 +43,47 @@ const useStyles = makeStyles(theme => ({
 
     tile: {
         cursor: "pointer"
+    },
+
+    deleteButton: {
+        zIndex: 10,
+        position: "absolute",
+        top: 0,
+        left: 0
     }
 }))
 
 function Templates({ onLoad, search }) {
+    const context = useContext(AppContext)
+
     const classes = useStyles()
 
-    const [templates, setTemplates] = useState()
+    const currentTemplate = useRef({})
 
-    useEffect(() => {
+    const [templates, setTemplates] = useState()
+    const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false)
+
+    const fetchTemplates = () => {
         getTemplates()
             .then(data => setTemplates(data))
+    }
+    
+    const handleDeleteClick = (template) => {
+        currentTemplate.current = template
+        setIsConfirmDialogOpen(true)
+    }
+
+    const handleConfirmDialogClose = (shouldDelete) => {
+        setIsConfirmDialogOpen(false)
+
+        if(shouldDelete) {
+            deleteTemplate(context.password, currentTemplate.current.id)
+                .then(fetchTemplates)
+        }
+    }
+
+    useEffect(() => {
+        fetchTemplates()
     }, [])
 
     if(!templates) {
@@ -63,13 +96,25 @@ function Templates({ onLoad, search }) {
         <div className={classes.listWrapper}>
             <GridList cellHeight={150} className={classes.list}>
                 {renderTemplates.map((template, i) => (
-                    <GridListTile key={i} onClick={() => onLoad(template)} className={classes.tile}>
-                        <img src={template.image_url} alt="Preview" loading="lazy"/>
+                    <GridListTile key={i} className={classes.tile}>
+                        <img src={template.image_url} alt="Preview" loading="lazy" onClick={() => onLoad(template)}/>
 
                         <GridListTileBar title={template.label}/>
+
+                        {context.password && (
+                            <IconButton onClick={() => handleDeleteClick(template)} className={classes.deleteButton}>
+                                <DeleteIcon fontSize="small" />
+                            </IconButton>
+                        )}
                     </GridListTile>
                 ))}
             </GridList>
+
+            <ConfirmDialog
+                open={isConfirmDialogOpen}
+                onClose={handleConfirmDialogClose}
+                content={`The template "${currentTemplate.current.label}" will be deleted`}
+            />
         </div>
     )
 }
