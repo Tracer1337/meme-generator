@@ -5,6 +5,8 @@ const multer = require("multer")
 const { v4: uuidv4 } = require("uuid")
 const cors = require("cors")
 const fs = require("fs")
+const sharp = require("sharp")
+
 const createConnection = require("./server/connectToDB.js")
 
 function randomFileName() {
@@ -21,7 +23,7 @@ function authorize(req) {
 
 const storage = multer.diskStorage({
     destination: (req, file, callback) => {
-        const folder = "storage"
+        const folder = "temp"
         callback(null, folder)
     },
 
@@ -61,25 +63,42 @@ app.post("/api/authorize", (req, res) => {
 })
 
 // API: Store template
-app.post("/api/template", upload.single("image"), (req, res) => {
+app.post("/api/template", upload.single("image"), async (req, res) => {
+    // Remove temporary image
+    const deleteTemp = () => {
+        fs.unlink(path.join(__dirname, req.file.destination, req.file.filename), (error) => {
+            if (error) throw error
+        })
+    }
+
     // Check the password
     if(!authorize(req)) {
         res.status(403)
         res.end()
-        
-        // Delete image
-        fs.unlink(path.join(__dirname, req.file.destination, req.file.filename), (error) => {
-            if(error) throw error
-        })
+        deleteTemp()
         return
     }
+
+    // Format image
+    const image = sharp(req.file.path)
+    const newImage = await image
+        .metadata()
+        .then((metadata) => image
+            .resize(metadata.width <= 512 ? metadata.width : 512)
+            .jpeg()
+            .toBuffer())
+
+    // Store formatted image
+    const newFileName = req.file.filename.replace(/\.\w+/, ".jpeg")
+    fs.writeFileSync("./storage/" + newFileName, newImage)
+    deleteTemp()
 
     // Build new template
     const template = {
         label: req.body.label,
-        image_url: `${req.protocol}://${process.env.HOST}:${process.env.PORT}/storage/${req.file.filename}`,
+        image_url: `${req.protocol}://${process.env.HOST}:${process.env.PORT}/storage/${newFileName}`,
         meta_data: req.body.meta_data,
-        amount_downloads: 0
+        amount_uses: 0
     }
 
     const sql = "INSERT INTO templates SET ?"
