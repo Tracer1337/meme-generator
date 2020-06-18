@@ -2,20 +2,13 @@ require("dotenv").config()
 const express = require("express")
 const path = require("path")
 const multer = require("multer")
-const { v4: uuidv4 } = require("uuid")
 const cors = require("cors")
 const fs = require("fs")
-const sharp = require("sharp")
 
-const createConnection = require("./server/connectToDB.js")
-
-function randomFileName() {
-    return uuidv4().match(/([^-]*)/)[0]
-}
-
-function getFileExtension(filename) {
-    return filename.match(/\.[0-9a-z]+$/i)[0]
-}
+const createConnection = require("./server/utils/connectToDB.js")
+const formatImage = require("./server/utils/formatImage.js")
+const randomFileName = require("./server/utils/randomFileName.js")
+const getFileExtension = require("./server/utils/getFileExtension.js")
 
 function authorize(req) {
     return req.body.password === process.env.UPLOAD_PASSWORD
@@ -80,13 +73,7 @@ app.post("/api/template", upload.single("image"), async (req, res) => {
     }
 
     // Format image
-    const image = sharp(req.file.path)
-    const newImage = await image
-        .metadata()
-        .then((metadata) => image
-            .resize(metadata.width <= 512 ? metadata.width : 512)
-            .jpeg()
-            .toBuffer())
+    const newImage = await formatImage(path.join(__dirname, req.file.path))
 
     // Store formatted image
     const newFileName = req.file.filename.replace(/\.\w+/, ".jpeg")

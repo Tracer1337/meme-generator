@@ -120,7 +120,7 @@ function Templates({ onLoad, search }) {
             <GridList cellHeight={150} className={classes.list}>
                 {renderTemplates.map((template, i) => (
                     <GridListTile key={i} className={classes.tile} onClick={e => handleClick(e, template)}>
-                        <img src={template.image_url} alt="Preview" loading="lazy"/>
+                        <img src={template.image_url} alt={template.label} loading="lazy"/>
 
                         <GridListTileBar title={template.label} subtitle={getSubtitle(template.amount_uses)} className={classes.tilebar}/>
 

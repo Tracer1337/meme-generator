@@ -1,4 +1,6 @@
+const path = require("path")
 const mysql = require("mysql")
+require("dotenv").config({ path: path.join(__dirname, "..", "..", ".env") })
 
 function createConnection() {
     // Create database connection
