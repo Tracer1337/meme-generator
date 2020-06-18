@@ -81,10 +81,9 @@ app.post("/api/template", upload.single("image"), async (req, res) => {
     deleteTemp()
 
     // Build new template
-    const port = process.env.NODE_ENV !== "production" ? process.env.PORT : 80
     const template = {
         label: req.body.label,
-        image_url: `${req.protocol}://${process.env.HOST}:${port}/storage/${newFileName}`,
+        image_url: `/storage/${newFileName}`,
         meta_data: req.body.meta_data,
         amount_uses: 0
     }
