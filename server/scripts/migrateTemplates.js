@@ -35,9 +35,10 @@ const STORAGE_DIR = path.join(__dirname, "..", "..", "storage")
         fs.copyFileSync(path.join(TEMPLATES_DIR, template.image), path.join(STORAGE_DIR, filename))
 
         // Build new template
+        const port = process.env.NODE_ENV !== "production" ? process.env.PORT : 80
         const newTemplate = {
             label: template.label,
-            image_url: `http://${process.env.HOST}:${process.env.PORT}/storage/${filename}`,
+            image_url: `http://${process.env.HOST}:${port}/storage/${filename}`,
             meta_data: JSON.stringify(template.meta_data),
             amount_uses: 0
         }
