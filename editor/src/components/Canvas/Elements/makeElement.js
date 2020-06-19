@@ -178,6 +178,12 @@ function makeElement({
         const handleRotationDrag = (event, data) => {
             setRotation(getRotationAngle(event, data))
         }
+            
+        const emitResize = () => {
+            if(handle.onResize) {
+                handle.onResize()
+            }
+        }
 
         const calcNewHeight = (data) => {
             // Calculate new delta-y with the following rotation matrix: https://en.wikipedia.org/wiki/Rotation_matrix
@@ -207,15 +213,18 @@ function makeElement({
 
         const handleVerticalDrag = (event, data) => {
             calcNewHeight(data)
+            emitResize()
         }
 
         const handleHorizontalDrag = (event, data) => {
             calcNewWidth(data)
+            emitResize()
         }
 
         const handleDiagonalDrag = (event, data) => {
             calcNewWidth(data)
             calcNewHeight(data)
+            emitResize()
         }
 
         const handleMovementDrag = (event, data) => {

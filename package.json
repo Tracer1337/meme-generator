@@ -1,11 +1,11 @@
 {
-  "name": "easymeme-server",
+  "name": "easymeme",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
-    "dev": "concurrently --kill-others \"npm start\" \"cd editor && npm start\""
+    "start": "concurrently --kill-others \"npm run start-server\" \"cd editor && npm start\"",
+    "start-server": "nodemon index.js"
   },
   "author": "",
   "license": "ISC",

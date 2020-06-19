@@ -17,11 +17,13 @@ function fitText({ width, height, text, styles }) {
 
     const div = document.createElement("div")
 
-    div.style.visibility = "hidden"
+    // div.style.visibility = "hidden"
     div.style.position = "absolute"
     div.style.width = width + "px"
     div.style.height = height + "px"
     div.style.whiteSpace = "pre"
+    div.style.fontWeight = styles.bold ? "bold" : null
+    div.style.textTransform = styles.caps ? "uppercase" : null
 
     Object.assign(div.style, styles)
 
