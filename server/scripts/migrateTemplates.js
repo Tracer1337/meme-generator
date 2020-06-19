@@ -5,6 +5,7 @@ require("dotenv").config({ path: path.join(__dirname, "..", "..", ".env") })
 
 const randomFileName = require("../utils/randomFileName.js")
 const getFileExtension = require("../utils/getFileExtension.js")
+const Template = require("../models/Template.js")
 
 const TEMPLATES_DIR = path.join(__dirname, "..", "..", "templates")
 const STORAGE_DIR = path.join(__dirname, "..", "..", "storage")
@@ -35,17 +36,17 @@ const STORAGE_DIR = path.join(__dirname, "..", "..", "storage")
         fs.copyFileSync(path.join(TEMPLATES_DIR, template.image), path.join(STORAGE_DIR, filename))
 
         // Build new template
-        const newTemplate = {
+        const newTemplate = new Template({
             label: template.label,
             image_url: `/storage/${filename}`,
             meta_data: JSON.stringify(template.meta_data),
             amount_uses: 0
-        }
+        })
 
         const sql = "INSERT INTO templates SET ?"
 
         // Store template
-        await new Promise(resolve => db.query(sql, newTemplate, (error) => {
+        await new Promise(resolve => db.query(sql, newTemplate.toObject(), (error) => {
             if (error) throw error
             resolve()
         }))

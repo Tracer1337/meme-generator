@@ -1,10 +1,12 @@
-const isDev = !process.env.NODE_ENV || process.env.NODE_ENV === "development"
+import { IS_DEV } from "../config/constants.js"
 
 function url(path) {
-    return `${window.location.protocol}//${window.location.hostname}${isDev ? ":8080" : ""}/api${path}`
+    return `${window.location.protocol}//${window.location.hostname}${IS_DEV ? ":8080" : ""}/api${path}`
 }
 
-export const uploadTemplate = (formData) => fetch(url("/template"), {
+// Templates
+
+export const uploadTemplate = (formData) => fetch(url("/templates"), {
     method: "POST",
     body: formData
 })
@@ -14,6 +16,8 @@ export const getTemplates = () => {
         .then(res => res.json())
         .then(data => {
             data.forEach(template => {
+                template.image_url = (IS_DEV ? "http://localhost:8080" : "") + template.image_url
+
                 if (template.meta_data) {
                     template.meta_data = JSON.parse(template.meta_data)
                 }
@@ -22,29 +26,28 @@ export const getTemplates = () => {
         })
 }
 
-export const authorize = (password) => fetch(url("/authorize"), {
+export const deleteTemplate = (password, id) => fetch(url("/templates/delete/" + id), {
     method: "POST",
     headers: {
         "Content-Type": "application/json"
     },
     body: JSON.stringify({ password })
-}).then(res => res.json())
-
-export const deleteTemplate = (password, id) => fetch(url("/template/" + id), {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-        password,
-        isMethodDelete: true
-    })
 })
 
-export const registerTemplateUse = (id) => fetch(url("/register-use"), {
+export const registerTemplateUse = (id) => fetch(url("/templates/register-use"), {
     method: "POST",
     headers: {
         "Content-Type": "application/json"
     },
     body: JSON.stringify({ id })
 })
+
+// Auth
+
+export const authorize = (password) => fetch(url("/auth/authorize"), {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ password })
+}).then(res => res.json())

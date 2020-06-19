@@ -93,6 +93,7 @@ function ImageDialog({ open, onClose, imageData, template }) {
     const [isUploading, setIsUploading] = useState(false)
     const [isShareDialogOpen, setIsShareDialogOpen] = useState(false)
     const [isUploadSnackbarOpen, setIsUploadSnackbarOpen] = useState(false)
+    const [hasCreatedTemplate, setHasCreatedTemplate] = useState(false)
 
     const registerUsage = async () => {
         if(!template) {
@@ -108,6 +109,7 @@ function ImageDialog({ open, onClose, imageData, template }) {
 
     const handleClose = () => {
         isRegistered.current = false
+        setHasCreatedTemplate(false)
         onClose()
     }
 
@@ -154,6 +156,7 @@ function ImageDialog({ open, onClose, imageData, template }) {
         // Upload data
         uploadTemplate(formData).then(res => {
             if(res.ok) {
+                setHasCreatedTemplate(true)
                 setIsUploadSnackbarOpen(true)
             }
         })
@@ -173,7 +176,7 @@ function ImageDialog({ open, onClose, imageData, template }) {
                     <CircularProgress/>
                 ) : (
                     <>
-                        <img alt = "" src = { imageData } className = {classes.image}/>
+                        <img alt="" src={imageData} className={classes.image}/>
 
                         <Paper variant="outlined" className={classes.linkWrapper} style={{ display: !link && "none" }}>
                             <Typography variant="body1" className={classes.link}>
@@ -212,7 +215,7 @@ function ImageDialog({ open, onClose, imageData, template }) {
                             Download
                         </Button>
 
-                        {context.password && !template && (
+                        {context.password && !template && !hasCreatedTemplate && (
                             <>
                                 <TextField
                                     inputRef={register()}

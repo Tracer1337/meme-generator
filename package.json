@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "dev": "concurrently --kill-others \"npm start\" \"cd editor && npm start\""
   },
   "author": "",
   "license": "ISC",
@@ -18,6 +19,7 @@
     "uuid": "^8.1.0"
   },
   "devDependencies": {
+    "concurrently": "^5.2.0",
     "nodemon": "^2.0.4"
   }
 }

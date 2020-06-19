@@ -21,4 +21,7 @@ function createConnection() {
     return db
 }
 
-module.exports = createConnection
+module.exports = {
+    createConnection,
+    db: createConnection()
+}
