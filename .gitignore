@@ -4,3 +4,4 @@ storage/*
 .env
 templates/
 temp/*
+store/keystore/*
