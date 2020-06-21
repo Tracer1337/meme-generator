@@ -11,12 +11,12 @@ import { AppContext } from "../../App.js"
 import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
 
 const useStyles = makeStyles(theme => ({
-    body: {
-        marginTop: theme.mixins.toolbar.minHeight
-    },
-
     toolbar: {
         minHeight: 46
+    },
+
+    body: {
+        marginTop: 46
     }
 }))
 
@@ -68,13 +68,13 @@ function TemplatesDialog({ onClose, open }) {
                 </Toolbar>
             </AppBar>
 
-            <SwipeableViews index={currentTab} onChangeIndex={handleChangeIndex} axis="x">
+            <SwipeableViews index={currentTab} onChangeIndex={handleChangeIndex} axis="x" id="templates-dialog-inner-container">
                 <div className={classes.body}>
-                    <Templates onLoad={handleTemplateLoad} />
+                    <Templates onLoad={handleTemplateLoad} active={currentTab === 0}/>
                 </div>
 
                 <div className={classes.body}>
-                    <Stickers onLoad={handleStickerLoad}/>
+                    <Stickers onLoad={handleStickerLoad} active={currentTab === 1}/>
                 </div>
             </SwipeableViews>
         </Dialog>

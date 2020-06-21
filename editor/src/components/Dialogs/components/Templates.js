@@ -10,8 +10,13 @@ import ConfirmDialog from "../ConfirmDialog.js"
 import { getTemplates, deleteTemplate } from "../../../utils/API.js"
 
 const useStyles = makeStyles(theme => ({
+    spacer: {
+        height: theme.spacing(2)
+    },
+
     searchWrapper: {
         margin: `${theme.spacing(2)}px ${theme.spacing(1)}px`,
+        marginTop: 0,
         padding: "2px 4px",
         display: "flex"
     },
@@ -117,6 +122,8 @@ function Templates({ onLoad }) {
 
     return (
         <>
+            <div className={classes.spacer}/>
+
             <Paper variant="outlined" className={classes.searchWrapper}>
                 <InputBase value={search} onChange={handleSearchChange} placeholder="Search" className={classes.search} />
 

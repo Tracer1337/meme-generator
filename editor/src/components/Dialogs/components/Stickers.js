@@ -1,8 +1,8 @@
 import React, { useState, useContext, useEffect, useRef } from "react"
-import { IconButton, GridList, GridListTile, CircularProgress, Fab } from "@material-ui/core"
+import ReactDOM from "react-dom"
+import { IconButton, GridList, GridListTile, CircularProgress, Fab, Zoom } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import DeleteIcon from "@material-ui/icons/Delete"
-import CloseIcon from "@material-ui/icons/Close"
 import AddIcon from "@material-ui/icons/Add"
 
 import { AppContext } from "../../../App.js"
@@ -87,7 +87,7 @@ function InnerTile({ sticker, onDelete }) {
     )
 }
 
-function Stickers({ onLoad }) {
+function Stickers({ onLoad, active }) {
     const context = useContext(AppContext)
 
     const classes = useStyles()
@@ -164,9 +164,13 @@ function Stickers({ onLoad }) {
                 content={`Sticker ${currentSticker.current.id} will be deleted`}
             />
             
-            <Fab color="secondary" className={classes.addButton} onClick={handleAddSticker}>
-                <AddIcon/>
-            </Fab>
+            {ReactDOM.createPortal((
+                <Zoom in={active} unmountOnExit>
+                    <Fab color="secondary" className={classes.addButton} onClick={handleAddSticker}>
+                        <AddIcon />
+                    </Fab>
+                </Zoom>
+            ), document.getElementById("templates-dialog-inner-container"))}
         </div>
     )
 }
