@@ -32,10 +32,10 @@ router.post("/", upload.single("image"), async (req, res) => {
     }
 
     // Create new image
-    const newImage = await formatImage(req.file.path)
+    const newImage = await formatImage(req.file.path, "png")
 
     // Store new image
-    const newFileName = req.file.filename.replace(/\.\w+/, ".jpeg")
+    const newFileName = req.file.filename.replace(/\.\w+/, ".png")
     fs.writeFileSync(path.join(ROOT_DIR, "storage", newFileName), newImage)
     fs.unlinkSync(req.file.path)
 

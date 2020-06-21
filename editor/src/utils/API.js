@@ -28,17 +28,13 @@ export const getTemplates = () => {
 
 export const deleteTemplate = (password, id) => fetch(url("/templates/delete/" + id), {
     method: "POST",
-    headers: {
-        "Content-Type": "application/json"
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ password })
 })
 
 export const registerTemplateUse = (id) => fetch(url("/templates/register-use"), {
     method: "POST",
-    headers: {
-        "Content-Type": "application/json"
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ id })
 })
 
@@ -51,3 +47,32 @@ export const authorize = (password) => fetch(url("/auth/authorize"), {
     },
     body: JSON.stringify({ password })
 }).then(res => res.json())
+
+// Stickers
+
+export const getStickers = () => fetch(url("/stickers"))
+    .then(res => res.json())
+    .then(data => {
+        data.forEach(sticker => {
+            sticker.image_url = (IS_DEV ? "http://localhost:8080" : "") + sticker.image_url
+        })
+
+        return data
+    })
+
+export const uploadSticker = (formData) => fetch(url("/stickers"), {
+    method: "POST",
+    body: formData
+})
+
+export const deleteSticker = (password, id) => fetch(url("/stickers/delete/" + id), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password })
+})
+
+export const registerStickerUse = (id) => fetch(url("/stickers/register-use"), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id })
+})

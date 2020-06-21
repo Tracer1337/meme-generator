@@ -86,8 +86,6 @@ function Grid({ config, canvas, border }) {
         }
 
         setDimensions().then(renderGrid)
-
-        // renderGrid()
     }, [canvas, config, context.image, border])
 
     return (

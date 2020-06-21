@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/core/styles"
 import PhotoLibraryIcon from "@material-ui/icons/PhotoLibrary"
 
 import Textbox from "./Elements/Textbox.js"
-import Image from "./Elements/Image.js"
+import Sticker from "./Elements/Sticker.js"
 import Grid from "./Grid.js"
 import BorderDialog from "../Dialogs/BorderDialog.js"
 import ImageDialog from "../Dialogs/ImageDialog.js"
@@ -137,12 +137,15 @@ function Canvas() {
         return newElementKey
     }
 
-    const handleAddImage = async () => {
+    const addSticker = (src, id) => {
+        const newElementKey = createNewElement("sticker", { src, id })
+        setElementKeys([...elementKeys, newElementKey])
+    }
+
+    const handleImportSticker = async () => {
         const file = await importFile("image/*")
         const base64Image = await fileToImage(file)
-
-        const newElementKey = createNewElement("image", { src: base64Image })
-        setElementKeys([...elementKeys, newElementKey])
+        addSticker(base64Image)
     }
 
     const beforeCapturing = async container => {
@@ -244,6 +247,10 @@ function Canvas() {
         setElementKeys(elementKeys)
     }
 
+    const handleLoadSticker = ({ detail: { sticker } }) => {
+        addSticker(sticker.image_url, sticker.id)
+    }
+
     const handleGetTextboxes = () => {
         const textboxKeys = elementKeys.filter(({ type }) => type === "textbox").map(({ key }) => key)
         const formatted = textboxKeys.map(key => elementRefs.current[key].toObject({ image: image.current }))
@@ -259,11 +266,12 @@ function Canvas() {
     useEffect(() => {
         context.event.addEventListener("importImage", handleImportImage)
         context.event.addEventListener("addTextbox", handleAddTextbox)
-        context.event.addEventListener("addImage", handleAddImage)
+        context.event.addEventListener("importSticker", handleImportSticker)
         context.event.addEventListener("generateImage", handleGenerateImage)
         context.event.addEventListener("setBorder", handleSetBorder)
         context.event.addEventListener("setGrid", handleSetGrid)
         context.event.addEventListener("loadTemplate", handleLoadTemplate)
+        context.event.addEventListener("loadSticker", handleLoadSticker)
 
         window.getTextboxes = handleGetTextboxes
         window.getBorder = handleGetBorder
@@ -271,11 +279,12 @@ function Canvas() {
         return () => {
             context.event.removeEventListener("importImage", handleImportImage)
             context.event.removeEventListener("addTextbox", handleAddTextbox)
-            context.event.removeEventListener("addImage", handleAddImage)
+            context.event.removeEventListener("importSticker", handleImportSticker)
             context.event.removeEventListener("generateImage", handleGenerateImage)
             context.event.removeEventListener("setBorder", handleSetBorder)
             context.event.removeEventListener("setGrid", handleSetGrid)
             context.event.removeEventListener("loadTemplate", handleLoadTemplate)
+            context.event.removeEventListener("loadSticker", handleLoadSticker)
         }
     })
 
@@ -353,9 +362,9 @@ function Canvas() {
                                 canvas={canvas.current}
                             />
                         )
-                    } else if (type === "image") {
+                    } else if (type === "sticker") {
                         return (
-                            <Image
+                            <Sticker
                                 key={key}
                                 id={key}
                                 onRemove={handleRemoveElement}
@@ -375,7 +384,7 @@ function Canvas() {
 
             <BorderDialog open={isBorderDialogOpen} onClose={handleBorderDialogClose} values={borderValues}/>
             <GridDialog open={isGridDialogOpen} onClose={handleGridDialogClose} values={gridValues}/>
-            <ImageDialog open={isImageDialogOpen} onClose={handleImageDialogClose} imageData={generatedImage} template={currentTemplate.current}/>
+            <ImageDialog open={isImageDialogOpen} onClose={handleImageDialogClose} imageData={generatedImage} template={currentTemplate.current} elements={elementKeys}/>
         </div>
     )
 }

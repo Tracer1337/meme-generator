@@ -1,146 +1,19 @@
-import React, { useState, useContext, useEffect, useRef } from "react"
-import { Dialog, AppBar, Toolbar, Typography, IconButton, Slide, GridList, GridListTile, GridListTileBar, InputBase, Paper, CircularProgress } from "@material-ui/core"
+import React, { useState, useContext } from "react"
+import { Dialog, AppBar, Toolbar, IconButton, Slide, Tabs, Tab } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import CloseIcon from "@material-ui/icons/Close"
-import DeleteIcon from "@material-ui/icons/Delete"
 
-import ConfirmDialog from "./ConfirmDialog.js"
+import Templates from "./components/Templates.js"
+import Stickers from "./components/Stickers.js"
 
 import { AppContext } from "../../App.js"
 import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
-import { getTemplates, deleteTemplate } from "../../utils/API.js"
-
-const getSubtitle = (count) => {
-    if (count === 1) {
-        return "1 Meme Created"
-    } else {
-        return count + " Memes Created"
-    }
-}
 
 const useStyles = makeStyles(theme => ({
     body: {
         marginTop: theme.mixins.toolbar.minHeight
-    },
-
-    searchWrapper: {
-        margin: `${theme.spacing(2)}px ${theme.spacing(1)}px`,
-        padding: "2px 4px",
-        display: "flex"
-    },
-
-    search: {
-        marginLeft: theme.spacing(1),
-        flex: 1
-    },
-
-    searchClear: {
-        padding: theme.spacing(1)
-    },
-
-    listWrapper: {
-        display: "flex",
-        justifyContent: "center",
-        overflow: "hidden"
-    },
-
-    list: {
-        maxWidth: 400,
-        width: "100%"
-    },
-
-    tile: {
-        cursor: "pointer"
-    },
-    
-    tilebar: {
-        height: 56
-    },
-
-    deleteButton: {
-        zIndex: 10,
-        position: "absolute",
-        top: 0,
-        left: 0
     }
 }))
-
-function Templates({ onLoad, search }) {
-    const context = useContext(AppContext)
-
-    const classes = useStyles()
-
-    const currentTemplate = useRef({})
-
-    const [templates, setTemplates] = useState()
-    const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false)
-
-    const fetchTemplates = () => {
-        getTemplates()
-            .then(data => setTemplates(data))
-    }
-    
-    const handleDeleteClick = (template) => {
-        currentTemplate.current = template
-        setIsConfirmDialogOpen(true)
-    }
-
-    const handleConfirmDialogClose = (shouldDelete) => {
-        setIsConfirmDialogOpen(false)
-
-        if(shouldDelete) {
-            deleteTemplate(context.password, currentTemplate.current.id)
-                .then(fetchTemplates)
-        }
-    }
-
-    const handleClick = (event, template) => {
-        // Prevent loading when delete icon got clicked
-        if(event.target.tagName === "DIV" || event.target.tagName === "IMG") {
-            onLoad(template)
-        }
-    }
-
-    useEffect(() => {
-        fetchTemplates()
-    }, [])
-
-    if(!templates) {
-        return <CircularProgress/>
-    }
-
-    // Filter by search string
-    const renderTemplates = templates.filter(({ label }) => label.toLowerCase().includes(search.toLowerCase()))
-
-    // Sort by usage => Push most used memes to the top
-    renderTemplates.sort((a, b) => b.amount_uses - a.amount_uses)
-
-    return (
-        <div className={classes.listWrapper}>
-            <GridList cellHeight={150} className={classes.list}>
-                {renderTemplates.map((template, i) => (
-                    <GridListTile key={i} className={classes.tile} onClick={e => handleClick(e, template)}>
-                        <img src={template.image_url} alt={template.label} loading="lazy"/>
-
-                        <GridListTileBar title={template.label} subtitle={getSubtitle(template.amount_uses)} className={classes.tilebar}/>
-
-                        {context.password && (
-                            <IconButton onClick={() => handleDeleteClick(template)} className={classes.deleteButton}>
-                                <DeleteIcon fontSize="small" />
-                            </IconButton>
-                        )}
-                    </GridListTile>
-                ))}
-            </GridList>
-
-            <ConfirmDialog
-                open={isConfirmDialogOpen}
-                onClose={handleConfirmDialogClose}
-                content={`The template "${currentTemplate.current.label}" will be deleted`}
-            />
-        </div>
-    )
-}
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props}/>
@@ -151,20 +24,24 @@ function TemplatesDialog({ onClose, open }) {
 
     const classes = useStyles()
 
-    const [search, setSearch] = useState("")
+    const [currentTab, setCurrentTab] = useState(0)
 
     const handleClose = () => {
-        setSearch("")
         onClose()
     }
 
-    const handleLoad = template => {
+    const handleTemplateLoad = (template) => {
         context.event.dispatchEvent(new CustomEvent("loadTemplate", { detail: { template } }))
         handleClose()
     }
 
-    const handleSearchChange = event => {
-        setSearch(event.target.value)
+    const handleStickerLoad = (sticker) => {
+        context.event.dispatchEvent(new CustomEvent("loadSticker", { detail: { sticker } }))
+        handleClose()
+    }
+
+    const handleTabChange = (event, index) => {
+        setCurrentTab(index)
     }
 
     return (
@@ -175,22 +52,19 @@ function TemplatesDialog({ onClose, open }) {
                         <CloseIcon/>
                     </IconButton>
 
-                    <Typography variant="h6">
-                        Templates
-                    </Typography>
+                    <Tabs value={currentTab} onChange={handleTabChange}>
+                        <Tab label="Templates"/>
+                        <Tab label="Stickers"/>
+                    </Tabs>
                 </Toolbar>
             </AppBar>
 
-            <div className={classes.body}>
-                <Paper variant="outlined" className={classes.searchWrapper}>
-                    <InputBase value={search} onChange={handleSearchChange} placeholder="Search" className={classes.search}/>
+            <div className={classes.body} hidden={currentTab !== 0}>
+                <Templates onLoad={handleTemplateLoad} />
+            </div>
 
-                    <IconButton onClick={() => setSearch("")} className={classes.searchClear}>
-                        <CloseIcon/>
-                    </IconButton>
-                </Paper>
-
-                <Templates onLoad={handleLoad} search={search}/>
+            <div className={classes.body} hidden={currentTab !== 1}>
+                <Stickers onLoad={handleStickerLoad}/>
             </div>
         </Dialog>
     )

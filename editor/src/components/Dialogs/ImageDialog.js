@@ -15,7 +15,7 @@ import downloadImageFromSrc from "../../utils/downloadImageFromSrc.js"
 import dataURLToFile from "../../utils/dataURLToFile.js"
 import uploadImage from "../../utils/uploadImage.js"
 import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
-import { uploadTemplate, registerTemplateUse } from "../../utils/API.js"
+import { uploadTemplate, registerTemplateUse, registerStickerUse } from "../../utils/API.js"
 
 const useStyles = makeStyles(theme => {
     const button = {
@@ -79,7 +79,7 @@ const useStyles = makeStyles(theme => {
     }
 })
 
-function ImageDialog({ open, onClose, imageData, template }) {
+function ImageDialog({ open, onClose, imageData, template, elements }) {
     const context = useContext(AppContext)
 
     const { register, getValues } = useForm()
@@ -96,15 +96,21 @@ function ImageDialog({ open, onClose, imageData, template }) {
     const [hasCreatedTemplate, setHasCreatedTemplate] = useState(false)
 
     const registerUsage = async () => {
-        if(!template) {
-            return
+        // Register template usage
+        if(template) {
+            if (!isRegistered.current) {
+                await registerTemplateUse(template.id)
+            }
         }
 
-        // Register template-usage
-        if(!isRegistered.current) {
-            await registerTemplateUse(template.id)
-            isRegistered.current = true
+        // Register sticker usage
+        for(let element of elements) {
+            if (element.type === "sticker" && element.data.id !== undefined) {
+                await registerStickerUse(element.data.id)
+            }
         }
+
+        isRegistered.current = true
     }
 
     const handleClose = () => {

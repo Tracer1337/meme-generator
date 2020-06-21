@@ -15,7 +15,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-const Image = ({ src, id, onFocus, dimensions, handle }, forwardedRef) => {
+function Sticker({ src, id, onFocus, dimensions, handle }, forwardedRef) {
     const classes = useStyles()
 
     const imageRef = useRef()
@@ -77,5 +77,5 @@ export default makeElement({
         width: 100,
         zIndex: 1
     },
-    Child: React.forwardRef(Image)
+    Child: React.forwardRef(Sticker)
 })

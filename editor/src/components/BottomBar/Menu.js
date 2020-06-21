@@ -52,11 +52,11 @@ function Menu({ open, anchorEl, onClose }) {
                 <ListItemText primary="Grid"/>
             </MenuItem>
 
-            <MenuItem onClick={dispatchEvent("addImage")}>
+            <MenuItem onClick={dispatchEvent("importSticker")}>
                 <ListItemIcon className={classes.icon}>
                     <AddPhotoIcon fontSize="small" />
                 </ListItemIcon>
-                <ListItemText primary="Add Image" />
+                <ListItemText primary="Import Sticker" />
             </MenuItem>
 
             <MenuItem onClick={dispatchEvent("importImage")}>
