@@ -164,7 +164,7 @@ function Stickers({ onLoad, active }) {
                 content={`Sticker ${currentSticker.current.id} will be deleted`}
             />
             
-            {ReactDOM.createPortal((
+            {context.password && ReactDOM.createPortal((
                 <Zoom in={active} unmountOnExit>
                     <Fab color="secondary" className={classes.addButton} onClick={handleAddSticker}>
                         <AddIcon />
