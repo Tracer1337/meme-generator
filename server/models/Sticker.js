@@ -1,14 +1,9 @@
-class Sticker {
-    constructor({ image_url, amount_uses }) {
-        this.image_url = image_url
-        this.amount_uses = amount_uses
-    }
+const Model = require("../lib/Model.js")
 
-    toObject() {
-        return {
-            image_url: this.image_url,
-            amount_uses: this.amount_uses
-        }
+class Sticker extends Model {
+    constructor(args) {
+        const attributes = ["image_url", "amount_uses"]
+        super(attributes, args)
     }
 }
 

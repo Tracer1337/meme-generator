@@ -55,25 +55,29 @@ function InnerTile({ sticker, onDelete }) {
 
     const image = useRef()
 
+    const resizeImage = () => {
+        if (!image.current) {
+            return
+        }
+
+        // Set image dimensions
+        if (image.current.naturalWidth >= image.current.naturalHeight) {
+            image.current.style.width = "100%"
+        } else if (image.current.naturalHeight > image.current.naturalWidth) {
+            image.current.style.height = "100%"
+        }
+    }
+
     useEffect(() => {
         if (!image.current) {
             return
         }
 
         image.current.onload = () => {
-            if(!image.current) {
-                return
-            }
-
-            // Set image dimensions
-            if (image.current.naturalWidth >= image.current.naturalHeight) {
-                image.current.style.width = "100%"
-            } else if (image.current.naturalHeight > image.current.naturalWidth) {
-                image.current.style.height = "100%"
-            }
+            resizeImage()
         }
-    }, [image])
- 
+    }, [])
+    
     return (
         <>
             <img src={sticker.image_url} alt="Sticker" loading="lazy" ref={image}/>
