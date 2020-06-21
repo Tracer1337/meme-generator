@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react"
 import { Dialog, AppBar, Toolbar, IconButton, Slide, Tabs, Tab } from "@material-ui/core"
+import SwipeableViews from "react-swipeable-views"
 import { makeStyles } from "@material-ui/core/styles"
 import CloseIcon from "@material-ui/icons/Close"
 
@@ -12,6 +13,10 @@ import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
 const useStyles = makeStyles(theme => ({
     body: {
         marginTop: theme.mixins.toolbar.minHeight
+    },
+
+    toolbar: {
+        minHeight: 46
     }
 }))
 
@@ -44,12 +49,16 @@ function TemplatesDialog({ onClose, open }) {
         setCurrentTab(index)
     }
 
+    const handleChangeIndex = (index) => {
+        setCurrentTab(index)
+    }
+
     return (
         <Dialog fullScreen onClose={handleClose} open={open} TransitionComponent={Transition}>
             <AppBar>
-                <Toolbar>
+                <Toolbar className={classes.toolbar}>
                     <IconButton edge="start" color="inherit" onClick={handleClose}>
-                        <CloseIcon/>
+                        <CloseIcon fontSize="small"/>
                     </IconButton>
 
                     <Tabs value={currentTab} onChange={handleTabChange}>
@@ -59,13 +68,15 @@ function TemplatesDialog({ onClose, open }) {
                 </Toolbar>
             </AppBar>
 
-            <div className={classes.body} hidden={currentTab !== 0}>
-                <Templates onLoad={handleTemplateLoad} />
-            </div>
+            <SwipeableViews index={currentTab} onChangeIndex={handleChangeIndex} axis="x">
+                <div className={classes.body}>
+                    <Templates onLoad={handleTemplateLoad} />
+                </div>
 
-            <div className={classes.body} hidden={currentTab !== 1}>
-                <Stickers onLoad={handleStickerLoad}/>
-            </div>
+                <div className={classes.body}>
+                    <Stickers onLoad={handleStickerLoad}/>
+                </div>
+            </SwipeableViews>
         </Dialog>
     )
 }

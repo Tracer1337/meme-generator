@@ -16,6 +16,7 @@
     "react-draggable": "^4.4.2",
     "react-hook-form": "^5.7.2",
     "react-scripts": "3.4.1",
+    "react-swipeable-views": "^0.13.9",
     "textfit": "^2.4.0"
   },
   "scripts": {
