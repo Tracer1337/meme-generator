@@ -15,9 +15,7 @@ const ROOT_DIR = path.join(__dirname, "..", "..", "..")
 router.post("/", upload.single("image"), async (req, res) => {
     // Remove temporary image
     const deleteTemp = () => {
-        fs.unlink(req.file.path, (error) => {
-            if (error) throw error
-        })
+        fs.unlinkSync(req.file.path)
     }
 
     // Check the password
@@ -33,7 +31,7 @@ router.post("/", upload.single("image"), async (req, res) => {
 
     // Store formatted image
     const newFileName = req.file.filename.replace(/\.\w+/, ".jpeg")
-    fs.writeFileSync("./storage/" + newFileName, newImage)
+    fs.writeFileSync(path.join(ROOT_DIR, "storage", newFileName), newImage)
     deleteTemp()
 
     // Build new template
@@ -49,7 +47,7 @@ router.post("/", upload.single("image"), async (req, res) => {
     // Store template
     db.query(sql, template.toObject(), (error) => {
         if (error) throw error
-        res.send(template)
+        res.send(template.toObject())
     })
 })
 
@@ -67,9 +65,9 @@ router.post("/delete/:id", async (req, res) => {
     // Query requested template
     const template = await new Promise(resolve => {
         const sql = `SELECT * FROM templates WHERE id = ${templateId}`
-        db.query(sql, (error, result) => {
+        db.query(sql, (error, results) => {
             if(error) throw error
-            resolve(result[0])
+            resolve(results[0])
         })
     })
 
