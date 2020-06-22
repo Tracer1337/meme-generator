@@ -132,7 +132,7 @@ function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dim
         setValue(newValue)
     }
 
-    const toObject = ({ image }) => {
+    const toObject = ({ image }, detailed) => {
         const toPercentage = (value, useWidth = false) => value / (useWidth ? image.clientWidth : image.clientHeight) * 100 + "%"
 
         const changedSettings = {}
@@ -143,12 +143,18 @@ function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dim
         }
 
         return {
+            value,
             width: toPercentage(dimensions.width + padding * 2, true),
             height: toPercentage(dimensions.height + padding * 2),
             x: toPercentage(dimensions.x, true),
             y: toPercentage(dimensions.y),
             rotation: dimensions.rotation,
-            settings: changedSettings
+            settings: {
+                ...(detailed ? {
+                    ...settings,
+                    fontSize: toPercentage(parseFloat(getComputedStyle(textboxRef.current).fontSize))
+                } : changedSettings)
+            }
         }
     }
 

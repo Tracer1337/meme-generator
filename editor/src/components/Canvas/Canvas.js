@@ -251,9 +251,9 @@ function Canvas() {
         addSticker(sticker.image_url, sticker.id)
     }
 
-    const handleGetTextboxes = () => {
+    const handleGetTextboxes = (detailed = false) => {
         const textboxKeys = elementKeys.filter(({ type }) => type === "textbox").map(({ key }) => key)
-        const formatted = textboxKeys.map(key => elementRefs.current[key].toObject({ image: image.current }))
+        const formatted = textboxKeys.map(key => elementRefs.current[key].toObject({ image: image.current }, detailed))
 
         return formatted
     }
