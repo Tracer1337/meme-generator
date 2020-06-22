@@ -13,11 +13,9 @@ const font = ({ name, src }) => `
     </style>
 `
 
-const image = ({ base64, mimetype, width, height }) => `<image href="data:${mimetype};base64,${base64}" width="${width}" height="${height}"/>`
-
-const textbox = ({ x, y, width, height, backgroundColor, ...args }) => `
-    <g transform="translate(${x}, ${y})">
-        <rect width="${width}" height="${height}" fill="${backgroundColor || "transparent"}"/>
+const textbox = ({ width, height, backgroundColor, ...args }) => `
+    <g>
+        <rect width="${width}" height="${height}" fill="${backgroundColor}"/>
         <svg width="${width}" height="${height}">
             ${text({ ...args, x: "50%", y: "50%" })}
         </svg>
@@ -70,11 +68,6 @@ class SVG {
 
     closeDefs() {
         return this.add("</defs>")
-    }
-
-    addImage({ path, ...args }) {
-        const base64 = fs.readFileSync(path, "base64")
-        return this.add(image({ ...args, base64 }))
     }
 }
 

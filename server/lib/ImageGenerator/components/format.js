@@ -1,21 +1,7 @@
-const sharp = require("sharp")
-
-async function init(svg, { image, textboxes }) {
+async function format({ dimensions, textboxes, stickers }) {
     const percentageToPixel = (percentage, attribute = "width") => {
-        return parseFloat(percentage) / 100 * svg[attribute]
+        return parseFloat(percentage) / 100 * dimensions[attribute]
     }
-
-    const { width, height } = await sharp(image.path).metadata()
-    
-    svg
-        .setWidth(width)
-        .setHeight(height)
-        .openDefs()
-        .addFont({
-            name: "Comic Sans",
-            src: "C:/Users/Merlin/Desktop/projects/meme-generator/editor/src/assets/fonts/comic-sans.ttf"
-        })
-        .closeDefs()
 
     // Format textboxes
     textboxes.forEach(textbox => {
@@ -32,4 +18,4 @@ async function init(svg, { image, textboxes }) {
     })
 }
 
-module.exports = init
+module.exports = format

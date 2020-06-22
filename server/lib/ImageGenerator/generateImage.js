@@ -1,20 +1,33 @@
-const addTextboxes = require("./components/addTextboxes.js")
-const addImage = require("./components/addImage.js")
-const addStickers = require("./components/addStickers.js")
-const init = require("./components/init.js")
-const SVG = require("../SVG.js")
+const sharp = require("sharp")
 
-async function generateImage(args) {
-    const svg = new SVG()
+const createTextboxes = require("./components/createTextboxes.js")
+const createStickers = require("./components/createStickers.js")
+const format = require("./components/format.js")
 
-    await init(svg, args)
-    await addImage(svg, args)
-    await addTextboxes(svg, args)
-    await addStickers(svg, args)
-    
-    svg.close()
+function generateImage({ image, textboxes, sticker_images, stickers }) {
+    const composedImage = sharp(image.path)
 
-    return svg
+    return new Promise((resolve) => {
+        composedImage
+            .metadata()
+            .then(({ width, height }) => {
+                format({
+                    dimensions: { width, height },
+                    textboxes,
+                    stickers
+                })
+
+                composedImage
+                    .composite([
+                        ...createTextboxes({ textboxes }),
+                        ...createStickers({ stickers, sticker_images })
+                    ])
+                    .normalise()
+                    .png()
+                    .toBuffer()
+                    .then((data) => resolve(data))
+            })
+    })
 }
 
 module.exports = generateImage

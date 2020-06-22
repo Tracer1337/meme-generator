@@ -5,6 +5,8 @@ const path = require("path")
 const upload = require("../../utils/upload.js")
 const generateImage = require("../../lib/ImageGenerator/generateImage.js")
 
+const ROOT_DIR = path.join(__dirname, "..", "..", "..")
+
 const uploadFields = upload.fields([
     {
         name: "image",
@@ -24,7 +26,7 @@ router.get("/", uploadFields, async (req, res) => {
     const stickers = JSON.parse(req.body.stickers)
 
     // Generate image
-    const svg = await generateImage({
+    const composedImage = await generateImage({
         image,
         sticker_images,
         textboxes,
@@ -32,14 +34,14 @@ router.get("/", uploadFields, async (req, res) => {
     })
 
     // Store image
-    const imagePath = path.join(__dirname, "..", "..", "..", "test.svg")
-    fs.writeFileSync(imagePath, svg.toString())
+    const imagePath = path.join(ROOT_DIR, "test.png")
+    fs.writeFileSync(imagePath, composedImage)
 
     // Delete temp images
     fs.unlinkSync(image.path)
     sticker_images.forEach(({ path }) => fs.unlinkSync(path))
 
-    res.send(svg.toString())
+    res.sendFile(imagePath)
 })
 
 module.exports = router
