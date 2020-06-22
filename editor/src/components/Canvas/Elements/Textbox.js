@@ -7,7 +7,7 @@ import useSnapshots from "../../../utils/useSnapshots.js"
 import makeElement from "./makeElement.js"
 import fitText from "../../../utils/fitText.js"
 import insertLinebreaks from "../../../utils/insertLinebreaks.js"
-import { TEXTBOX_PLACEHOLDER } from "../../../config/constants.js"
+import { TEXTBOX_PLACEHOLDER, TEXTBOX_PADDING } from "../../../config/constants.js"
 
 const globalDefaultSettings = {
     color: "black",
@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
         resize: "none",
         whiteSpace: "pre",
         zIndex: 10,
-        padding: props => props.padding,
+        padding: TEXTBOX_PADDING,
         display: "flex",
         flexDirection: "column",
         justifyContent: props => (
@@ -43,7 +43,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dimensions, padding }, forwardedRef) {
+function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dimensions }, forwardedRef) {
     const defaultSettings = {...globalDefaultSettings}
 
     // Apply template settings
@@ -62,7 +62,7 @@ function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dim
     const [dialogOpen, setDialogOpen] = useState(false)
     const [settings, setSettings] = useState(defaultSettings)
 
-    const classes = useStyles({ settings, isFocused, padding }) 
+    const classes = useStyles({ settings, isFocused }) 
 
     const addSnapshot = useSnapshots({
         createSnapshot: () => ({ value, settings }),
@@ -144,8 +144,8 @@ function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dim
 
         return {
             value,
-            width: toPercentage(dimensions.width + padding * 2, true),
-            height: toPercentage(dimensions.height + padding * 2),
+            width: toPercentage(dimensions.width + TEXTBOX_PADDING * 2, true),
+            height: toPercentage(dimensions.height + TEXTBOX_PADDING * 2),
             x: toPercentage(dimensions.x, true),
             y: toPercentage(dimensions.y),
             rotation: dimensions.rotation,
@@ -187,13 +187,13 @@ function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dim
             textboxRef.current.textContent = TEXTBOX_PLACEHOLDER
         }
     }, [isFocused])
-
+    
     return (
         <>
             <div
                 contentEditable
                 id={`element-${id}`}
-                className={classes.input}
+                className={`textbox ${classes.input}`}
                 style={styles}
                 ref={ref => {
                     textboxRef.current = ref

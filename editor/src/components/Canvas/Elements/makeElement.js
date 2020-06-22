@@ -10,8 +10,7 @@ import EditIcon from "@material-ui/icons/Edit"
 
 import { AppContext } from "../../../App.js"
 import useSnapshots from "../../../utils/useSnapshots.js"
-
-const padding = 6
+import { TEXTBOX_PADDING } from "../../../config/constants.js"
 
 const useStyles = makeStyles(theme => {
     const highlight = {
@@ -106,8 +105,8 @@ function makeElement({
 
         const [position, setPosition] = useState({ x: template?.x || 0, y: template?.y || 0 })
         const [rotation, setRotation] = useState(template?.rotation || 0)
-        const [height, setHeight] = useState((template?.height && template.height - padding * 2) || defaultValues.height)
-        const [width, setWidth] = useState((template?.width && template.width - padding * 2) || defaultValues.width)
+        const [height, setHeight] = useState((template?.height && template.height - TEXTBOX_PADDING * 2) || defaultValues.height)
+        const [width, setWidth] = useState((template?.width && template.width - TEXTBOX_PADDING * 2) || defaultValues.width)
         const [capture, setCapture] = useState(false)
         const [isFocused, setIsFocused] = useState(false)
         const [shouldMove, setShouldMove] = useState(true)
@@ -287,11 +286,11 @@ function makeElement({
                 })
 
                 // Init width in grid
-                const newWidth = width - (width + padding * 2) % dragGrid[0]
+                const newWidth = width - (width + TEXTBOX_PADDING * 2) % dragGrid[0]
                 setWidth(newWidth)
 
                 // Init height in grid
-                const newHeight = height - (height + padding * 2) % dragGrid[1]
+                const newHeight = height - (height + TEXTBOX_PADDING * 2) % dragGrid[1]
                 setHeight(newHeight)
             }
         }, [grid])
@@ -348,8 +347,8 @@ function makeElement({
                         isFocused={isFocused}
                         toggleMovement={handleToggleMovement}
                         dimensions={{ width, height, ...position, rotation }}
-                        padding={padding}
                         ref={childRef}
+                        capture={capture}
                         {...props}
                     />
 
