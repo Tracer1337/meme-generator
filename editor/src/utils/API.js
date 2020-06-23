@@ -16,7 +16,7 @@ export const getTemplates = () => {
         .then(res => res.json())
         .then(data => {
             data.forEach(template => {
-                template.image_url = (IS_DEV ? "http://localhost:8080" : "") + template.image_url
+                template.image_url = template.image_url
 
                 if (template.meta_data) {
                     template.meta_data = JSON.parse(template.meta_data)
@@ -54,7 +54,7 @@ export const getStickers = () => fetch(url("/stickers"))
     .then(res => res.json())
     .then(data => {
         data.forEach(sticker => {
-            sticker.image_url = (IS_DEV ? "http://localhost:8080" : "") + sticker.image_url
+            sticker.image_url = sticker.image_url
         })
 
         return data

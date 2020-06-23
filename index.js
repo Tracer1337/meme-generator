@@ -2,10 +2,11 @@ require("dotenv").config()
 const express = require("express")
 const path = require("path")
 const cors = require("cors")
+const { createProxyMiddleware } = require("http-proxy-middleware")
 
 const app = express()
 
-// Allow cors for dev
+// Allow cors for dev 
 if(process.env.NODE_ENV !== "production") {
     app.use(cors())
 }
@@ -15,6 +16,14 @@ app.use(express.json())
 
 // Support forms
 app.use(express.urlencoded())
+
+// Proxy react dev-server
+if(process.env.NODE_ENV !== "production") {
+    app.use("/editor", createProxyMiddleware({
+        target: "http://localhost:3000",
+        ws: true
+    }))
+}
 
 // Serve files from dist folder
 app.use(express.static(path.join(__dirname, "dist")))

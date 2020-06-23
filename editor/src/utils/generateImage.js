@@ -8,7 +8,7 @@ function compensateError(clonedDocument) {
      */
     const textboxes = clonedDocument.querySelectorAll(".textbox")
     const padding = TEXTBOX_PADDING
-    
+
     textboxes.forEach(textbox => {
         const shiftOffset = Math.min(textbox.offsetHeight / 18, padding)
         textbox.style.padding = `${padding - shiftOffset}px ${padding}px ${padding + shiftOffset}px`
