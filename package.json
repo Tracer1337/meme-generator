@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "concurrently --kill-others \"npm run start-server\" \"cd editor && npm start\"",
-    "start-server": "nodemon --watch server --watch index.js index.js",
-    "prod": "NODE_ENV=production node index.js"
+    "start-server": "nodemon --watch server --watch index.js index.js"
   },
   "author": "",
   "license": "ISC",
