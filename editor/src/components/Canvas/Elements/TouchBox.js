@@ -1,53 +1,8 @@
-import React, { useEffect } from "react"
-import Hammer from "hammerjs"
+import React from "react"
 
 import makeElement from "./makeElement.js"
 
-function TouchBox({ id, dimensions, onFocus, container }, forwardedRef) {
-    // Add multitouch listeners
-    useEffect(() => {
-        const element = document.getElementById("element-" + id)
-
-        const transform = {
-            rotation: 0
-        }
-
-        const applyTransform = () => element.style.transform = `rotate(${transform.rotation}deg)`
-
-        const manager = new Hammer.Manager(container.current, {
-            recognizers: [
-                [Hammer.Rotate],
-                [Hammer.Pinch, null, ["rotate"]]
-            ]
-        })
-
-        /**
-         * Handle Rotation
-         */
-
-        let startRotation = 0
-        let lastRotation = 0
-
-        manager.on("rotatestart", (event) => {
-            lastRotation = transform.rotation
-            startRotation = event.rotation
-        })
-
-        manager.on("rotateend", (event) => {
-            lastRotation = transform.rotation
-        })
-
-        manager.on("rotatemove", (event) => {
-            const diff = startRotation - event.rotation
-            transform.rotation = lastRotation - diff
-            applyTransform()
-        })
-
-        /**
-         * Handle Resizing
-         */
-    }, [])
-
+function TouchBox({ id, dimensions, onFocus }, forwardedRef) {
     return (
         <div
             id={`element-${id}`}
