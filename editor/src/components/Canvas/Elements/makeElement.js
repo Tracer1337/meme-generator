@@ -1,6 +1,5 @@
 import React, { useState, useRef, useMemo, useEffect, useContext } from "react"
 import { DraggableCore } from "react-draggable"
-import Hammer from "hammerjs"
 import { IconButton } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import RotateLeftIcon from "@material-ui/icons/RotateLeft"
@@ -89,46 +88,25 @@ const useStyles = makeStyles(theme => {
     }
 })
 
-function usePersistantState(defaultValue, apply) {
-    const ref = useRef(defaultValue)
-    return [
-        ref,
-        (value) => {
-            ref.current = value
-            apply()
-        }
-    ]
-}
-
-function degToRad(deg) {
-    return deg / 180 * Math.PI
-}
-
 function makeElement({
     controls,
     defaultValues,
     Child
 }) {
     return function Element({ onRemove, handle, grid, canvas, template, id, ...props }) {
-        const defaultHeight = (template?.height && template.height - TEXTBOX_PADDING * 2) || defaultValues.height
-        const defaultWidth = (template?.width && template.width - TEXTBOX_PADDING * 2) || defaultValues.width
-
         const context = useContext(AppContext)
 
         const lastRotation = useRef(template?.rotation || 0)
         const container = useRef()
         const childRef = useRef()
         const hasCreatedSnapshot = useRef(false)
+        // Store states to be applied on undo
+        const snapshots = useRef([])
 
-        const applyTransform = () => {
-            console.log("Apply Transform", { ...positionRef.current, rotation: rotationRef.current })
-            container.current.style.transform = `translate(${positionRef.current.x}px, ${positionRef.current.y}px) rotate(${rotationRef.current}rad)`
-        }
-
-        const [positionRef, setPosition] = usePersistantState({ x: template?.x || 0, y: template?.y || 0 }, applyTransform)
-        const [rotationRef, setRotation] = usePersistantState(template?.rotation || 0, applyTransform)
-        const [height, setHeight] = useState(defaultHeight)
-        const [width, setWidth] = useState(defaultWidth)
+        const [position, setPosition] = useState({ x: template?.x || 0, y: template?.y || 0 })
+        const [rotation, setRotation] = useState(template?.rotation || 0)
+        const [height, setHeight] = useState((template?.height && template.height - TEXTBOX_PADDING * 2) || defaultValues.height)
+        const [width, setWidth] = useState((template?.width && template.width - TEXTBOX_PADDING * 2) || defaultValues.width)
         const [capture, setCapture] = useState(false)
         const [isFocused, setIsFocused] = useState(false)
         const [shouldMove, setShouldMove] = useState(true)
@@ -151,7 +129,7 @@ function makeElement({
         }, [grid, context.image])
 
         const addSnapshot = useSnapshots({
-            createSnapshot: () => ({ width, height, position: positionRef.current, rotation: rotationRef.current }),
+            createSnapshot: () => ({ width, height, position, rotation }),
 
             applySnapshot: (snapshot) => {
                 setWidth(snapshot.width)
@@ -208,7 +186,7 @@ function makeElement({
 
         const calcNewHeight = (data) => {
             // Calculate new delta-y with the following rotation matrix: https://en.wikipedia.org/wiki/Rotation_matrix
-            const angle = -rotationRef.current
+            const angle = -rotation
             const dy = data.deltaX * Math.sin(angle) + data.deltaY * Math.cos(angle)
             const newHeight = height + dy
             setHeight(newHeight)
@@ -221,7 +199,7 @@ function makeElement({
 
         const calcNewWidth = (data) => {
             // Calculate new delta-x with the following rotation matrix: https://en.wikipedia.org/wiki/Rotation_matrix
-            const angle = -rotationRef.current
+            const angle = -rotation
             const dx = data.deltaX * Math.cos(angle) - data.deltaY * Math.sin(angle)
             const newWidth = width + dx
             setWidth(width + dx)
@@ -260,8 +238,8 @@ function makeElement({
             }
 
             setPosition({
-                x: positionRef.current.x + data.deltaX,
-                y: positionRef.current.y + data.deltaY
+                x: position.x + data.deltaX,
+                y: position.y + data.deltaY
             })
         }
 
@@ -302,10 +280,9 @@ function makeElement({
         useEffect(() => {
             if (grid.enabled) {
                 // Init position in grid
-                const { x, y } = positionRef.current
                 setPosition({
-                    x: x - x % dragGrid[0],
-                    y: y - y % dragGrid[1]
+                    x: position.x - position.x % dragGrid[0],
+                    y: position.y - position.y % dragGrid[1]
                 })
 
                 // Init width in grid
@@ -351,65 +328,12 @@ function makeElement({
             })()
         }, [])
 
-        // Add multitouch listeners
-        useEffect(() => {
-            const manager = new Hammer.Manager(container.current, {
-                recognizers: [
-                    [Hammer.Rotate],
-                    [Hammer.Pinch, null, ["rotate"]]
-                ]
-            })
-
-            /**
-             * Handle Rotation
-             */
-
-            let startRotation = 0
-
-            manager.on("rotatestart", (event) => {
-                lastRotation.current = rotationRef.current
-                startRotation = degToRad(event.rotation)
-            })
-
-            manager.on("rotateend", (event) => {
-                lastRotation.current = rotationRef.current
-            })
-
-            manager.on("rotatemove", (event) => {
-                const diff = startRotation - degToRad(event.rotation)
-                setRotation(lastRotation.current - diff)
-            })
-
-            /**
-             * Handle Resizing
-             */
-
-            const getScale = () => width / defaultWidth
-
-            let startScale = getScale()
-
-            manager.on("pinchstart", (event) => {
-                startScale = getScale()
-            })
-
-            manager.on("pinchmove", (event) => {
-                const newScale = event.scale * startScale
-                setWidth(defaultWidth * newScale)
-            })
-
-            return () => {
-                manager.off("rotatestart rotateend rotatemove pinchstart pinchmove")
-                manager.destroy()
-            }
-        })
-
-        console.log("Render")
-
         return (
             <DraggableCore onDrag={handleMovementDrag} onStop={handleMovementStop} grid={dragGrid} handle={`#element-${id}`} disabled={!shouldMove}>
                 <div
                     className={classes.container}
                     style={{
+                        transform: `translate(${position.x}px, ${position.y}px) rotate(${rotation}rad)`,
                         transformOrigin: `center center`,
                         zIndex: defaultValues.zIndex || 0
                     }}
@@ -422,7 +346,7 @@ function makeElement({
                         onFocus={handleFocus}
                         isFocused={isFocused}
                         toggleMovement={handleToggleMovement}
-                        dimensions={{ width, height, ...positionRef.current, rotation: rotationRef.current }}
+                        dimensions={{ width, height, ...position, rotation }}
                         ref={childRef}
                         capture={capture}
                         {...props}

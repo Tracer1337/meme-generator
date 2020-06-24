@@ -5,7 +5,6 @@ import PhotoLibraryIcon from "@material-ui/icons/PhotoLibrary"
 
 import Textbox from "./Elements/Textbox.js"
 import Sticker from "./Elements/Sticker.js"
-import TouchBox from "./Elements/TouchBox.js"
 import Grid from "./Grid.js"
 import BorderDialog from "../Dialogs/BorderDialog.js"
 import ImageDialog from "../Dialogs/ImageDialog.js"
@@ -353,7 +352,7 @@ function Canvas() {
                 {elementKeys.map(({ type, key, data }) => {
                     if(type === "textbox") {
                         return (
-                            <TouchBox
+                            <Textbox
                                 key={key}
                                 id={key}
                                 onRemove={handleRemoveElement}
