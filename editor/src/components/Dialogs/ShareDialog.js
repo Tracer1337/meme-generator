@@ -1,6 +1,8 @@
-import React from "react"
+import React, { useContext } from "react"
 import { SwipeableDrawer, IconButton, DialogTitle } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
+
+import { AppContext } from "../../App.js"
 
 import WhatsAppIcon from "../../assets/images/icons/WhatsApp.svg"
 import TwitterIcon from "../../assets/images/icons/Twitter.png"
@@ -35,10 +37,15 @@ const useStyles = makeStyles(theme => ({
 
 function ShareDialog({ open, link, onClose, onOpen }) {
     link = encodeURIComponent(link)
+
+    const context = useContext(AppContext)
     
     const classes = useStyles()
 
-    const openLink = href => () => window.open(href.replace(/{}/g, link))
+    const openLink = (href, label) => () => {
+        context.event.dispatchEvent(new CustomEvent("share", { detail: { label } }))
+        window.open(href.replace(/{}/g, link))
+    }
 
     return (
         <SwipeableDrawer
@@ -53,43 +60,43 @@ function ShareDialog({ open, link, onClose, onOpen }) {
             <DialogTitle className={classes.title}>Share Link</DialogTitle>
 
             <div className={classes.iconsContainer}>
-                <IconButton onClick={openLink("whatsapp://send?text={}")}>
+                <IconButton onClick={openLink("whatsapp://send?text={}", "WhatsApp")}>
                     <img src={WhatsAppIcon} alt="WhatsApp" className={classes.icon}/>
                 </IconButton>
 
-                <IconButton onClick={openLink("https://www.facebook.com/sharer/sharer.php?u={}")}>
+                <IconButton onClick={openLink("https://www.facebook.com/sharer/sharer.php?u={}", "Facebook")}>
                     <img src={FacebookIcon} alt="Facebook" className={classes.icon}/>
                 </IconButton>
 
-                <IconButton onClick={openLink("http://twitter.com/intent/tweet?text={}")}>
+                <IconButton onClick={openLink("http://twitter.com/intent/tweet?text={}", "Twitter")}>
                     <img src={TwitterIcon} alt="Twitter" className={classes.icon}/>
                 </IconButton>
 
-                <IconButton onClick={openLink("https://telegram.me/share?url={}")}>
+                <IconButton onClick={openLink("https://telegram.me/share?url={}", "Telegram")}>
                     <img src={TelegramIcon} alt="Telegram" className={classes.icon}/>
                 </IconButton>
 
-                <IconButton onClick={openLink("https://web.skype.com/share?url={}")}>
+                <IconButton onClick={openLink("https://web.skype.com/share?url={}", "Skype")}>
                     <img src={SkypeIcon} alt="Skype" className={classes.icon}/>
                 </IconButton>
 
-                <IconButton onClick={openLink("fb-messenger://share?link={}")}>
+                <IconButton onClick={openLink("fb-messenger://share?link={}", "FB-Messenger")}>
                     <img src={FBMessengerIcon} alt="Messenger" className={classes.icon}/>
                 </IconButton>
 
-                <IconButton onClick={openLink("https://www.pinterest.com/pin/create/button?url={}")}>
+                <IconButton onClick={openLink("https://www.pinterest.com/pin/create/button?url={}", "Pinterest")}>
                     <img src={PinterestIcon} alt="Pinterest" className={classes.icon}/>
                 </IconButton>
 
-                <IconButton onClick={openLink("https://www.reddit.com/submit?url={}")}>
+                <IconButton onClick={openLink("https://www.reddit.com/submit?url={}", "Reddit")}>
                     <img src={RedditIcon} alt="Reddit" className={classes.icon}/>
                 </IconButton>
 
-                <IconButton onClick={openLink("https://www.tumblr.com/widgets/share/tool?posttype=link&canonicalUrl={}")}>
+                <IconButton onClick={openLink("https://www.tumblr.com/widgets/share/tool?posttype=link&canonicalUrl={}", "Tumblr")}>
                     <img src={TumblrIcon} alt="Tumblr" className={classes.icon}/>
                 </IconButton>
 
-                <IconButton onClick={openLink("mailto:?body={}")}>
+                <IconButton onClick={openLink("mailto:?body={}", "Mail")}>
                     <img src={GmailIcon} alt="Email" className={classes.icon}/>
                 </IconButton>
             </div>

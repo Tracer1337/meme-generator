@@ -79,7 +79,7 @@ const useStyles = makeStyles(theme => {
     }
 })
 
-function ImageDialog({ open, onClose, imageData, template, elements }) {
+function ImageDialog({ open, onClose, imageData, elements }) {
     const context = useContext(AppContext)
 
     const { register, getValues } = useForm()
@@ -95,11 +95,13 @@ function ImageDialog({ open, onClose, imageData, template, elements }) {
     const [isUploadSnackbarOpen, setIsUploadSnackbarOpen] = useState(false)
     const [hasCreatedTemplate, setHasCreatedTemplate] = useState(false)
 
+    const dispatchEvent = (name, detail) => context.event.dispatchEvent(new CustomEvent(name, { detail }))
+
     const registerUsage = async () => {
         // Register template usage
-        if(template) {
+        if(context.currentTemplate) {
             if (!isRegistered.current) {
-                await registerTemplateUse(template.id)
+                await registerTemplateUse(context.currentTemplate.id)
             }
         }
 
@@ -122,6 +124,7 @@ function ImageDialog({ open, onClose, imageData, template, elements }) {
     const handleDownloadClick = () => {
         downloadImageFromSrc(imageData)
         registerUsage()
+        dispatchEvent("downloadImage")
     }
 
     const handleUploadClick = async () => {
@@ -133,10 +136,12 @@ function ImageDialog({ open, onClose, imageData, template, elements }) {
         setIsUploading(false)
         setLink(link)
         registerUsage()
+        dispatchEvent("uploadImage", { link })
     }
 
     const handleShareClick = () => {
         setIsShareDialogOpen(true)
+        dispatchEvent("openShareModal")
     }
 
     const handleTemplateClick = async () => {
@@ -221,7 +226,7 @@ function ImageDialog({ open, onClose, imageData, template, elements }) {
                             Download
                         </Button>
 
-                        {context.password && !template && !hasCreatedTemplate && (
+                        {context.password && !context.currentTemplate && !hasCreatedTemplate && (
                             <>
                                 <TextField
                                     inputRef={register()}

@@ -5,6 +5,8 @@ import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles"
 import App from "./App.js"
 import "./index.css"
 
+import { IS_DEV } from "./config/constants.js"
+
 const theme = createMuiTheme({
     palette: {
         type: "dark",
@@ -15,7 +17,7 @@ const theme = createMuiTheme({
     }
 })
 
-if(process.env.NODE_ENV === "development") {
+if(IS_DEV) {
     console.log(theme)
 }
 

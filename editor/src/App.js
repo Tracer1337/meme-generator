@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 
 import Canvas from "./components/Canvas/Canvas.js"
 import BottomBar from "./components/BottomBar/BottomBar.js"
+import Analytics from "./utils/Analytics.js"
 
 const AppContext = React.createContext()
 
@@ -9,11 +10,12 @@ function App() {
     const [context, setContext] = useState({
         event: new EventTarget(),
         image: null,
+        currentTemplate: null,
         password: localStorage.getItem("password")
     })
 
     const setter = {
-        setImage: image => setContext({ ...context, image }),
+        set: values => setContext({ ...context, ...values }),
         setPassword: password => {
             // Store password in localstorage
             localStorage.setItem("password", password)
@@ -36,6 +38,8 @@ function App() {
 
     return (
         <AppContext.Provider value={{ ...context, ...setter }}>
+            <Analytics/>
+            
             <Canvas/>
             <BottomBar/>
         </AppContext.Provider>

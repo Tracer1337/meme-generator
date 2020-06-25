@@ -76,7 +76,6 @@ function Canvas() {
     const canvas = useRef()
     const container = useRef()
     const elementRefs = useRef({})
-    const currentTemplate = useRef()
 
     let [elementKeys, setElementKeys] = useState([])
     const [borderValues, setBorderValues] = useState(defaultBorderValues)
@@ -162,8 +161,10 @@ function Canvas() {
     const handleImportImage = async () => {
         const file = await importFile("image/*")
         const base64Image = await fileToImage(file)
-        currentTemplate.current = null
-        context.setImage(base64Image)
+        context.set({
+            currentTemplate: null,
+            image: base64Image
+        })
     }
 
     const handleGenerateImage = async () => {
@@ -192,7 +193,13 @@ function Canvas() {
     }
 
     const handleLoadTemplate = async ({ detail: { template } }) => {
-        currentTemplate.current = template
+        context.set({
+            currentTemplate: template,
+            image: template.image_url
+        })
+
+        // Wait until image is loaded into DOM
+        await new Promise(requestAnimationFrame)
         
         // Check if value is given as percentage string and convert it if true
         const formatPercentage = (object, selector, useWidth = false) => {
@@ -206,9 +213,6 @@ function Canvas() {
         elementKeys.forEach(({ key }) => handleRemoveElement(key))
         elementKeys = []
 
-        // Set image
-        context.setImage(template.image_url)
-
         // Stop if no metadata exists
         if(!template.meta_data) {
             return
@@ -216,9 +220,6 @@ function Canvas() {
 
         const border = template.meta_data.border
         const textboxes = template.meta_data.textboxes
-
-        // Wait until image is loaded into DOM
-        await new Promise(requestAnimationFrame)
 
         // Format border size
         if (typeof border?.size === "string") {
@@ -384,7 +385,7 @@ function Canvas() {
 
             <BorderDialog open={isBorderDialogOpen} onClose={handleBorderDialogClose} values={borderValues}/>
             <GridDialog open={isGridDialogOpen} onClose={handleGridDialogClose} values={gridValues}/>
-            <ImageDialog open={isImageDialogOpen} onClose={handleImageDialogClose} imageData={generatedImage} template={currentTemplate.current} elements={elementKeys}/>
+            <ImageDialog open={isImageDialogOpen} onClose={handleImageDialogClose} imageData={generatedImage} elements={elementKeys}/>
         </div>
     )
 }

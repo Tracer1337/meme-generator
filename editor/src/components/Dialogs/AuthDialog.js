@@ -97,4 +97,4 @@ function BorderDialog({ onClose, open }) {
     )
 }
 
-export default withBackButtonSupport(BorderDialog, "border")
+export default withBackButtonSupport(BorderDialog, "auth")
