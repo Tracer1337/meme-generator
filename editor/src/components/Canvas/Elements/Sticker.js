@@ -66,6 +66,7 @@ function Sticker({ src, id, onFocus, dimensions, handle }, forwardedRef) {
                 onTouchStart={onFocus}
                 style={styles}
                 className={classes.image}
+                draggable="false"
             />
 
             <ImageSettingsDialog open={isDialogOpen} onClose={handleSettingsApply} values={settings} src={src}/>

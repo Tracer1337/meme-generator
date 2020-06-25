@@ -27,7 +27,7 @@ const useStyles = makeStyles(theme => ({
     iconsContainer: {
         display: "flex",
         padding: `0 ${theme.spacing(1)}px ${theme.spacing(2)}px ${theme.spacing(1)}px`,
-        overflow: "scroll"
+        overflowX: "scroll"
     },
 
     icon: {

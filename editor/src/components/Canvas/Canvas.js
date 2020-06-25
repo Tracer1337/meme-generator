@@ -344,7 +344,7 @@ function Canvas() {
                 ref={canvas}
             >
                 {context.image ? (
-                    <img alt="" src={context.image} className={classes.image} ref={image}/>
+                    <img alt="" src={context.image} className={classes.image} ref={image} draggable="false"/>
                 ) : (
                     <>
                         <IconButton onClick={() => context.event.dispatchEvent(new CustomEvent("openTemplatesDialog"))}>

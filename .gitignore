@@ -8,5 +8,4 @@ dist/editor
 templates/
 stickers/
 
-store/keystore
-store/builds
+store/google-play/
