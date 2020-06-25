@@ -6,7 +6,8 @@ import ImageSettingsDialog from "../../Dialogs/ImageSettingsDialog.js"
 import makeElement from "./makeElement.js"
 
 const defaultSettings = {
-    keepAspectRatio: true
+    keepAspectRatio: true,
+    flip: false
 }
 
 const useStyles = makeStyles(theme => ({
@@ -32,7 +33,8 @@ function Sticker({ src, id, onFocus, dimensions, handle }, forwardedRef) {
 
     const styles = {
         width: dimensions.width + "px",
-        height: dimensions.height + "px"
+        height: dimensions.height + "px",
+        transform: `scaleX(${settings.flip ? "-1" : "1"})`
     }
 
     if(handle) {

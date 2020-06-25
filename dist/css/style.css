@@ -165,7 +165,7 @@ section li:last-child {
 }
 
 @media only screen and (min-width: 420px) {
-    #about p {
+    section p {
         text-align: center;
     }
 }

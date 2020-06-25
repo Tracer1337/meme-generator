@@ -1,7 +1,7 @@
 import React, { useEffect } from "react"
+import { useForm, FormContext } from "react-hook-form"
 import { Dialog, Button } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
-import { useForm, FormContext } from "react-hook-form"
 
 import Switch from "./components/Switch.js"
 
@@ -50,13 +50,18 @@ function ImageSettingsDialog({ onClose, open, values, src }) {
     return (
         <Dialog onClose={handleClose} open={open}>
             <div className={classes.imageWrapper}>
-                <img src={src} alt="" className={classes.image}/>
+                <img src={src} alt="" className={classes.image} style={{
+                    transform: `scaleX(${watch("flip") ? "-1" : "1"})`
+                }}/>
             </div>
 
             <FormContext {...{ control, watch, register, setValue }}>
                 <form onSubmit={handleSubmit(handleClose)} className={classes.form}>
                     {/* Keep Aspect Ratio */}
                     <Switch name="keepAspectRatio" label="Keep Aspect Ratio" className={classes.input} />
+
+                    {/* Flip */}
+                    <Switch name="flip" label="Flip" className={classes.input} />
 
                     <Button fullWidth className={classes.applyButton} type="submit">Apply</Button>
                 </form>
