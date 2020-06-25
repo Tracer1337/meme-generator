@@ -13,6 +13,16 @@ function compensateError(clonedDocument) {
         const shiftOffset = Math.min(textbox.offsetHeight / 18, padding)
         textbox.style.padding = `${padding - shiftOffset}px ${padding}px ${padding + shiftOffset}px`
     })
+
+    /**
+     * Reverse order of elements
+     */
+    const elements = Array.from(clonedDocument.querySelectorAll(".element"))
+    const parent = elements[0].parentNode
+    elements
+        .map(node => parent.removeChild(node))
+        .reverse()
+        .map(node => parent.appendChild(node))
 }
 
 async function generateImage(container) {

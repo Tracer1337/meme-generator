@@ -329,13 +329,14 @@ function makeElement({
         return (
             <DraggableCore onDrag={handleMovementDrag} onStop={handleMovementStop} grid={dragGrid} handle={`#element-${id}`} disabled={!shouldMove}>
                 <div
-                    className={classes.container}
+                    className={`${classes.container} element`}
                     style={{
                         transform: `translate(${position.x}px, ${position.y}px) rotate(${rotation}rad)`,
                         transformOrigin: `center center`,
                         zIndex: defaultValues.zIndex || 0
                     }}
                     ref={container}
+                    data-id={id}
                 >
                     <Child
                         id={id}
