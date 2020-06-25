@@ -42,7 +42,7 @@ class SmartWebView {
 	static int ASWV_LAYOUT            = 0;            // default=0; for clear fullscreen layout, and =1 for drawer layout
 
 	// URL configs
-	static String ASWV_URL            = "http://www.easymeme69.com/editor/";     // complete URL of your website or offline webpage
+	static String ASWV_URL            = "http://www.easymeme69.com/editor?isAndroidApp=true";     // complete URL of your website or offline webpage
 	static String ASWV_SEARCH         = "https://www.google.com/search?q=";       // search query will start by the end of the present string
 	static String ASWV_SHARE_URL      = ASWV_URL + "?share=";                     // URL where you process external content shared with the app
 

@@ -16,6 +16,7 @@ import dataURLToFile from "../../utils/dataURLToFile.js"
 import uploadImage from "../../utils/uploadImage.js"
 import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
 import { uploadTemplate, registerTemplateUse, registerStickerUse } from "../../utils/API.js"
+import { IS_ANDROID_APP } from "../../config/constants.js"
 
 const useStyles = makeStyles(theme => {
     const button = {
@@ -210,21 +211,23 @@ function ImageDialog({ open, onClose, imageData, elements }) {
                                     style={{ width: "100%" }}
                                 >
                                     Create Link
-                            </Button>
+                                </Button>
 
                                 {isUploading && <CircularProgress size={24} className={classes.buttonLoader} />}
                             </div>
                         )}
 
-                        <Button
-                            startIcon={<DownloadIcon />}
-                            color="primary"
-                            variant="outlined"
-                            className={classes.button}
-                            onClick={handleDownloadClick}
-                        >
-                            Download
-                        </Button>
+                        {!IS_ANDROID_APP && (
+                            <Button
+                                startIcon={<DownloadIcon />}
+                                color="primary"
+                                variant="outlined"
+                                className={classes.button}
+                                onClick={handleDownloadClick}
+                            >
+                                Download
+                            </Button>
+                        )}
 
                         {context.password && !context.currentTemplate && !hasCreatedTemplate && (
                             <>
