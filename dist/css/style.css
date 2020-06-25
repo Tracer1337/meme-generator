@@ -71,10 +71,24 @@ main {
     align-items: center;
 }
 
+.main-actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
 main .btn {
     margin-top: 16px;
 }
 
+.google-play-badge-wrapper {
+    display: flex;
+}
+
+.google-play-badge {
+    margin-top: 8px;
+    width: 140px;
+}
 
 section h4 {
     margin-bottom: 32px;
@@ -179,6 +193,20 @@ section li:last-child {
         display: flex;
         justify-content: center;
         align-items: flex-start;
+    }
+
+    .main-actions {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    main .btn {
+        margin: 0;
+    }
+
+    .google-play-badge {
+        margin-top: 0;
+        margin-left: 16px;
     }
 
     .outer-preview {
