@@ -6,7 +6,6 @@ import TextboxSettingsDialog from "../../Dialogs/TextboxSettingsDialog.js"
 import useSnapshots from "../../../utils/useSnapshots.js"
 import makeElement from "./makeElement.js"
 import fitText from "../../../utils/fitText.js"
-import insertLinebreaks from "../../../utils/insertLinebreaks.js"
 import { TEXTBOX_PLACEHOLDER, TEXTBOX_PADDING } from "../../../config/constants.js"
 
 const globalDefaultSettings = {
@@ -29,7 +28,7 @@ const useStyles = makeStyles(theme => ({
         fontFamily: theme.typography.fontFamily,
         textTransform: props => props.settings.caps && "uppercase",
         resize: "none",
-        whiteSpace: "pre",
+        whiteSpace: "pre-wrap",
         zIndex: 10,
         padding: TEXTBOX_PADDING,
         display: "flex",
@@ -95,7 +94,6 @@ function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dim
     const handleEditClicked = () => {
         const handleFocusOut = () => {
             toggleMovement(true)
-            handleResize()
             textboxRef.current.removeEventListener("focusout", handleFocusOut)
         }
         
@@ -109,17 +107,6 @@ function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dim
         if(value.toLowerCase() === TEXTBOX_PLACEHOLDER.toLowerCase()) {
             textboxRef.current.textContent = ""
         }
-    }
-
-    const handleResize = () => {
-        const newValue = insertLinebreaks({
-            text: textboxRef.current.textContent,
-            styles: settings,
-            ...dimensions
-        })
-
-        textboxRef.current.textContent = newValue
-        setValue(newValue)
     }
 
     const handleValueChange = (event) => {
@@ -158,7 +145,6 @@ function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dim
         handle.toObject = toObject
         handle.onEditClicked = handleEditClicked
         handle.onSettingsClicked = handleSettingsClicked
-        handle.onResize = handleResize
     }
 
     // Generate stylings for textbox

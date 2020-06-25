@@ -1,7 +1,9 @@
 import textfit from "textfit"
 
 function getNewFontsize(div) {
-    textfit(div)
+    textfit(div, {
+        multiLine: true
+    })
     const span = div.querySelector("span")
     const fontSize = getComputedStyle(span).fontSize
     return parseInt(fontSize)
@@ -21,7 +23,7 @@ function fitText({ width, height, text, styles }) {
     div.style.position = "absolute"
     div.style.width = width + "px"
     div.style.height = height + "px"
-    div.style.whiteSpace = "pre"
+    div.style.whiteSpace = "pre-wrap"
     div.style.fontWeight = styles.bold ? "bold" : null
     div.style.textTransform = styles.caps ? "uppercase" : null
 
