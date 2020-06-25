@@ -3,7 +3,11 @@ git pull
 cd editor
 
 if [ "$1" = "install" ]
-    then npm run install
+    then
+        npm install
+        cd editor
+        npm install
+        cd ..
 fi
 
 npm run build
