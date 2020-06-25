@@ -1,8 +1,12 @@
-dist/editor
 node_modules/
 storage/*
+temp/*
 .env
+
+dist/editor
+
 templates/
 stickers/
-temp/*
-store/keystore/*
+
+store/keystore
+store/builds
