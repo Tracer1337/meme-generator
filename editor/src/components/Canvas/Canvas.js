@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState, useRef } from "react"
 import { IconButton } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import PhotoLibraryIcon from "@material-ui/icons/PhotoLibrary"
+import CloudDownloadIcon from "@material-ui/icons/CloudDownload"
 
 import Textbox from "./Elements/Textbox.js"
 import Sticker from "./Elements/Sticker.js"
@@ -345,9 +346,15 @@ function Canvas() {
                 {context.image ? (
                     <img alt="" src={context.image} className={classes.image} ref={image}/>
                 ) : (
-                    <IconButton onClick={handleImportImage}>
-                        <PhotoLibraryIcon fontSize="large" />
-                    </IconButton>
+                    <>
+                        <IconButton onClick={() => context.event.dispatchEvent(new CustomEvent("openTemplatesDialog"))}>
+                            <CloudDownloadIcon fontSize="large" />
+                        </IconButton>
+                        
+                        <IconButton onClick={handleImportImage}>
+                            <PhotoLibraryIcon fontSize="large" />
+                        </IconButton>
+                    </>
                 )}
 
                 {elementKeys.map(({ type, key, data }) => {

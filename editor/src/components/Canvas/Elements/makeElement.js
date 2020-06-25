@@ -100,8 +100,6 @@ function makeElement({
         const container = useRef()
         const childRef = useRef()
         const hasCreatedSnapshot = useRef(false)
-        // Store states to be applied on undo
-        const snapshots = useRef([])
 
         const [position, setPosition] = useState({ x: template?.x || 0, y: template?.y || 0 })
         const [rotation, setRotation] = useState(template?.rotation || 0)

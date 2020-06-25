@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef } from "react"
+import React, { useContext, useState, useRef, useEffect } from "react"
 import { AppBar, Toolbar, Fab, IconButton } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import DoneIcon from "@material-ui/icons/Done"
@@ -85,6 +85,14 @@ function BottomBar() {
     const dispatchEvent = (name) => () => {
         context.event.dispatchEvent(new CustomEvent(name))
     }
+
+    useEffect(() => {
+        context.event.addEventListener("openTemplatesDialog", handleTemplatesClick)
+        
+        return () => {
+            context.event.removeEventListener("openTemplatesDialog", handleTemplatesClick)
+        }
+    })
 
     return (
         <AppBar position="fixed" className={classes.appBar}>
