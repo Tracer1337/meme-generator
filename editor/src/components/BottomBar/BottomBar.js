@@ -97,7 +97,7 @@ function BottomBar() {
     return (
         <AppBar position="fixed" className={classes.appBar}>
             <Toolbar>
-                <IconButton onClick={handleHelpClick} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+                <IconButton onClick={handleHelpClick} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onMouseDown={handleTouchStart} onMouseUp={handleTouchEnd}>
                     <HelpIcon/>
                 </IconButton>
 

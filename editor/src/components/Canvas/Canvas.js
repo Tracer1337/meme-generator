@@ -16,12 +16,21 @@ import { AppContext } from "../../App.js"
 import importFile, { fileToImage } from "../../utils/importFile.js"
 import generateImage from "../../utils/generateImage.js"
 
-const showCanvas = (canvas) => {
+function showCanvas (canvas) {
     const newWindow = window.open("", "canvas")
     newWindow.document.body.appendChild(canvas)
 }
 
-const waitFrames = async (amount = 1) => {
+function getDimensionsWithoutPadding(element) {
+    const styles = getComputedStyle(element)
+
+    return {
+        width: element.clientWidth - parseFloat(styles.paddingLeft) - parseFloat(styles.paddingRight),
+        height: element.clientHeight - parseFloat(styles.paddingTop) - parseFloat(styles.paddingBottom)
+    }
+}
+
+async function waitFrames(amount = 1) {
     for(let i = 0; i < amount; i++) {
         await new Promise(requestAnimationFrame)
     }
@@ -51,9 +60,9 @@ const useStyles = makeStyles(theme => ({
         top: 0, bottom: 0,
         left: 0, right: 0,
         backgroundColor: theme.palette.background.default,
-        outline: `${theme.spacing(1)}px solid ${theme.palette.background.default}`,
-        margin: theme.spacing(1),
-        marginBottom: theme.mixins.toolbar.minHeight + theme.spacing(1),
+        // outline: `${theme.spacing(1)}px solid ${theme.palette.background.default}`,
+        padding: theme.spacing(1),
+        paddingBottom: theme.mixins.toolbar.minHeight + theme.spacing(1),
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -119,6 +128,11 @@ function Canvas() {
         delete elementRefs.current[removeKey]
     }
 
+    const clearElements = () => {
+        setElementKeys([])
+        elementRefs.current = {}
+    }
+
     const createNewElement = (type, data) => {
         const newElementKey = {
             type,
@@ -162,6 +176,8 @@ function Canvas() {
     const handleImportImage = async () => {
         const file = await importFile("image/*")
         const base64Image = await fileToImage(file)
+
+        clearElements()
         context.set({
             currentTemplate: null,
             image: base64Image
@@ -199,8 +215,8 @@ function Canvas() {
             image: template.image_url
         })
 
-        // Wait until image is loaded into DOM
-        await new Promise(requestAnimationFrame)
+        // Wait until image is loaded into DOM and resized
+        await waitFrames(2)
         
         // Check if value is given as percentage string and convert it if true
         const formatPercentage = (object, selector, useWidth = false) => {
@@ -210,8 +226,8 @@ function Canvas() {
             }
         }
 
-        // Delete all textboxes
-        elementKeys.forEach(({ key }) => handleRemoveElement(key))
+        // Delete all elements
+        clearElements()
         elementKeys = []
 
         // Stop if no metadata exists
@@ -292,41 +308,46 @@ function Canvas() {
 
     // Set image dimensions
     useEffect(() => {
-        if (!image.current || !container.current || !canvas.current) {
-            return
-        }
+        (async () => {
+            // Wait until image is loaded
+            await waitFrames(1)
 
-        // Get image dimensions
-        const imgWidth = image.current.naturalWidth
-        const imgHeight = image.current.naturalHeight
-        const imgRatio = imgHeight / imgWidth
+            if (!image.current || !container.current || !canvas.current) {
+                return
+            }
 
-        // Get container size
-        const maxWidth = container.current.offsetWidth
-        const maxHeight = container.current.offsetHeight
+            // Get image dimensions
+            const imgWidth = image.current.naturalWidth
+            const imgHeight = image.current.naturalHeight
+            const imgRatio = imgHeight / imgWidth
 
-        let newWidth, newHeight
+            // Get container size
+            const { width: maxWidth, height: maxHeight } = getDimensionsWithoutPadding(container.current)
 
-        if(maxWidth * imgRatio > maxHeight) {
-            // Height is larger than max height => Constrain height
-            newHeight = maxHeight
-            newWidth = maxHeight * (1 / imgRatio)
-        } else {
-            // Width is larger than max width => Constrain width
-            newWidth = maxWidth
-            newHeight = maxWidth * imgRatio
-        }
-        
-        newWidth = Math.floor(newWidth)
-        newHeight = Math.floor(newHeight)
+            let newWidth, newHeight
 
-        // Apply sizing to image
-        image.current.style.width = newWidth + "px"
-        image.current.style.height = newHeight + "px"
+            if (maxWidth * imgRatio > maxHeight) {
+                // Height is larger than max height => Constrain height
+                const margin = 32
+                newHeight = maxHeight - margin
+                newWidth = newHeight * (1 / imgRatio)
+            } else {
+                // Width is larger than max width => Constrain width
+                newWidth = maxWidth
+                newHeight = newWidth * imgRatio
+            }
 
-        // Apply sizing to canvas
-        canvas.current.style.width = newWidth + "px"
-        canvas.current.style.height = newHeight + "px"
+            newWidth = Math.floor(newWidth)
+            newHeight = Math.floor(newHeight)
+
+            // Apply sizing to image
+            image.current.style.width = newWidth + "px"
+            image.current.style.height = newHeight + "px"
+
+            // Apply sizing to canvas
+            canvas.current.style.width = newWidth + "px"
+            canvas.current.style.height = newHeight + "px"
+        })()
     }, [context.image, image, container, canvas])
 
     return (
@@ -344,7 +365,13 @@ function Canvas() {
                 ref={canvas}
             >
                 {context.image ? (
-                    <img alt="" src={context.image} className={classes.image} ref={image} draggable="false"/>
+                    <img
+                        alt=""
+                        src={context.image}
+                        className={classes.image}
+                        ref={image}
+                        draggable="false"
+                    />
                 ) : (
                     <>
                         <IconButton onClick={() => context.event.dispatchEvent(new CustomEvent("openTemplatesDialog"))}>

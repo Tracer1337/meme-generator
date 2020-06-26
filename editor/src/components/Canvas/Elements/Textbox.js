@@ -33,6 +33,9 @@ const useStyles = makeStyles(theme => ({
         padding: TEXTBOX_PADDING,
         display: "flex",
         flexDirection: "column",
+        fontWeight: props => props.settings.bold && "bold",
+        userSelect: props => !props.isEditing && "none",
+        cursor: props => !props.isEditing && "move",
         justifyContent: props => (
             props.settings.verticalTextAlign === "top" ? "flex-start" :
             props.settings.verticalTextAlign === "bottom" ? "flex-end" :
@@ -60,8 +63,9 @@ function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dim
     const [value, setValue] = useState(TEXTBOX_PLACEHOLDER)
     const [dialogOpen, setDialogOpen] = useState(false)
     const [settings, setSettings] = useState(defaultSettings)
+    const [isEditing, setIsEditing] = useState(false)
 
-    const classes = useStyles({ settings, isFocused }) 
+    const classes = useStyles({ settings, isFocused, isEditing }) 
 
     const addSnapshot = useSnapshots({
         createSnapshot: () => ({ value, settings }),
@@ -91,15 +95,20 @@ function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dim
         setDialogOpen(false)
     }
     
-    const handleEditClicked = () => {
+    const handleEditClicked = async () => {
         const handleFocusOut = () => {
             toggleMovement(true)
+            setIsEditing(false)
             textboxRef.current.removeEventListener("focusout", handleFocusOut)
         }
         
         shouldEmitSnapshot.current = true
         toggleMovement(false)
+        setIsEditing(true)
         textboxRef.current.addEventListener("focusout", handleFocusOut)
+
+        // Wait until contenteditable is set
+        await new Promise(requestAnimationFrame)
 
         textboxRef.current.focus()
 
@@ -152,8 +161,7 @@ function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dim
         ...settings,
         width: dimensions.width + "px",
         height: dimensions.height + "px",
-        fontSize: fitText({ styles: settings, text: value, ...dimensions }),
-        fontWeight: settings.bold ? "bold" : null
+        fontSize: fitText({ styles: settings, text: value, ...dimensions })
     }), [value, settings, dimensions.width, dimensions.height])
 
     useEffect(() => {
@@ -162,17 +170,17 @@ function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dim
     }, [])
 
     useEffect(() => {
-        if(!isFocused && !value) {
+        if(!isEditing && !value) {
             // Insert placeholder if textbox is empty
             setValue(TEXTBOX_PLACEHOLDER)
             textboxRef.current.textContent = TEXTBOX_PLACEHOLDER
         }
-    }, [isFocused])
+    }, [isEditing])
     
     return (
         <>
             <div
-                contentEditable
+                contentEditable={isEditing}
                 id={`element-${id}`}
                 className={`textbox ${classes.input}`}
                 style={styles}
@@ -180,7 +188,7 @@ function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dim
                     textboxRef.current = ref
                     forwardedRef.current = ref
                 }}
-                onClick={onFocus}
+                onMouseDown={onFocus}
                 onTouchStart={onFocus}
                 onInput={handleValueChange}
             />

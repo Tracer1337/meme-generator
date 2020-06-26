@@ -70,6 +70,7 @@ const useStyles = makeStyles(theme => {
             top: "100%",
             left: "50%",
             transform: "translate(-50%, -50%)",
+            cursor: "ns-resize"
         },
 
         horizontal: {
@@ -77,6 +78,7 @@ const useStyles = makeStyles(theme => {
             top: "50%",
             left: "100%",
             transform: "translate(-50%, -50%) rotate(-90deg)",
+            cursor: "ew-resize"
         },
 
         diagonal: {
@@ -84,6 +86,7 @@ const useStyles = makeStyles(theme => {
             top: "100%",
             left: "100%",
             transform: "translate(-50%, -50%) rotate(-45deg)",
+            cursor: "nwse-resize"
         }
     }
 })
