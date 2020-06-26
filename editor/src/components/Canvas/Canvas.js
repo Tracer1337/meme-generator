@@ -329,11 +329,13 @@ function Canvas() {
             if (maxWidth * imgRatio > maxHeight) {
                 // Height is larger than max height => Constrain height
                 const margin = 32
-                newHeight = maxHeight - margin
+                const borderSize = (borderValues.top || 0 + borderValues.bottom || 0) * borderValues.size
+                newHeight = maxHeight - margin - borderSize
                 newWidth = newHeight * (1 / imgRatio)
             } else {
                 // Width is larger than max width => Constrain width
-                newWidth = maxWidth
+                const borderSize = (borderValues.left || 0 + borderValues.right || 0) * borderValues.size
+                newWidth = maxWidth - borderSize
                 newHeight = newWidth * imgRatio
             }
 
@@ -348,7 +350,7 @@ function Canvas() {
             canvas.current.style.width = newWidth + "px"
             canvas.current.style.height = newHeight + "px"
         })()
-    }, [context.image, image, container, canvas])
+    }, [context.image, image, container, canvas, borderValues])
 
     return (
         <div className={classes.canvasWrapper} ref={container}>
