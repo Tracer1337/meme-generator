@@ -2,7 +2,9 @@ import textfit from "textfit"
 
 function getNewFontsize(div) {
     textfit(div, {
-        multiLine: true
+        multiLine: true,
+        minFontSize: 1,
+        maxFontSize: window.innerHeight
     })
     const span = div.querySelector("span")
     const fontSize = getComputedStyle(span).fontSize
