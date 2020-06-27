@@ -24,7 +24,6 @@ chrome.storage.local.get("isTemplateLoaderEnabled", ({ isTemplateLoaderEnabled }
 checkboxEnableTemplateLoader.addEventListener("change", (event) => {
     if(event.target.checked) {
         chrome.storage.local.set({ "isTemplateLoaderEnabled": true })
-        openTemplatesPage()
     } else {
         chrome.storage.local.set({ "isTemplateLoaderEnabled": false })
     }
