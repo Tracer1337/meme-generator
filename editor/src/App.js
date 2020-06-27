@@ -6,10 +6,10 @@ import Analytics from "./utils/Analytics.js"
 
 const AppContext = React.createContext()
 
-function App() {
+function App({ injectedImage = null }) {
     const [context, setContext] = useState({
         event: new EventTarget(),
-        image: null,
+        image: injectedImage,
         currentTemplate: null,
         password: localStorage.getItem("password")
     })
@@ -35,6 +35,21 @@ function App() {
 
         return () => window.removeEventListener("keydown", handleUndo)
     }, [])
+
+    useEffect(() => {
+        // Handle image injection
+        const handleMessage = (message) => {
+            if (message.data.image) {
+                setContext({ ...context, image: message.data.image })
+            }
+        }
+
+        window.addEventListener("message", handleMessage)
+
+        return () => {
+            window.removeEventListener("message", handleMessage)
+        }
+    })
 
     return (
         <AppContext.Provider value={{ ...context, ...setter }}>

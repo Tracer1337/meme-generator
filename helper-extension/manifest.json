@@ -1,0 +1,31 @@
+{
+    "manifest_version": 2,
+
+    "name": "Easy Meme Helper",
+    "description": "Easy Meme helper extension",
+    "version": "1.0",
+
+    "permissions": [
+        "tabs",
+        "activeTab",
+        "http://*/*",
+        "https://*/*"
+    ],
+
+    "content_scripts": [
+        {
+            "matches": ["https://imgflip.com/memetemplates*"],
+            "js": ["template-selector.js"]
+        },
+
+        {
+            "matches": ["https://imgflip.com/memegenerator/*"],
+            "js": ["template-loader.js"]
+        }
+    ],
+
+    "background": {
+        "scripts": ["template-receiver.js"],
+        "persistant": false
+    }
+}
