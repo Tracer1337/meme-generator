@@ -1,28 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/materialize.min.css"/>
+    <link rel="stylesheet" href="css/index.css"/>
     <title>Easy Meme</title>
-
-    <style>
-        :root {
-            --height: 575px;
-            --width: 400px;
-        }
-
-        body {
-            margin: 0;
-            height: var(--height);
-        }
-
-        #main-frame {
-            height: var(--height);
-            width: var(--width);
-        }
-    </style>
 </head>
+
 <body>
+    <div id="config">
+        <form action="#">
+            <div class="row valign-wrapper">
+                <div class="col s6">
+                    <div class="switch">
+                        <label>
+                            <input type="checkbox" id="checkbox-enable-template-loader">
+                            <span class="lever"></span>
+
+                            Template Loader
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col s6">
+                    <a href="#" id="templates-page-link" class="btn-small waves-effect waves-light black-text primary">Click Here</a>
+                </div>
+            </div>
+        </form>
+    </div>
+    
     <iframe src="https://www.easymeme69.com/editor" frameborder="0" id="main-frame"></iframe>
+
+    <script src="scripts/materialize.min.js"></script>
+    <script src="scripts/index.js"></script>
 </body>
+
 </html>

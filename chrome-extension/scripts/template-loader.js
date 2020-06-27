@@ -1,7 +1,13 @@
-window.onload = async () => {
+chrome.storage.local.get("isTemplateLoaderEnabled", (values) => {
+    if(values.isTemplateLoaderEnabled) {
+        run()
+    }
+})
+
+async function run() {
     // Wait until image is loaded
     await new Promise(requestAnimationFrame)
-    
+
     // Get image from canvas
     const canvas = document.querySelector("canvas")
     const image = canvas.toDataURL()
