@@ -10,6 +10,7 @@ function App({ injectedImage = null }) {
     const [context, setContext] = useState({
         event: new EventTarget(),
         image: injectedImage,
+        label: null,
         currentTemplate: null,
         password: localStorage.getItem("password")
     })
@@ -40,7 +41,11 @@ function App({ injectedImage = null }) {
         // Handle image injection
         const handleMessage = (message) => {
             if (message.data.image) {
-                setContext({ ...context, image: message.data.image })
+                setContext({
+                    ...context,
+                    image: message.data.image,
+                    label: message.data.label
+                })
             }
         }
 

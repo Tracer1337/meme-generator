@@ -1,7 +1,7 @@
-let currentImage
+let currentValues
 
-function getCurrentImage() {
-    return currentImage
+function getCurrentValues() {
+    return currentValues
 }
 
 chrome.runtime.onMessage.addListener(message => {
@@ -9,7 +9,7 @@ chrome.runtime.onMessage.addListener(message => {
         return
     }
 
-    currentImage = message.image
+    currentValues = message
 
     chrome.windows.create({
         url: chrome.runtime.getURL("editor.html"),

@@ -1,15 +1,17 @@
-// Get image from canvas
-const canvas = document.querySelector("canvas")
-const image = canvas.toDataURL()
+window.onload = async () => {
+    // Wait until image is loaded
+    await new Promise(requestAnimationFrame)
+    
+    // Get image from canvas
+    const canvas = document.querySelector("canvas")
+    const image = canvas.toDataURL()
 
-// Get label
-const label = document.getElementById("mm-meme-title").textContent
+    // Get label
+    const label = document.getElementById("mm-meme-title").textContent
 
-// Store label in clipboard
-navigator.clipboard.writeText(label)
+    // Send image and label to easymeme extension
+    chrome.runtime.sendMessage({ image, label })
 
-// Send image to easymeme extension
-chrome.runtime.sendMessage({ image })
-
-// Close tab
-window.close()
+    // Close tab
+    window.close()
+}

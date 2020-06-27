@@ -1,10 +1,10 @@
-// Get image
+// Get values
 const backgroundPage = chrome.extension.getBackgroundPage()
-const image = backgroundPage.getCurrentImage()
+const values = backgroundPage.getCurrentValues()
 
-// Post image to iframe
+// Post values to iframe
 const iframe = document.getElementById("main-frame")
 
 iframe.onload = () => {
-    iframe.contentWindow.postMessage({ image }, "*")
+    iframe.contentWindow.postMessage(values, "*")
 }

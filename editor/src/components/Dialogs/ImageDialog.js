@@ -237,6 +237,7 @@ function ImageDialog({ open, onClose, imageData, elements }) {
                                     label="Label"
                                     className={classes.button}
                                     variant="outlined"
+                                    defaultValue={context.label}
                                 />
                                 <Button
                                     startIcon={<PublishIcon />}
