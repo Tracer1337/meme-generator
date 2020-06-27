@@ -74,20 +74,27 @@ main {
 .main-actions {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    align-items: center;
 }
 
 main .btn {
     margin-top: 16px;
 }
 
-.google-play-badge-wrapper {
+.download-badge-wrapper {
     display: flex;
 }
 
-.google-play-badge {
+.download-badge {
     margin-top: 8px;
-    width: 140px;
+}
+
+#google-play {
+    width: 154px;
+}
+
+#chrome-webstore {
+    width: 133px;
 }
 
 section h4 {
@@ -108,7 +115,6 @@ section li {
 section li:last-child {
     margin-bottom: 0;
 }
-
 
 .outer-preview {
     position: absolute;
@@ -204,9 +210,19 @@ section li:last-child {
         margin: 0;
     }
 
-    .google-play-badge {
+    .download-badge {
         margin-top: 0;
         margin-left: 16px;
+    }
+
+    #google-play {
+        width: unset;
+        height: 54px;
+    }
+
+    #chrome-webstore {
+        width: unset;
+        height: 36px;
     }
 
     .outer-preview {

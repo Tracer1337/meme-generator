@@ -12,7 +12,8 @@ const defaultSettings = {
 
 const useStyles = makeStyles(theme => ({
     image: {
-        zIndex: 1
+        zIndex: 1,
+        cursor: "move"
     }
 }))
 
@@ -62,7 +63,7 @@ function Sticker({ src, id, onFocus, dimensions, handle }, forwardedRef) {
                     forwardedRef.current = ref
                     imageRef.current = ref
                 }}
-                onClick={onFocus}
+                onMouseDown={onFocus}
                 onTouchStart={onFocus}
                 style={styles}
                 className={classes.image}
