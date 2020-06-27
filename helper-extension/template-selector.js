@@ -8,5 +8,3 @@ boxes.forEach(box => {
         link.setAttribute("target", "_blank")
     })
 })
-
-console.log("[Easy Meme Helper] Run")

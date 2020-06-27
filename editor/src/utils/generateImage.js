@@ -18,11 +18,13 @@ function compensateError(clonedDocument) {
      * Reverse order of elements
      */
     const elements = Array.from(clonedDocument.querySelectorAll(".element"))
-    const parent = elements[0].parentNode
-    elements
-        .map(node => parent.removeChild(node))
-        .reverse()
-        .map(node => parent.appendChild(node))
+    if(elements.length > 0) {
+        const parent = elements[0].parentNode
+        elements
+            .map(node => parent.removeChild(node))
+            .reverse()
+            .map(node => parent.appendChild(node))
+    }
 }
 
 async function generateImage(container) {

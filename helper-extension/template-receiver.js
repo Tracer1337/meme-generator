@@ -1,5 +1,9 @@
 let currentImage
 
+function getCurrentImage() {
+    return currentImage
+}
+
 chrome.runtime.onMessage.addListener(message => {
     if(!message.image) {
         return
@@ -14,7 +18,3 @@ chrome.runtime.onMessage.addListener(message => {
         type: "popup"
     })
 })
-
-function getCurrentImage() {
-    return currentImage
-}
