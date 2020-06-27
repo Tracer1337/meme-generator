@@ -14,6 +14,6 @@ npm run build
 
 cd ..
 
-rm -r ./dist/editor
-mkdir ./dist/editor
-mv ./editor/build/* ./dist/editor
+rm -r ./public/editor
+mkdir ./public/editor
+mv ./editor/build/* ./public/editor

@@ -6,6 +6,9 @@ const { createProxyMiddleware } = require("http-proxy-middleware")
 
 const app = express()
 
+// Set pug as the templating engine
+app.set("view engine", "pug")
+
 // Allow cors for dev 
 if(process.env.NODE_ENV !== "production") {
     app.use(cors())
@@ -25,14 +28,17 @@ if(process.env.NODE_ENV !== "production") {
     }))
 }
 
-// Serve files from dist folder
-app.use(express.static(path.join(__dirname, "dist")))
+// Serve files from public folder
+app.use(express.static(path.join(__dirname, "public")))
 
 // Serve storage files
 app.use("/storage", express.static(path.join(__dirname, "storage")))
 
 // Use api routes
 app.use("/api", require("./server/routes/api/index.js"))
+
+// Use index route
+app.use("/", require("./server/routes/index/index.js"))
 
 // Start server
 const port = process.env.PORT || 80

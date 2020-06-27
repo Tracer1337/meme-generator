@@ -3,7 +3,7 @@ storage/*
 temp/*
 .env
 
-dist/editor
+public/editor
 
 templates/
 stickers/
