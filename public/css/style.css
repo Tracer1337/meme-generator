@@ -213,8 +213,21 @@ section li:last-child {
         align-items: flex-start;
     }
 
+    .statistics {
+        margin-top: 16px;
+        flex-direction: row;
+    }
+
+    .statistics div {
+        margin-right: 32px;
+    }
+
+    .statistics div:last-child {
+        margin-right: 0;
+    }
+
     .main-actions {
-        margin-top: 0;
+        margin-top: 16px;
         flex-direction: row;
         align-items: center;
     }
