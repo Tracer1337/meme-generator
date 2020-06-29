@@ -13,7 +13,7 @@ function loadAnalytics() {
     document.getElementsByTagName("head")[0].appendChild(gascript, document.getElementsByTagName("head")[0]);
 }
 
-if (document.cookie.indexOf("cookieconsent_status") !== -1) {
+if (document.cookie.indexOf("cookieconsent_status") !== -1 && !localStorage.getItem("password")) {
     loadAnalytics()
 }
 
