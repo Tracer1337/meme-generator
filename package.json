@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "npm run start",
     "start": "concurrently --kill-others \"npm run start-server\" \"cd editor && npm start\"",
-    "start-server": "nodemon --watch server --watch index.js index.js"
+    "start-server": "node scripts/start-server.js && nodemon --watch server --watch index.js index.js"
   },
   "author": "",
   "license": "ISC",
@@ -22,6 +23,7 @@
   },
   "devDependencies": {
     "concurrently": "^5.2.0",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "opn": "^6.0.0"
   }
 }
