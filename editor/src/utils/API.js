@@ -1,5 +1,5 @@
 import { IS_DEV } from "../config/constants.js"
-import cachedRequest from "./cache.js"
+import { cachedRequest, getCachedImage } from "./cache.js"
 
 function url(path) {
     return `${window.location.protocol}//${window.location.hostname}${IS_DEV ? ":8080" : ""}/api${path}`
@@ -15,12 +15,15 @@ export const uploadTemplate = (formData) => fetch(url("/templates"), {
 export const getTemplates = () => {
     return cachedRequest(url("/templates"))
         .then(res => res.json())
-        .then(data => {
-            data.forEach(template => {
+        .then(async data => {
+            for(let template of data) {
+                template.image_url = await getCachedImage(template.image_url)
+
                 if (template.meta_data) {
                     template.meta_data = JSON.parse(template.meta_data)
                 }
-            })
+            }
+
             return data
         })
 }
@@ -51,10 +54,10 @@ export const authorize = (password) => fetch(url("/auth/authorize"), {
 
 export const getStickers = () => cachedRequest(url("/stickers"))
     .then(res => res.json())
-    .then(data => {
-        data.forEach(sticker => {
-            sticker.image_url = sticker.image_url
-        })
+    .then(async data => {
+        for(let sticker of data) {
+            sticker.image_url = await getCachedImage(sticker.image_url)
+        }
 
         return data
     })

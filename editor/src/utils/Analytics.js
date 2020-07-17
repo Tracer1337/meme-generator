@@ -12,13 +12,11 @@ function Analytics() {
      * Initialize GA
      */
     useEffect(() => {
-        if(context.password) {
+        if(context.password || IS_DEV) {
             return
         }
 
-        ReactGA.initialize(GA_TRACKING_ID, {
-            debug: IS_DEV
-        })
+        ReactGA.initialize(GA_TRACKING_ID)
 
         ReactGA.pageview(window.location.pathname)
 

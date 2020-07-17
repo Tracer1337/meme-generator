@@ -1,6 +1,13 @@
+import { IS_DEV } from "../config/constants.js"
+
 const cacheName = "v1"
 
-async function cachedRequest(url) {
+export async function cachedRequest(url) {
+    // Do not cache in development mode
+    if(IS_DEV) {
+        return await fetch(url)
+    }
+
     // Retrieve cache instance
     const cache = await caches.open(cacheName)
 
@@ -8,7 +15,7 @@ async function cachedRequest(url) {
     const cachedData = await cache.match(url)
 
     // Return cached data if neccessary
-    if(!navigator.onLine && cachedData) {
+    if(!navigator.onLine) {
         return cachedData
     }
 
@@ -21,4 +28,13 @@ async function cachedRequest(url) {
     return response
 }
 
-export default cachedRequest
+export async function getCachedImage(url) {
+    // Request cached image
+    const response = await cachedRequest(url)
+
+    // Create local image url from response
+    const blob = await response.blob()
+    const imageURL = URL.createObjectURL(blob)
+    
+    return imageURL
+}
