@@ -46,8 +46,8 @@ export async function getCachedImage(url) {
 }
 
 export async function cacheImage(url) {
-    // Do not cache blob
-    if(url.indexOf("blob") === 0) {
+    // Do not cache blob / in development mode
+    if(url.indexOf("blob") === 0 || IS_DEV) {
         return
     }
 
