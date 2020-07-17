@@ -45,12 +45,18 @@ function TemplatesDialog({ onClose, open }) {
         handleClose()
     }
 
+    const scrollToTop = () => {
+        document.getElementById("templates-dialog-inner-container").scrollTo(0, 0)
+    }
+
     const handleTabChange = (event, index) => {
         setCurrentTab(index)
+        scrollToTop()
     }
 
     const handleChangeIndex = (index) => {
         setCurrentTab(index)
+        scrollToTop()
     }
 
     return (
@@ -68,7 +74,7 @@ function TemplatesDialog({ onClose, open }) {
                 </Toolbar>
             </AppBar>
 
-            <SwipeableViews index={currentTab} onChangeIndex={handleChangeIndex} axis="x" id="templates-dialog-inner-container">
+            <SwipeableViews index={currentTab} onChangeIndex={handleChangeIndex} axis="x" id="templates-dialog-inner-container" disableLazyLoading>
                 <div className={classes.body}>
                     <Templates onLoad={handleTemplateLoad} active={currentTab === 0}/>
                 </div>
