@@ -8,6 +8,7 @@ import { AppContext } from "../../../App.js"
 import ConfirmDialog from "../ConfirmDialog.js"
 
 import { getTemplates, deleteTemplate } from "../../../utils/API.js"
+import { cacheImage } from "../../../utils/cache.js"
 
 const useStyles = makeStyles(theme => ({
     spacer: {
@@ -106,6 +107,10 @@ function Templates({ onLoad }) {
         setSearch(event.target.value)
     }
 
+    const handleImageLoad = (template) => {
+        cacheImage(template.image_url)
+    }
+
     useEffect(() => {
         fetchTemplates()
     }, [])
@@ -136,7 +141,7 @@ function Templates({ onLoad }) {
                 <GridList cellHeight={150} className={classes.list}>
                     {renderTemplates.map((template, i) => (
                         <GridListTile key={i} className={classes.tile} onClick={e => handleClick(e, template)}>
-                            <img src={template.image_url} alt={template.label} loading="lazy" />
+                            <img src={template.image_url} alt={template.label} loading="lazy" onLoad={() => handleImageLoad(template)}/>
 
                             <GridListTileBar title={template.label} subtitle={getSubtitle(template.amount_uses)} className={classes.tilebar} />
 

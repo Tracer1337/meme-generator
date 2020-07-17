@@ -10,6 +10,7 @@ import ConfirmDialog from "../ConfirmDialog.js"
 
 import { getStickers, deleteSticker, uploadSticker } from "../../../utils/API.js"
 import importFile from "../../../utils/importFile.js"
+import { cacheImage } from "../../../utils/cache.js"
 
 const useStyles = makeStyles(theme => ({
     listWrapper: {
@@ -68,6 +69,10 @@ function InnerTile({ sticker, onDelete }) {
         }
     }
 
+    const handleImageLoad = () => {
+        cacheImage(sticker.image_url)
+    }
+
     useEffect(() => {
         if (!image.current) {
             return
@@ -80,7 +85,7 @@ function InnerTile({ sticker, onDelete }) {
     
     return (
         <>
-            <img src={sticker.image_url} alt="Sticker" loading="lazy" ref={image}/>
+            <img src={sticker.image_url} alt="Sticker" loading="lazy" ref={image} onLoad={handleImageLoad}/>
 
             {context.password && (
                 <IconButton onClick={() => onDelete(sticker)} className={classes.deleteButton}>

@@ -1,6 +1,4 @@
-import { IS_DEV } from "../config/constants.js"
-
-const cacheName = "v1"
+import { IS_DEV, CACHE_NAME } from "../config/constants.js"
 
 export async function cachedRequest(url) {
     // Do not cache in development mode
@@ -9,7 +7,7 @@ export async function cachedRequest(url) {
     }
 
     // Retrieve cache instance
-    const cache = await caches.open(cacheName)
+    const cache = await caches.open(CACHE_NAME)
 
     // Get cached data
     const cachedData = await cache.match(url)
@@ -30,19 +28,14 @@ export async function cachedRequest(url) {
 
 export async function getCachedImage(url) {
     // Retrieve cache instance
-    const cache = await caches.open(cacheName)
+    const cache = await caches.open(CACHE_NAME)
 
     // Get cached response
-    let response = await cache.match(url)
+    const response = await cache.match(url)
 
-    // Store image to cache if missing
+    // Return url if image is not cached
     if(!response) {
-        response = await fetch(url)
-
-        // Store image asynchronously => Do not block loading process
-        new Promise(() => {
-            cache.put(url, response.clone())
-        })
+        return url
     }
 
     // Create local image url from response
@@ -50,4 +43,23 @@ export async function getCachedImage(url) {
     const imageURL = URL.createObjectURL(blob)
     
     return imageURL
+}
+
+export async function cacheImage(url) {
+    // Do not cache blob
+    if(url.indexOf("blob") === 0) {
+        return
+    }
+
+    // Retrieve cache instance
+    const cache = await caches.open(CACHE_NAME)
+
+    // Check if image is cached already
+    const cachedData = await cache.match(url)
+
+    if(!cachedData) {
+        // Store image in cache
+        const response = await fetch(url)
+        cache.put(url, response)
+    }
 }
