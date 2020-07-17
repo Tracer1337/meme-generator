@@ -4,6 +4,8 @@ const path = require("path")
 const cors = require("cors")
 const { createProxyMiddleware } = require("http-proxy-middleware")
 
+// process.env.NODE_ENV = "production"
+
 const app = express()
 
 // Set pug as the templating engine

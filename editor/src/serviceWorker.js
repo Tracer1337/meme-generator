@@ -8,8 +8,10 @@ const isLocalhost = Boolean(
     )
 );
 
+const channel = new BroadcastChannel("sw-0")
+
 export function register(config) {
-    if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
+    if (process.env.NODE_ENV === 'production' &&'serviceWorker' in navigator) {
         // The URL constructor is available in all browsers that support SW.
         const publicUrl = new URL(process.env.PUBLIC_URL, window.location.href);
         if (publicUrl.origin !== window.location.origin) {
@@ -48,15 +50,18 @@ function registerValidSW(swUrl, config) {
         .then(registration => {
             registration.onupdatefound = () => {
                 const installingWorker = registration.installing;
+
                 if (installingWorker == null) {
                     return;
                 }
+
                 installingWorker.onstatechange = () => {
                     if (installingWorker.state === 'installed') {
                         if (navigator.serviceWorker.controller) {
                             // At this point, the updated precached content has been fetched,
                             // but the previous service worker will still serve the older
                             // content until all client tabs are closed.
+                            channel.postMessage("content-available")
                             console.log(
                                 'New content is available and will be used when all ' +
                                 'tabs for this page are closed. See https://cra.link/PWA.'
@@ -70,6 +75,7 @@ function registerValidSW(swUrl, config) {
                             // At this point, everything has been precached.
                             // It's the perfect time to display a
                             // "Content is cached for offline use." message.
+                            channel.postMessage("content-cached")
                             console.log('Content is cached for offline use.');
 
                             // Execute callback
