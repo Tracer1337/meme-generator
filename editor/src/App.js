@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react"
 import Canvas from "./components/Canvas/Canvas.js"
 import BottomBar from "./components/BottomBar/BottomBar.js"
 import Analytics from "./utils/Analytics.js"
+import OfflineUseAlerts from "./utils/OfflineUseAlerts.js"
 
 const AppContext = React.createContext()
 
@@ -59,6 +60,7 @@ function App({ injectedImage = null }) {
     return (
         <AppContext.Provider value={{ ...context, ...setter }}>
             <Analytics/>
+            <OfflineUseAlerts/>
             
             <Canvas/>
             <BottomBar/>

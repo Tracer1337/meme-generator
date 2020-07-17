@@ -30,9 +30,3 @@ ReactDOM.render((
 ), document.getElementById("root"))
 
 serviceWorker.register()
-
-const channel = new BroadcastChannel("sw-0")
-
-channel.addEventListener("message", function(event) {
-    console.log(event)
-})
