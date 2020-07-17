@@ -29,8 +29,21 @@ export async function cachedRequest(url) {
 }
 
 export async function getCachedImage(url) {
-    // Request cached image
-    const response = await cachedRequest(url)
+    // Retrieve cache instance
+    const cache = await caches.open(cacheName)
+
+    // Get cached response
+    let response = await cache.match(url)
+
+    // Store image to cache if missing
+    if(!response) {
+        response = await fetch(url)
+
+        // Store image asynchronously => Do not block loading process
+        new Promise(() => {
+            cache.put(url, response.clone())
+        })
+    }
 
     // Create local image url from response
     const blob = await response.blob()
