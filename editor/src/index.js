@@ -21,8 +21,6 @@ if(IS_DEV) {
     console.log(theme)
 }
 
-document.body.style.overflow = "hidden"
-
 ReactDOM.render((
     <ThemeProvider theme={theme}>
         <App/>
