@@ -23,8 +23,18 @@ router.get("/", async (req, res) => {
         res.render("index", { amountTemplates, totalTemplateUses })
     } catch(error) {
         console.log(error)
-        res.status(500)
-        res.end()
+        res.status(500).end()
+    }
+})
+
+// Get archive page
+router.get("/archive", async (req, res) => {
+    try {
+        const images = (await awaitQuery("SELECT * FROM uploads")).map(upload => upload.filename)
+        res.render("archive", { images })
+    } catch(error) {
+        console.error(error)
+        res.status(500).end()
     }
 })
 

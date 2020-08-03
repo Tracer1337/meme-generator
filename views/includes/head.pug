@@ -1,0 +1,28 @@
+mixin head(title)
+    doctype html
+    head
+        meta(charset='UTF-8')
+        meta(name='viewport' content='width=device-width, initial-scale=1.0')
+
+        // SEO
+        meta(name='author' content='Merlin Moelter')
+        meta(name='description' content='The Easiest Meme Generator Available')
+
+        meta(property='og:title' content='Easy Meme')
+        meta(property='og:description' content='The Easiest Meme Generator Available')
+        meta(property='og:image' content='https://easymeme69.com/images/logo.png')
+        meta(property='og:site_name' content='EasyMeme')
+        meta(property='og:type' content='Website')
+
+        link(rel='canonical' href='https://easymeme69.com/')
+
+        link(rel='icon' href='images/favicon.ico')
+
+        link(rel='stylesheet' href='css/materialize.min.css')
+        link(rel='stylesheet' href='css/cookieconsent.min.css')
+        link(rel='stylesheet' href='css/style.css')
+
+        title title
+
+        // Google Analytics
+        script(async='' src='https://www.googletagmanager.com/gtag/js?id=UA-162994094-2')

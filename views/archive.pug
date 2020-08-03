@@ -1,0 +1,20 @@
+include ./includes/head.pug
+
++head(title="EasyMeme | Archive")
+
+body
+    link(rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons")
+
+    include ./includes/nav.pug
+
+    #image-grid(style="padding: 0 20px;")
+
+    script.
+        images=JSON.parse(`!{JSON.stringify(images)}`)
+
+    include ./includes/scripts.pug
+
+    script(src="https://unpkg.com/react@16/umd/react.development.js" crossorigin)
+    script(src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin)
+    
+    script(src="/js/img-grid.js")

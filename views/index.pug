@@ -1,39 +1,9 @@
-doctype html
-head
-    meta(charset='UTF-8')
-    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+include ./includes/head.pug
 
-    // SEO
-    meta(name='author' content='Merlin Moelter')
-    meta(name='description' content='The Easiest Meme Generator Available')
-
-    meta(property='og:title' content='Easy Meme')
-    meta(property='og:description' content='The Easiest Meme Generator Available')
-    meta(property='og:image' content='https://easymeme69.com/images/logo.png')
-    meta(property='og:site_name' content='EasyMeme')
-    meta(property='og:type' content='Website')
-
-    link(rel='canonical' href='https://easymeme69.com/')
-
-    link(rel='icon' href='images/favicon.ico')
-
-    link(rel='stylesheet' href='css/materialize.min.css')
-    link(rel='stylesheet' href='css/cookieconsent.min.css')
-    link(rel='stylesheet' href='css/style.css')
-
-    title Easy Meme
-
-    // Google Analytics
-    script(async='' src='https://www.googletagmanager.com/gtag/js?id=UA-162994094-2')
++head(title="EasyMeme")
 
 body
-    header
-        h4.brand-name Easy Meme
-            
-        span.links
-            a(href='#features') Features
-            a(href='#about') About
-            a(href='https://www.yet-another-blog.com/legal' target='_blank') Legal
+    include ./includes/nav.pug
 
     main
         h4 The last Meme Generator you will ever need.
@@ -79,7 +49,7 @@ body
 
     section#about
         h4 About
-        p Easy Meme is a hobby project of Merlin Moelter.
+        p Easy Meme is a hobby project from Merlin Moelter.
         p Contact: merlin.moelter@gmail.com, 
             a(href='https://github.com/Tracer1337' target='_blank') GitHub
 
@@ -88,10 +58,4 @@ body
     section#footer
         p Google Play and the Google Play logo are trademarks of Google LLC.
 
-    script(src='js/materialize.min.js')
-
-    script(src='js/anime.min.js')
-
-    script(src='js/cookieconsent.min.js')
-
-    script(src="js/index.js")
+    include ./includes/scripts.pug

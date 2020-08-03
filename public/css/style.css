@@ -17,6 +17,7 @@ body {
     background-image: linear-gradient(to bottom right, #764BA2, #667EEA);
     background-repeat: no-repeat;
     overflow-x: hidden;
+    min-height: 100vh;
 }
 
 h4 {
@@ -180,6 +181,16 @@ section li:last-child {
     left: 186px;
     transform: rotate(-27.5deg);
     transform: perspective(200px) rotateZ(-50deg) rotateY(22.5deg);
+}
+
+#image-grid {
+    max-width: 1100px;
+    margin: auto;
+}
+
+#image-grid .grid-item {
+    width: 100%;
+    margin-bottom: 20px;
 }
 
 @media only screen and (min-width: 420px) {
