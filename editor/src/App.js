@@ -9,12 +9,16 @@ import { setCSSVariable } from "./utils/style.js"
 
 const AppContext = React.createContext()
 
-// The screen should not be wider than maxRatio% of the height
-const maxRatio = .65
+/**
+ * If the screen is wider than maxRatio% of the height, set
+ * the width to constraintTo * height.
+ */
+const maxRatio = 1
+const constrainTo = .65
 
 function getWidth() {
     if (window.outerWidth / window.outerHeight > maxRatio) {
-        return window.outerHeight * maxRatio
+        return window.outerHeight * constrainTo
     }
 
     return window.outerWidth
