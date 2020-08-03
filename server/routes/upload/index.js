@@ -1,6 +1,5 @@
 const express = require("express")
 const fs = require("fs")
-const path = require("path")
 const router = express.Router()
 
 const StorageFacade = require("../../facades/StorageFacade.js")
@@ -10,6 +9,14 @@ const { db } = require("../../utils/connectToDB")
 
 // Get file from Storage
 router.get("/:file", async (req, res) => {
+    // Render HTML page if no file extension is provided
+    if (!/[^.]*\..*/.test(req.params.file)) {
+        return void res.render("image", {
+            imagePath: `/nudes/${req.params.file}.png`,
+            title: "Created with https://easymeme69.com/"
+        })
+    }
+    
     const stream = StorageFacade.getFileStream(process.env.AWS_BUCKET_PUBLIC_DIR + "/" + req.params.file)
     
     stream.on("error", (error) => {
@@ -17,7 +24,7 @@ router.get("/:file", async (req, res) => {
     })
 
     try {
-        // Pipe S3 file-stream to response
+        // Pipe storage file-stream to response
         stream.pipe(res)
             .on("error", (error) => {
                 console.error(error)
@@ -36,7 +43,7 @@ router.post("/", upload.single("file"), async (req, res) => {
     fs.writeFileSync(req.file.path, formattedImage)
 
     try {
-        // Upload file to S3
+        // Upload file to storage
         await StorageFacade.uploadFile(req.file.path, process.env.AWS_BUCKET_PUBLIC_DIR + "/" + req.file.filename)
 
         // Store file in database
@@ -51,7 +58,7 @@ router.post("/", upload.single("file"), async (req, res) => {
             
             // Send file path
             res.send({
-                path: "/nudes/" + req.file.filename
+                path: "/nudes/" + req.file.filename.replace(/\..*/, "")
             })
         })
     } catch (error) {

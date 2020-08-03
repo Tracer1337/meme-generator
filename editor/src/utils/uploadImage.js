@@ -11,7 +11,7 @@ async function uploadImage(image) {
         
         const data = await res.json()
     
-        return window.location.origin + data.path
+        return window.location.host + data.path
     } catch (error) {
         console.error(error)
         return

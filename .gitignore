@@ -7,5 +7,8 @@ public/editor
 
 templates/
 stickers/
+bucket/
 
 store/google-play/
+
+*.log
