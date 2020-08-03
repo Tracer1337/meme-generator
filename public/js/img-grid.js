@@ -28,8 +28,9 @@ function getImageDimensions(image) {
 
 function getAmountOfRows() {
     const sizeMap = {
-        300: 2,
-        700: 4,
+        500: 2,
+        800: 3,
+        1100: 4,
         Infinity: 6 
     }
 
@@ -85,7 +86,10 @@ function Grid() {
                     }
                 })
 
+                // Add item to row's elements
                 row.elements.push(e(GridItem, { image, key: image }))
+
+                // Add element's score to row
                 row.score += ratio
             }
 
@@ -110,7 +114,13 @@ function Grid() {
     })
 
     if (!rows || !rows.length) {
-        return null
+        return e("div", { className: "row" }, Array(amountOfRows).fill(0).map((_, i) => (
+            e("div", { className: "col s" + 12 / amountOfRows, key: i }, (
+                Array(Math.ceil(images.length / amountOfRows)).fill(0).map((_, j) => (
+                    e("div", { className: "skeleton grid-item", style: { height: Math.floor(Math.random() * 100) + 100 }, key: j })
+                ))
+            ))
+        )))
     }
 
     return e("div", { className: "row" }, rows.map((row, i) => (
