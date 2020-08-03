@@ -3,8 +3,6 @@ storage/*
 temp/*
 .env
 
-public/editor
-
 templates/
 stickers/
 bucket/

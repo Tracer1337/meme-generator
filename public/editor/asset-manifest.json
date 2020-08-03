@@ -1,0 +1,33 @@
+{
+  "files": {
+    "main.css": "/editor/static/css/main.1873515d.chunk.css",
+    "main.js": "/editor/static/js/main.7e738362.chunk.js",
+    "main.js.map": "/editor/static/js/main.7e738362.chunk.js.map",
+    "runtime-main.js": "/editor/static/js/runtime-main.6589e790.js",
+    "runtime-main.js.map": "/editor/static/js/runtime-main.6589e790.js.map",
+    "static/js/2.71967253.chunk.js": "/editor/static/js/2.71967253.chunk.js",
+    "static/js/2.71967253.chunk.js.map": "/editor/static/js/2.71967253.chunk.js.map",
+    "index.html": "/editor/index.html",
+    "precache-manifest.07b1bb47b38083a88719d32fb1e4dfc6.js": "/editor/precache-manifest.07b1bb47b38083a88719d32fb1e4dfc6.js",
+    "service-worker.js": "/editor/service-worker.js",
+    "static/css/main.1873515d.chunk.css.map": "/editor/static/css/main.1873515d.chunk.css.map",
+    "static/js/2.71967253.chunk.js.LICENSE.txt": "/editor/static/js/2.71967253.chunk.js.LICENSE.txt",
+    "static/media/FBMessenger.png": "/editor/static/media/FBMessenger.f8b3ffc7.png",
+    "static/media/Facebook.png": "/editor/static/media/Facebook.9ee5d43c.png",
+    "static/media/Gmail.png": "/editor/static/media/Gmail.598d07e7.png",
+    "static/media/Pinterest.png": "/editor/static/media/Pinterest.717253e4.png",
+    "static/media/Reddit.png": "/editor/static/media/Reddit.3826daa7.png",
+    "static/media/Skype.png": "/editor/static/media/Skype.5a725d78.png",
+    "static/media/Telegram.png": "/editor/static/media/Telegram.b4b9d64f.png",
+    "static/media/Tumblr.png": "/editor/static/media/Tumblr.93e9138a.png",
+    "static/media/Twitter.png": "/editor/static/media/Twitter.1f5a8ef5.png",
+    "static/media/WhatsApp.svg": "/editor/static/media/WhatsApp.0e878a0f.svg",
+    "static/media/index.css": "/editor/static/media/impact.8fc622c3.ttf"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.6589e790.js",
+    "static/js/2.71967253.chunk.js",
+    "static/css/main.1873515d.chunk.css",
+    "static/js/main.7e738362.chunk.js"
+  ]
+}
