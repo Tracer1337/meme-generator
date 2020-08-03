@@ -1,8 +1,10 @@
 import { IS_DEV, CACHE_NAME } from "../config/constants.js"
 
+const isCacheSupported = "caches" in window
+
 export async function cachedRequest(url) {
     // Do not cache in development mode
-    if(IS_DEV) {
+    if (IS_DEV || !isCacheSupported) {
         return await fetch(url)
     }
 
@@ -27,6 +29,10 @@ export async function cachedRequest(url) {
 }
 
 export async function getCachedImage(url) {
+    if (!isCacheSupported) {
+        return url
+    }
+
     // Retrieve cache instance
     const cache = await caches.open(CACHE_NAME)
 
@@ -46,6 +52,10 @@ export async function getCachedImage(url) {
 }
 
 export async function cacheImage(url) {
+    if (!isCacheSupported) {
+        return
+    }
+
     // Do not cache blob / in development mode
     if(url.indexOf("blob") === 0 || IS_DEV) {
         return

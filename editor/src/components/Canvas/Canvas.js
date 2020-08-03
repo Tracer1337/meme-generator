@@ -370,7 +370,7 @@ function Canvas() {
                     <img
                         alt=""
                         src={context.image}
-                        className={classes.image}
+                        className="meme-image"
                         ref={image}
                         draggable="false"
                     />

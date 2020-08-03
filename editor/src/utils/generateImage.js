@@ -25,6 +25,13 @@ function compensateError(clonedDocument) {
             .reverse()
             .map(node => parent.appendChild(node))
     }
+
+    /**
+     * Remove white border
+     */
+    const image = clonedDocument.querySelector(".meme-image")
+    image.style.minWidth = (image.clientWidth + 1) + "px"
+    image.style.minHeight = (image.clientHeight + 1) + "px"
 }
 
 async function generateImage(container) {
