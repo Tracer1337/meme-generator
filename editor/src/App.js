@@ -94,6 +94,13 @@ function App({ injectedImage = null }) {
         document.getElementById("root").style.boxShadow = theme.shadows[4]
     }, [theme])
 
+    useEffect(() => {
+        // Fix layout in chrome extension
+        setTimeout(() => {
+            setter.set({ width: getWidth() })
+        }, 100)
+    }, [])
+
     return (
         <AppContext.Provider value={{ ...context, ...setter }}>
             <Analytics/>
