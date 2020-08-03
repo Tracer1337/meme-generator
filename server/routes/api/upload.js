@@ -15,8 +15,9 @@ router.get("/random", (req, res) => {
 
         // Send first entry of shuffled rows
         const row = results[0]
-        res.send({
-            path: `/nudes/${row.filename.replace(/\..*/, "")}`
+        res.render("image", {
+            imagePath: `/nudes/${row.filename.replace(/\..*/, "")}.png`,
+            title: "Created with https://easymeme69.com/"
         })
     })
 })
