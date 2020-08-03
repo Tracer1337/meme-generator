@@ -30,7 +30,7 @@ router.get("/:file", async (req, res) => {
 // Upload file to storage
 router.post("/", upload.single("file"), async (req, res) => {
     // Format image like templates and stickers
-    const formattedImage = await formatImage(req.file.path, "png")
+    const formattedImage = await formatImage(req.file.path)
 
     // Replace uploaded image with formatted image
     fs.writeFileSync(req.file.path, formattedImage)
