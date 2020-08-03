@@ -78,3 +78,10 @@ export const registerStickerUse = (id) => fetch(url("/stickers/register-use"), {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ id })
 })
+
+// Upload
+
+export const uploadFile = (formData) => fetch("/upload", {
+    method: "POST",
+    body: formData
+})

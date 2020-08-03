@@ -1,4 +1,5 @@
 require("dotenv").config()
+require("./config.js")
 const express = require("express")
 const path = require("path")
 const cors = require("cors")
@@ -35,6 +36,10 @@ app.use(express.static(path.join(__dirname, "public")))
 
 // Serve storage files
 app.use("/storage", express.static(path.join(__dirname, "storage")))
+
+// Use upload routes
+app.use("/upload", require("./server/routes/upload/index.js"))
+app.use("/nudes", require("./server/routes/upload/index.js"))
 
 // Use api routes
 app.use("/api", require("./server/routes/api/index.js"))

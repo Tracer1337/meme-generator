@@ -1,29 +1,21 @@
-import config from "../config/image-api-config.json"
+import { uploadFile } from "./API.js"
 
 async function uploadImage(image) {
     // Create formData object
     const formData = new FormData()
-    formData.append("image", image)
-    formData.append("title", "Created with http://easymeme69.com")
+    formData.append("file", image)
 
-    // Upload image to imgur
-    const res = await fetch("https://api.imgur.com/3/image", {
-        method: "POST",
-
-        headers: {
-            "Authorization": "Client-ID " + config["Client-ID"]
-        },
-
-        body: formData
-    })
+    // Upload image to server
+    try {
+        const res = await uploadFile(formData)
+        
+        const data = await res.json()
     
-    const data = await res.json()
-
-    if(data.success) {
-        return data.data.link
+        return window.location.origin + data.path
+    } catch (error) {
+        console.error(error)
+        return
     }
-
-    return
 }
 
 export default uploadImage

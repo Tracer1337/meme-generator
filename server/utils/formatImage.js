@@ -8,7 +8,7 @@ async function formatImage(path, format = "jpeg") {
             const resized = await image
                 .resize(metadata.width <= 512 ? metadata.width : 512)
             
-            if(format === "jpeg") {
+            if (format === "jpeg") {
                 return resized.jpeg().toBuffer()
             } else if (format === "png") {
                 return resized.png().toBuffer()
