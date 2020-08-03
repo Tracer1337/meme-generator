@@ -54,7 +54,8 @@ function GridItem({ image }) {
     }, /*#__PURE__*/React.createElement("img", {
         className: "materialboxed",
         src: "/upload/" + image,
-        ref: ref
+        ref: ref,
+        loading: "lazy"
     })));
 }
 
