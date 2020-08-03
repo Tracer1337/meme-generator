@@ -7,6 +7,8 @@ const s3 = new AWS.S3({ apiVersion: "2006-03-01" })
 
 const DEV_BUCKET_DIR = path.join(__dirname, "..", "..", "bucket")
 
+const cache = new Map()
+
 const StorageFacade = {
     createBucket(bucketName = process.env.APP_NAME + "-" + uuid()) {
         return new Promise((resolve, reject) => {
@@ -21,8 +23,12 @@ const StorageFacade = {
     },
 
     uploadFile(inputPath, outputPath, bucketName = process.env.AWS_BUCKET) {
+        const fileName = path.basename(inputPath)
+
+        cache.set(fileName, fs.readFileSync(inputPath))
+
         if (process.env.NODE_ENV === "development") {
-            return fs.copyFileSync(inputPath, path.join(DEV_BUCKET_DIR, outputPath))
+            return fs.copyFileSync(inputPath, path.join(DEV_BUCKET_DIR, fileName))
         }
 
         return new Promise((resolve, reject) => {
@@ -46,19 +52,39 @@ const StorageFacade = {
         })
     },
 
-    getFileStream(fileName, bucketName = process.env.AWS_BUCKET) {
-        if (process.env.NODE_ENV === "development") {
-            return fs.createReadStream(path.join(DEV_BUCKET_DIR, fileName))
+    getFile(filePath, bucketName = process.env.AWS_BUCKET) {
+        const fileName = path.basename(filePath)
+
+        if (cache.has(fileName)) {
+            return cache.get(fileName)
         }
 
-        const params = {
-            Bucket: bucketName,
-            Key: fileName
-        }
+        return new Promise((resolve, reject) => {
+            let stream
 
-        const stream = s3.getObject(params).createReadStream()
+            if (process.env.NODE_ENV === "development") {
+                stream = fs.createReadStream(path.join(DEV_BUCKET_DIR, fileName))
+            } else {
+                const params = {
+                    Bucket: bucketName,
+                    Key: filePath
+                }
 
-        return stream
+                stream = s3.getObject(params).createReadStream()
+            }
+
+            const buffers = []
+
+            stream.on("error", reject)
+
+            stream.on("data", (chunk) => buffers.push(chunk))
+
+            stream.on("end", () => {
+                const buffer = Buffer.concat(buffers)
+                cache.set(fileName, buffer)
+                resolve(buffer)
+            })
+        })
     }
 }
 

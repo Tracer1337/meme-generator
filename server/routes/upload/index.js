@@ -17,21 +17,14 @@ router.get("/:file", async (req, res) => {
         })
     }
     
-    const stream = StorageFacade.getFileStream(process.env.AWS_BUCKET_PUBLIC_DIR + "/" + req.params.file)
-    
-    stream.on("error", (error) => {
-        res.status(error.statusCode).end()
-    })
+    const buffer = StorageFacade.getFile(process.env.AWS_BUCKET_PUBLIC_DIR + "/" + req.params.file)
 
-    try {
-        // Pipe storage file-stream to response
-        stream.pipe(res)
-            .on("error", (error) => {
-                console.error(error)
-                res.status(500).end()
-            })
-            .on("close", () => res.end())
-    } catch { }
+    if (Buffer.isBuffer(buffer)) {
+        res.header("X-From-Cache", true)
+        res.end(buffer)
+    } else {
+        res.end(await buffer)
+    }
 })
 
 // Upload file to storage
