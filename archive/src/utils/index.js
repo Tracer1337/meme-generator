@@ -50,8 +50,6 @@ export function getModalImageDimensions(image) {
             const maxHeight = window.innerHeight * .5
             const imageRatio = height / width
             const finalHeight = maxWidth * imageRatio
-            
-            console.log(image, { finalHeight, maxWidth, maxHeight, imageRatio })
 
             if (finalHeight > maxHeight) {
                 resolve({

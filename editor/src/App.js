@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useReducer } from "react"
 import { useTheme } from "@material-ui/core/styles"
 
 import Canvas from "./components/Canvas/Canvas.js"
@@ -24,17 +24,19 @@ function getWidth() {
     return window.outerWidth
 }
 
-function App({ injectedImage = null }) {
+function App() {
     const theme = useTheme()
 
     const [context, setContext] = useState({
         event: new EventTarget(),
-        image: injectedImage,
+        image: null,
         label: null,
         currentTemplate: null,
         password: localStorage.getItem("password"),
         width: getWidth()
     })
+
+    const [updateKey, update] = useReducer(key => key + 1, 0)
 
     const setter = {
         set: values => setContext({ ...context, ...values }),
@@ -44,19 +46,6 @@ function App({ injectedImage = null }) {
             setContext({ ...context, password })
         }
     }
-
-    useEffect(() => {
-        const handleUndo = (event) => {
-            // Detect ctrl + z
-            if(event.ctrlKey && event.keyCode === 90) {
-                context.event.dispatchEvent(new CustomEvent("undo"))
-            }
-        }
-
-        window.addEventListener("keydown", handleUndo)
-
-        return () => window.removeEventListener("keydown", handleUndo)
-    }, [])
 
     useEffect(() => {
         // Handle image injection
@@ -75,12 +64,21 @@ function App({ injectedImage = null }) {
             setter.set({ width: getWidth() })
         }
 
+        // Detect ctrl + z
+        const handleUndo = (event) => {
+            if (event.ctrlKey && event.keyCode === 90) {
+                context.event.dispatchEvent(new CustomEvent("undo"))
+            }
+        }
+
         window.addEventListener("message", handleMessage)
         window.addEventListener("resize", handleResize)
+        window.addEventListener("keydown", handleUndo)
         
         return () => {
             window.removeEventListener("message", handleMessage)
             window.removeEventListener("resize", handleResize)
+            window.removeEventListener("keydown", handleUndo)
         }
     })
 
@@ -95,11 +93,13 @@ function App({ injectedImage = null }) {
     }, [theme])
 
     useEffect(() => {
-        // Fix layout in chrome extension
-        setTimeout(() => {
+        if (updateKey !== 0) {
+            // Fix layout in chrome extension
             setter.set({ width: getWidth() })
-        }, 100)
-    }, [])
+        } else {
+            setTimeout(update, 100)
+        }
+    }, [updateKey])
 
     return (
         <AppContext.Provider value={{ ...context, ...setter }}>
