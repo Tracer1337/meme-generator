@@ -197,6 +197,11 @@ section li:last-child {
     cursor: pointer;
 }
 
+.modal {
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+}
+
 @media only screen and (min-width: 420px) {
     section p {
         text-align: center;

@@ -17,3 +17,9 @@ cd ..
 rm -r ./public/editor
 mkdir ./public/editor
 mv ./editor/build/* ./public/editor
+
+cd archive
+
+npm run build
+
+cd ..

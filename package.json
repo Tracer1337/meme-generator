@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "npm run start",
-    "start": "concurrently --kill-others \"npm run start-server\" \"cd editor && npm start\"",
+    "start": "concurrently --kill-others \"npm run start-server\" \"cd editor && npm start\" \"cd archive && npm start\"",
     "start-server": "node scripts/start-server.js && nodemon --watch server --watch index.js index.js",
     "create-bucket": "node server/scripts/createBucket.js"
   },
