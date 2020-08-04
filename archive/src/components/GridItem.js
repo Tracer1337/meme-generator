@@ -33,26 +33,28 @@ function GridItem({ image }) {
         M.toast({ html: "Copied to clipboard", displayLength: 1000 })
     }
 
-    const link = `${window.location.protocol}//${window.location.host}/nudes/${image.replace(/\..*/, "")}`
+    const path = "/nudes/" + image
+
+    const link = `${window.location.protocol}//${window.location.host}${path.replace(/\..*/, "")}`
 
     return (
         <div className="card grid-item">
             <a className="modal-trigger" href={"#" + image}>
                 <div className="card-image">
-                    <img src={"/upload/" + image} loading="lazy"></img>
+                    <img src={path} loading="lazy"></img>
                 </div>
             </a>
 
             <div id={image} className="modal" ref={modalRef}>
                 <div className="modal-content center-align">
-                    <img src={"/upload/" + image} ref={modalImageRef} style={modalImageDimension}/>
+                    <img src={path} ref={modalImageRef} style={modalImageDimension}/>
                 </div>
 
                 <div className="modal-footer">
                     <div className="card-action" style={{
                         padding: 8,
                         display: "flex",
-                        justifyContent: "center",
+                        justifyContent: "flex-end",
                         alignItems: "center",
                         height: "100%"
                     }}>
@@ -62,6 +64,12 @@ function GridItem({ image }) {
                                 height: 16
                             }}>Copy Link</a>
                         </CopyToClipboard>
+
+                        <a className="pointer teal-text text-lighten-2" href={path} download style={{
+                            margin: 0,
+                            marginLeft: 16,
+                            height: 16
+                        }}>Download</a>
                     </div>
                 </div>
             </div>

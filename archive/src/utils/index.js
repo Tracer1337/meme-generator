@@ -42,13 +42,24 @@ export function getModalImageDimensions(image) {
         img.onload = () => {
             const { naturalWidth: width, naturalHeight: height } = img
 
-            if (width > height || window.outerWidth < window.outerHeight) {
+            /**
+             * If the final height of the image will be larger than the modal,
+             * constrain the height to maxHeight.
+             */
+            const maxWidth = (window.innerWidth <= 992 ? .8 : .5) * window.innerWidth
+            const maxHeight = window.innerHeight * .5
+            const imageRatio = height / width
+            const finalHeight = maxWidth * imageRatio
+            
+            console.log(image, { finalHeight, maxWidth, maxHeight, imageRatio })
+
+            if (finalHeight > maxHeight) {
                 resolve({
-                    width: "100%"
+                    height: maxHeight
                 })
             } else {
                 resolve({
-                    height: 500
+                    width: "100%"
                 })
             }
         }
