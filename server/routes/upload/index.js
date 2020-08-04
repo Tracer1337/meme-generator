@@ -12,7 +12,7 @@ router.get("/:file", async (req, res) => {
     // Render HTML page if no file extension is provided
     if (!/[^.]*\..*/.test(req.params.file)) {
         return void res.render("image", {
-            imagePath: `/nudes/${req.params.file}.png`,
+            imagePath: `/nudes/${req.params.file}.jpg`,
             title: "Created with https://easymeme69.com/"
         })
     }

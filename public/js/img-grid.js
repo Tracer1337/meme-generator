@@ -48,6 +48,29 @@ function GridItem({ image }) {
         M.Materialbox.init(ref.current)
     }, [ref])
 
+    const handleCopy = () => {
+        M.toast({ html: "Copied to clipboard", displayLength: 1000 })
+    }
+
+    /**
+     * <div className="card grid-item">
+     *      <div className="card-image">
+     *          <img
+     *              className="materialboxed"
+     *              src={"/upload/" + image}
+     *              ref={ref}
+     *              loading="lazy"
+     *          ></img>
+     *      </div>
+     * 
+     *      <div className="card-action">
+     *          <button className="waves-effect waves-light btn">copy</button>
+     *      </div>
+     * </div>
+     */
+
+    const link = `${window.location.protocol}//${window.location.host}/nudes/${image.replace(/\..*/, "")}`
+
     return React.createElement("div", {
         className: "card grid-item"
     }, /*#__PURE__*/React.createElement("div", {
@@ -57,7 +80,22 @@ function GridItem({ image }) {
         src: "/upload/" + image,
         ref: ref,
         loading: "lazy"
-    })));
+    })), /*#__PURE__*/React.createElement("div", {
+        className: "card-action",
+        style: {
+            padding: 8,
+            display: "flex",
+            justifyContent: "center"
+        }
+    }, /*#__PURE__*/React.createElement(CopyToClipboard, {
+        text: link,
+        onCopy: handleCopy
+    }, /*#__PURE__*/React.createElement("a", {
+        className: "pointer teal-text text-lighten-2",
+        style: {
+            margin: 0
+        }
+    }, "copy link"))));
 }
 
 function Grid() {
