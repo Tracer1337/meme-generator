@@ -41,7 +41,7 @@ function GridItem({ image }) {
         <div className="card grid-item">
             <a className="modal-trigger" href={"#" + image}>
                 <div className="card-image">
-                    <img src={path} loading="lazy"></img>
+                    <img src={path}/>
                 </div>
             </a>
 
@@ -67,7 +67,7 @@ function GridItem({ image }) {
 
                         <a className="pointer teal-text text-lighten-2" href={path} download style={{
                             margin: 0,
-                            marginLeft: 16,
+                            marginLeft: 24,
                             height: 16
                         }}>Download</a>
                     </div>

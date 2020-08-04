@@ -19,13 +19,13 @@ import { uploadTemplate, registerTemplateUse, registerStickerUse } from "../../u
 import { IS_ANDROID_APP } from "../../config/constants.js"
 
 const useStyles = makeStyles(theme => {
-    const button = {
+    const spacing = {
         margin: theme.spacing(2),
         marginTop: 0
     }
 
     return {
-        button,
+        spacing,
 
         title: {
             textAlign: "center"
@@ -46,7 +46,7 @@ const useStyles = makeStyles(theme => {
         },
 
         uploadButtonWrapper: {
-            ...button,
+            ...spacing,
             position: "relative"
         },
         
@@ -74,6 +74,15 @@ const useStyles = makeStyles(theme => {
             padding: theme.spacing(1)
         },
 
+        terms: {
+            ...spacing,
+            color: theme.palette.text.secondary
+        },
+
+        archiveLink: {
+            color: theme.palette.text.secondary
+        },
+
         snackbarClose: {
             color: theme.palette.primary.variant
         }
@@ -83,9 +92,9 @@ const useStyles = makeStyles(theme => {
 function ImageDialog({ open, onClose, imageData, elements }) {
     const context = useContext(AppContext)
 
-    const { register, getValues } = useForm()
-
     const classes = useStyles({ imageData })
+    
+    const { register, getValues } = useForm()
 
     // Increase the usage-counter only once
     const isRegistered = useRef(false)
@@ -222,12 +231,17 @@ function ImageDialog({ open, onClose, imageData, elements }) {
                                 startIcon={<DownloadIcon />}
                                 color="primary"
                                 variant="outlined"
-                                className={classes.button}
+                                className={classes.spacing}
                                 onClick={handleDownloadClick}
                             >
                                 Download
                             </Button>
                         )}
+
+                        <Typography variant="caption" className={classes.terms}>
+                            By clicking on "Create Link" the image above will be uploaded to our servers and therefor be visible
+                            in the <a href="/archive" target="_blank" className={classes.archiveLink}>Archive</a>.
+                        </Typography>
 
                         {context.password && !context.currentTemplate && !hasCreatedTemplate && (
                             <>
@@ -235,7 +249,7 @@ function ImageDialog({ open, onClose, imageData, elements }) {
                                     inputRef={register()}
                                     name="label"
                                     label="Label"
-                                    className={classes.button}
+                                    className={classes.spacing}
                                     variant="outlined"
                                     defaultValue={context.label}
                                 />
@@ -243,7 +257,7 @@ function ImageDialog({ open, onClose, imageData, elements }) {
                                     startIcon={<PublishIcon />}
                                     color="primary"
                                     variant="outlined"
-                                    className={classes.button}
+                                    className={classes.spacing}
                                     onClick={handleTemplateClick}
                                 >
                                     Publish Template
