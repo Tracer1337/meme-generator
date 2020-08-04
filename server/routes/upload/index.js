@@ -32,17 +32,20 @@ router.post("/", upload.single("file"), async (req, res) => {
     // Format image like templates and stickers
     const formattedImage = await formatImage(req.file.path)
 
+    // Get new filename
+    const newFilename = req.file.filename.replace(".png", ".jpg")
+
     // Replace uploaded image with formatted image
     fs.writeFileSync(req.file.path, formattedImage)
 
     try {
         // Upload file to storage
-        await StorageFacade.uploadFile(req.file.path, process.env.AWS_BUCKET_PUBLIC_DIR + "/" + req.file.filename)
+        await StorageFacade.uploadFile(req.file.path, process.env.AWS_BUCKET_PUBLIC_DIR + "/" + newFilename)
 
         // Store file in database
         const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
 
-        const sql = `INSERT INTO uploads (filename, request_ip_address) VALUES ('${req.file.filename}', '${ip}')`
+        const sql = `INSERT INTO uploads (filename, request_ip_address) VALUES ('${newFilename}', '${ip}')`
 
         db.query(sql, (error, data) => {
             if (error) {
@@ -51,7 +54,7 @@ router.post("/", upload.single("file"), async (req, res) => {
             
             // Send file path
             res.send({
-                path: "/nudes/" + req.file.filename.replace(/\..*/, "")
+                path: "/nudes/" + newFilename.replace(/\..*/, "")
             })
         })
     } catch (error) {
