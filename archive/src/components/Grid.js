@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useMemo } from "react"
 
 import GridItem from "./GridItem.js"
 import { Row, getImageDimensions, getAmountOfRows } from "../utils"
@@ -12,13 +12,26 @@ function Grid() {
     const [isLoading, setIsLoading] = useState(true)
     const [showHiddenImages, setShowHiddenImages] = useState(false)
 
+    const skeletons = useMemo(() => (
+        Array(amountOfRows).fill(0).map((_, i) => (
+            <div className={"col s" + 12 / amountOfRows} key={i}>
+                <div className="skeleton grid-item" style={{ height: Math.floor(Math.random() * 100) + 100 }} />
+                <div className="skeleton grid-item" style={{ height: Math.floor(Math.random() * 100) + 100 }} />
+                <div className="skeleton grid-item" style={{ height: Math.floor(Math.random() * 100) + 100 }} />
+            </div>
+        ))
+    ), [amountOfRows])
+
+    const handleShowHiddenImagesChange = (event) => {
+        setShowHiddenImages(event.target.checked)
+    }
+
     const fetchImages = async () => {
         const response = await fetch("/api/upload/all" + (password ? "?password=" + password : ""))
 
         const images = await response.json()
 
         setImages(images)
-        setIsLoading(false)
     }
 
     const arrangeImages = async () => {
@@ -61,10 +74,7 @@ function Grid() {
         }
 
         setRows(newRows)
-    }
-
-    const handleShowHiddenImagesChange = (event) => {
-        setShowHiddenImages(event.target.checked)
+        setIsLoading(false)
     }
 
     useEffect(() => {
@@ -96,13 +106,7 @@ function Grid() {
     if (isLoading) {
         return (
             <div className="row">
-                { Array(amountOfRows).fill(0).map((_, i) => (
-                    <div className={"col s" + 12 / amountOfRows} key={i}>
-                        <div className="skeleton grid-item" style={{ height: Math.floor(Math.random() * 100) + 100 }}/>
-                        <div className="skeleton grid-item" style={{ height: Math.floor(Math.random() * 100) + 100 }}/>
-                        <div className="skeleton grid-item" style={{ height: Math.floor(Math.random() * 100) + 100 }}/>
-                    </div>
-                )) }
+                { skeletons }
             </div>
         )
     }

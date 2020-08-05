@@ -20,6 +20,8 @@ router.get("/:file", async (req, res) => {
     
     const buffer = StorageFacade.getFile(process.env.AWS_BUCKET_PUBLIC_DIR + "/" + req.params.file)
 
+    await new Promise(resolve => setTimeout(resolve, 100))
+
     if (Buffer.isBuffer(buffer)) {
         res.header("X-From-Cache", true).end(buffer)
     } else {
