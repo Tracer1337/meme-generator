@@ -11,9 +11,9 @@ const { db } = require("../../utils/connectToDB")
 router.get("/:file", async (req, res) => {
     // Render HTML page if no file extension is provided
     if (!/[^.]*\..*/.test(req.params.file)) {
-        return void res.render("image", {
+        return res.render("image", {
             imagePath: `/nudes/${req.params.file}.jpg`,
-            title: "Created with https://easymeme69.com/"
+            title: "Created with easymeme69.com"
         })
     }
     
