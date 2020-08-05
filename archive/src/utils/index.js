@@ -16,7 +16,7 @@ export function getImageDimensions(image) {
             })
         }
 
-        img.src = "/upload/" + image
+        img.src = "/nudes/" + image
     })
 }
 
@@ -62,6 +62,6 @@ export function getModalImageDimensions(image) {
             }
         }
 
-        img.src = "/upload/" + image
+        img.src = "/nudes/" + image
     })
 }

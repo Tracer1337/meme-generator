@@ -20,6 +20,8 @@ router.get("/:file", async (req, res) => {
     
     const buffer = StorageFacade.getFile(process.env.AWS_BUCKET_PUBLIC_DIR + "/" + req.params.file)
 
+    await new Promise(resolve => setTimeout(resolve, 100))
+
     if (Buffer.isBuffer(buffer)) {
         res.header("X-From-Cache", true).end(buffer)
     } else {
@@ -51,7 +53,7 @@ router.post("/", upload.single("file"), async (req, res) => {
 
         const sql = `INSERT INTO uploads (filename, request_ip_address) VALUES ('${newFilename}', '${ip}')`
 
-        db.query(sql, (error, data) => {
+        db.query(sql, (error) => {
             if (error) {
                 return void console.error(error)
             }
@@ -70,7 +72,7 @@ router.post("/", upload.single("file"), async (req, res) => {
     }
 })
 
-// Change removed-state from file
+// Change removed-state of file
 router.post("/:file", async (req, res) => {
     if (!authorize(req)) {
         return res.status(401).end()
