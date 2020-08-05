@@ -3,14 +3,77 @@ import { CopyToClipboard } from "react-copy-to-clipboard"
 
 import { getModalImageDimensions } from "../utils"
 
-function GridItem({ image }) {
+const password = localStorage.getItem("password")
+
+function GridItem({ image, reload, isHidden }) {
     const modalRef = useRef()
     const modalImageRef = useRef()
 
     const [modalImageDimension, setModalImageDimension] = useState()
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    
+    const path = "/nudes/" + image
+
+    const link = `${window.location.protocol}//${window.location.host}${path.replace(/\..*/, "")}`
 
     const resizeImage = async () => {
         setModalImageDimension(await getModalImageDimensions(image))
+    }
+
+    const handleCopy = () => {
+        M.toast({ html: "Copied to clipboard", displayLength: 1000 })
+    }
+
+    const handleHideSuccess = () => {
+        M.toast({ html: "Image hidden", displayLength: 1000 })
+        setIsModalOpen(false)
+        reload()
+    }
+
+    const handleShowSuccess = () => {
+        M.toast({ html: "Image exposed", displayLength: 1000 })
+        setIsModalOpen(false)
+        reload()
+    }
+
+    const handleError = () => {
+        M.toast({ html: "Error", displayLength: 1000 })
+        setIsModalOpen(false)
+        reload()
+    }
+
+    const handleHide = () => {
+        fetch("/upload/" + image, {
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+            
+            body: JSON.stringify({
+                password,
+                is_hidden: 1
+            })
+        })
+        .then(handleHideSuccess)
+            .catch(handleError)
+    }
+
+    const handleShow = () => {
+        fetch("/upload/" + image, {
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                password,
+                is_hidden: 0
+            })
+        })
+        .then(handleShowSuccess)
+        .catch(handleError)
     }
 
     useEffect(() => {
@@ -29,23 +92,36 @@ function GridItem({ image }) {
         }
     })
 
-    const handleCopy = () => {
-        M.toast({ html: "Copied to clipboard", displayLength: 1000 })
-    }
+    useEffect(() => {
+        const checkClickOutside = (event) => {
+            const hasClickedOutside = !event.target.contains(modalRef.current)
 
-    const path = "/nudes/" + image
+            if (hasClickedOutside) {
+                setIsModalOpen(false)
+                document.removeEventListener("click", checkClickOutside)
+            }
+        }
 
-    const link = `${window.location.protocol}//${window.location.host}${path.replace(/\..*/, "")}`
+        if (isModalOpen) {
+            M.Modal.getInstance(modalRef.current).open()
+
+            document.addEventListener("click", checkClickOutside)
+        } else {
+            M.Modal.getInstance(modalRef.current).close()
+        }
+    }, [isModalOpen])
 
     return (
-        <div className="card grid-item">
-            <a className="modal-trigger" href={"#" + image}>
+        <div className="card grid-item" style={{
+            opacity: isHidden && !isModalOpen ? .5 : 1
+        }}>
+            <a className="pointer" onClick={() => setIsModalOpen(true)}>
                 <div className="card-image">
                     <img src={path}/>
                 </div>
             </a>
 
-            <div id={image} className="modal" ref={modalRef}>
+            <div className="modal" ref={modalRef}>
                 <div className="modal-content center-align">
                     <img src={path} ref={modalImageRef} style={modalImageDimension}/>
                 </div>
@@ -54,22 +130,40 @@ function GridItem({ image }) {
                     <div className="card-action" style={{
                         padding: 8,
                         display: "flex",
-                        justifyContent: "flex-end",
+                        justifyContent: "space-between",
                         alignItems: "center",
                         height: "100%"
                     }}>
-                        <CopyToClipboard text={link} onCopy={handleCopy}>
-                            <a className="pointer teal-text text-lighten-2" style={{
-                                margin: 0,
-                                height: 16
-                            }}>Copy Link</a>
-                        </CopyToClipboard>
+                        <div>
+                            { password && (
+                                isHidden ? (
+                                    <a className="pointer teal-text text-lighten-2" onClick={handleShow} style={{
+                                        margin: 0,
+                                        height: 16
+                                    }}>Show</a>
+                                ) : (
+                                    <a className="pointer teal-text text-lighten-2" onClick={handleHide} style={{
+                                        margin: 0,
+                                        height: 16
+                                    }}>Hide</a>
+                                )
+                            ) }
+                        </div>
 
-                        <a className="pointer teal-text text-lighten-2" href={path} download style={{
-                            margin: 0,
-                            marginLeft: 24,
-                            height: 16
-                        }}>Download</a>
+                        <div>
+                            <CopyToClipboard text={link} onCopy={handleCopy}>
+                                <a className="pointer teal-text text-lighten-2" style={{
+                                    margin: 0,
+                                    height: 16
+                                }}>Copy Link</a>
+                            </CopyToClipboard>
+
+                            <a className="pointer teal-text text-lighten-2" href={path} download style={{
+                                margin: 0,
+                                marginLeft: 24,
+                                height: 16
+                            }}>Download</a>
+                        </div>
                     </div>
                 </div>
             </div>

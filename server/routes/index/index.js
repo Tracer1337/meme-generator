@@ -29,13 +29,7 @@ router.get("/", async (req, res) => {
 
 // Get archive page
 router.get("/archive", async (req, res) => {
-    try {
-        const images = (await awaitQuery("SELECT * FROM uploads ORDER BY created_at DESC")).map(upload => upload.filename)
-        res.render("archive", { images })
-    } catch(error) {
-        console.error(error)
-        res.status(500).end()
-    }
+    res.render("archive")
 })
 
 module.exports = router

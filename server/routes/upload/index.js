@@ -6,6 +6,7 @@ const StorageFacade = require("../../facades/StorageFacade.js")
 const upload = require("../../utils/upload.js")
 const formatImage = require("../../utils/formatImage.js")
 const { db } = require("../../utils/connectToDB")
+const authorize = require("../../utils/authorize.js")
 
 // Get file from Storage
 router.get("/:file", async (req, res) => {
@@ -20,10 +21,13 @@ router.get("/:file", async (req, res) => {
     const buffer = StorageFacade.getFile(process.env.AWS_BUCKET_PUBLIC_DIR + "/" + req.params.file)
 
     if (Buffer.isBuffer(buffer)) {
-        res.header("X-From-Cache", true)
-        res.end(buffer)
+        res.header("X-From-Cache", true).end(buffer)
     } else {
-        res.end(await buffer)
+        try {
+            res.end(await buffer)
+        } catch {
+            res.status(404).end()
+        } 
     }
 })
 
@@ -63,6 +67,30 @@ router.post("/", upload.single("file"), async (req, res) => {
     } finally {
         // Delete temp file
         fs.unlinkSync(req.file.path)
+    }
+})
+
+// Change removed-state from file
+router.post("/:file", async (req, res) => {
+    if (!authorize(req)) {
+        return res.status(401).end()
+    }
+
+    if (![0, 1].includes(+req.body.is_hidden)) {
+        return res.status(400).end()
+    }
+
+    try {
+        const query = `UPDATE uploads SET is_hidden = ${req.body.is_hidden} WHERE filename = '${req.params.file}'`
+
+        await new Promise((resolve, reject) => db.query(query, (error) => {
+            if (error) reject(error)
+            resolve()
+        }))
+
+        res.end()
+    } catch {
+        res.status(404).end()
     }
 })
 

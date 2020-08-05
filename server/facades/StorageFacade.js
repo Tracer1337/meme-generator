@@ -20,7 +20,7 @@ const StorageFacade = {
         return new Promise((resolve, reject) => {
             s3.createBucket({ Bucket: bucketName }, (error, data) => {
                 if (error) {
-                    return void reject(error)
+                    return reject(error)
                 }
 
                 resolve({ ...data, Bucket: bucketName })
@@ -50,7 +50,7 @@ const StorageFacade = {
 
             s3.upload(params, (error, data) => {
                 if (error) {
-                    return void reject(error)
+                    return reject(error)
                 }
 
                 resolve(data)
@@ -90,6 +90,32 @@ const StorageFacade = {
                 cache.set(fileName, buffer)
                 resolve(buffer)
             })
+        })
+    },
+
+    deleteFile(filePath, bucketName = process.env.AWS_BUCKET) {
+        const fileName = path.basename(filePath)
+
+        cache.delete(fileName)
+
+        return new Promise(resolve => {
+            if (process.env.NODE_ENV === "development") {
+                fs.unlinkSync(path.join(DEV_BUCKET_DIR, fileName))
+                resolve(true)
+            } else {
+                const params = {
+                    Bucket: bucketName,
+                    key: filePath
+                }
+
+                s3.deleteObject(params, (error, data) => {
+                    if (error) {
+                        return resolve(false)
+                    }
+
+                    resolve(true)
+                })
+            }
         })
     }
 }

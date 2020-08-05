@@ -5,8 +5,4 @@ import React from "react"
 
 import Grid from "./components/Grid.js"
 
-if (!images) {
-    throw new Error("No images given")
-}
-
 ReactDOM.render(<Grid/>, document.getElementById("image-grid"))
