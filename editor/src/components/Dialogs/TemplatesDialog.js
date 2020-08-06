@@ -11,16 +11,6 @@ import { AppContext } from "../../App.js"
 import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
 
 const useStyles = makeStyles(theme => ({
-    dialog: {
-        width: props => props.width,
-        left: "50% !important",
-        transform: "translateX(-50%)"
-    },
-
-    appBar: {
-        position: "absolute"
-    },
-
     toolbar: {
         minHeight: 46
     },
@@ -72,8 +62,8 @@ function TemplatesDialog({ onClose, open }) {
     }
 
     return (
-        <Dialog fullScreen onClose={handleClose} open={open} TransitionComponent={Transition} className={classes.dialog}>
-            <AppBar className={classes.appBar}>
+        <Dialog fullScreen onClose={handleClose} open={open} TransitionComponent={Transition}>
+            <AppBar>
                 <Toolbar className={classes.toolbar}>
                     <IconButton edge="start" color="inherit" onClick={handleClose}>
                         <CloseIcon fontSize="small"/>

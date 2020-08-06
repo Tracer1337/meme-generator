@@ -16,7 +16,6 @@ import dataURLToFile from "../../utils/dataURLToFile.js"
 import uploadImage from "../../utils/uploadImage.js"
 import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
 import { uploadTemplate, registerTemplateUse, registerStickerUse } from "../../utils/API.js"
-import { IS_ANDROID_APP } from "../../config/constants.js"
 
 const useStyles = makeStyles(theme => {
     const spacing = {
@@ -226,17 +225,15 @@ function ImageDialog({ open, onClose, imageData, elements }) {
                             </div>
                         )}
 
-                        {!IS_ANDROID_APP && (
-                            <Button
-                                startIcon={<DownloadIcon />}
-                                color="primary"
-                                variant="outlined"
-                                className={classes.spacing}
-                                onClick={handleDownloadClick}
-                            >
-                                Download
-                            </Button>
-                        )}
+                        <Button
+                            startIcon={<DownloadIcon />}
+                            color="primary"
+                            variant="outlined"
+                            className={classes.spacing}
+                            onClick={handleDownloadClick}
+                        >
+                            Download
+                        </Button>
 
                         <Typography variant="caption" className={classes.terms}>
                             By clicking on "Create Link" the image above will be uploaded to our servers and therefor be visible
