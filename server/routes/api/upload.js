@@ -7,7 +7,7 @@ const authorize = require("../../utils/authorize.js")
 // Get random file from uploads table
 router.get("/random", (req, res) => {
     // Get random row from table
-    const sql = "SELECT * FROM uploads ORDER BY RAND()"
+    const sql = "SELECT * FROM uploads WHERE is_hidden = 0 ORDER BY RAND()"
     db.query(sql, (error, results) => {
         if (error) {
             console.error(error)
