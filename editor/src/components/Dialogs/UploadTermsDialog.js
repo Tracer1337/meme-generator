@@ -62,7 +62,7 @@ function UploadTermsDialog({ open, onAccept, onReject }) {
                 <DialogContentText>
                     By creating a link for your image, it will be uploaded to our servers and 
                     therefor be listed in our <a href="/archive" target="_blank" className={classes.link}>archive</a>.
-                    We will store you IP address and are allowed to hand it to third-parties if you violate against these terms and conditions.
+                    We will store your IP address and are allowed to hand it to third-parties if you violate against these terms and conditions.
                 </DialogContentText>
 
                 <DialogContentText>
@@ -109,7 +109,7 @@ function UploadTermsDialog({ open, onAccept, onReject }) {
                 </DialogContentText>
 
                 <DialogContentText>
-                    easymeme69.com also reserves the right to reject and remove any uploaded image from display on its website, for any reason, at any time, without prior notice.
+                    easymeme69.com also reserves the right to reject and remove any uploaded images from its servers, for any reason, at any time, without prior notice.
                 </DialogContentText>
             </DialogContent>
 
