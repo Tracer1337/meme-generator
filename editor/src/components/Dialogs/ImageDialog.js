@@ -9,6 +9,7 @@ import PublishIcon from "@material-ui/icons/Publish"
 import CloseIcon from "@material-ui/icons/Close"
 
 import ShareDialog from "./ShareDialog.js"
+import UploadTermsDialog from "./UploadTermsDialog.js"
 
 import { AppContext } from "../../App.js"
 import downloadImageFromSrc from "../../utils/downloadImageFromSrc.js"
@@ -65,21 +66,12 @@ const useStyles = makeStyles(theme => {
         },
 
         link: {
-            overflowX: "scroll",
+            overflowX: "overlay",
             padding: `${theme.spacing(1)}px 0`
         },
 
         shareButton: {
             padding: theme.spacing(1)
-        },
-
-        terms: {
-            ...spacing,
-            color: theme.palette.text.secondary
-        },
-
-        archiveLink: {
-            color: theme.palette.text.secondary
         },
 
         snackbarClose: {
@@ -97,10 +89,13 @@ function ImageDialog({ open, onClose, imageData, elements }) {
 
     // Increase the usage-counter only once
     const isRegistered = useRef(false)
+    const onAccept = useRef()
+    const onReject = useRef()
 
     const [link, setLink] = useState()
     const [isUploading, setIsUploading] = useState(false)
     const [isShareDialogOpen, setIsShareDialogOpen] = useState(false)
+    const [isUploadTermsDialogOpen, setIsUploadTermsDialogOpen] = useState(false)
     const [isUploadSnackbarOpen, setIsUploadSnackbarOpen] = useState(false)
     const [hasCreatedTemplate, setHasCreatedTemplate] = useState(false)
 
@@ -136,16 +131,30 @@ function ImageDialog({ open, onClose, imageData, elements }) {
         dispatchEvent("downloadImage")
     }
 
-    const handleUploadClick = async () => {
-        setIsUploading(true)
-        
-        const file = dataURLToFile(imageData, "image.png")
-        const link = await uploadImage(file)
-        
-        setIsUploading(false)
-        setLink(link)
-        registerUsage()
-        dispatchEvent("uploadImage", { link })
+    const handleUploadClick = () => {
+        setIsUploadTermsDialogOpen(true)
+
+        new Promise((resolve, reject) => {
+            onAccept.current = resolve
+            onReject.current = reject
+        })
+
+        .then(async () => {
+            setIsUploadTermsDialogOpen(false)
+            setIsUploading(true)
+
+            const file = dataURLToFile(imageData, "image.png")
+            const link = await uploadImage(file)
+
+            setIsUploading(false)
+            setLink(link)
+            registerUsage()
+            dispatchEvent("uploadImage", { link })
+        })
+
+        .catch(() => {
+            setIsUploadTermsDialogOpen(false)
+        })
     }
 
     const handleShareClick = () => {
@@ -235,11 +244,6 @@ function ImageDialog({ open, onClose, imageData, elements }) {
                             Download
                         </Button>
 
-                        <Typography variant="caption" className={classes.terms}>
-                            By clicking on "Create Link" the image above will be uploaded to our servers and therefor be visible
-                            in the <a href="/archive" target="_blank" className={classes.archiveLink}>Archive</a>.
-                        </Typography>
-
                         {context.password && !context.currentTemplate && !hasCreatedTemplate && (
                             <>
                                 <TextField
@@ -271,6 +275,12 @@ function ImageDialog({ open, onClose, imageData, elements }) {
                     </>
                 )}
             </Dialog>
+
+            <UploadTermsDialog
+                open={isUploadTermsDialogOpen}
+                onAccept={onAccept.current}
+                onReject={onReject.current}
+            />
 
             <Snackbar
                 anchorOrigin={{

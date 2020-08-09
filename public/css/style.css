@@ -74,6 +74,30 @@ main {
     align-items: center;
 }
 
+.container {
+    padding: 0 16px;
+    max-width: 1100px;
+    width: unset;
+    margin: 0 auto 64px auto;
+}
+
+.content-screen {
+    margin-top: 32px;
+}
+
+.content-screen h4 {
+    margin-bottom: 32px;
+}
+
+.content-screen h5 {
+    margin: 32px 0 16px 0;
+}
+
+.content-screen a {
+    text-decoration: underline;
+    color: white;
+}
+
 .statistics {
     margin-top: 32px;
     display: flex;
@@ -184,8 +208,7 @@ section li:last-child {
 }
 
 #image-grid {
-    max-width: 1100px;
-    margin: auto;
+    padding: 0 20px;
 }
 
 #image-grid .grid-item {
@@ -231,6 +254,10 @@ section li:last-child {
         display: flex;
         justify-content: center;
         align-items: flex-start;
+    }
+
+    .container {
+        padding: 0 32px;
     }
 
     .statistics {

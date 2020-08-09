@@ -1,3 +1,5 @@
+const fs = require("fs")
+const path = require("path")
 const express = require("express")
 const router = express.Router()
 
@@ -27,9 +29,13 @@ router.get("/", async (req, res) => {
     }
 })
 
-// Get archive page
-router.get("/archive", async (req, res) => {
-    res.render("archive")
+// Serve static pages (<name>.static.pug)
+fs.readdirSync(path.join(__dirname, "..", "..", "..", "views", "static")).forEach(filename => {
+    const route = filename.replace(".pug", "")
+
+    router.get("/" + route, (req, res) => {
+        res.render("static/" + route)
+    })
 })
 
 module.exports = router

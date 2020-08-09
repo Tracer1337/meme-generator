@@ -1,14 +1,14 @@
-include ./includes/head.pug
+include ../includes/head.pug
 
 +head("EasyMeme | Archive")
 
 body
     link(rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons")
 
-    include ./includes/nav.pug
+    include ../includes/nav.pug
 
-    #image-grid(style="padding: 0 20px;")
+    #image-grid.container
 
-    include ./includes/scripts.pug
+    include ../includes/scripts.pug
     
     script(src="/js/archive.bundle.js")
