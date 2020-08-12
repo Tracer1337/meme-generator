@@ -1,0 +1,11 @@
+{
+    "name": "Easy Meme",
+    "website": "https://www.easymeme69.com/",
+    "description": "Meme-Generator as web- and android app",
+    "techstack": [
+        "React",
+        "Express",
+        "Javascript",
+        "NodeJS"
+    ]
+}
