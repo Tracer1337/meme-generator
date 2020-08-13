@@ -23,7 +23,7 @@
         },
 
         "npm": {
-            "packageName": "react-mui-swipeable"
+            "package_name": "react-mui-swipeable"
         }
     }
 }
