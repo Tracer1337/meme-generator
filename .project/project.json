@@ -16,6 +16,10 @@
 
         "google_play": {
             "app_id": "com.easymeme69.memegenerator"
+        },
+
+        "google_analytics": {
+            "view_id": "UA-162994094-2"
         }
     }
 }
