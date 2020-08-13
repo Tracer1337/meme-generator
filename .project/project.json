@@ -23,8 +23,7 @@
         },
 
         "npm": {
-            "package_name": "task-runner",
-            "package_scope": "@m.moelter"
+            "package_name": "@m.moelter/task-runner"
         }
     }
 }
