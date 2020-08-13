@@ -20,6 +20,10 @@
 
         "google_analytics": {
             "view_id": 220774653
+        },
+
+        "npm": {
+            "packageName": "react-mui-swipeable"
         }
     }
 }
