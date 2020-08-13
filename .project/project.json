@@ -7,5 +7,11 @@
         "Express",
         "Javascript",
         "NodeJS"
-    ]
+    ],
+    "type": "android-app",
+    "apis": {
+        "google_play": {
+            "app_id": "com.easymeme69.memegenerator"
+        }
+    }
 }
