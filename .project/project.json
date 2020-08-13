@@ -23,7 +23,8 @@
         },
 
         "npm": {
-            "package_name": "react-mui-swipeable"
+            "package_name": "task-runner",
+            "package_scope": "@m.moelter"
         }
     }
 }
