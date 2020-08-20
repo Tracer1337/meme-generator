@@ -39,9 +39,9 @@ function Grid() {
         const newRows = Array(amountOfRows).fill(0).map(() => new Row())
 
         // Insert all images into grid
-        for (let { filename, is_hidden } of images) {
+        await Promise.all(images.map(async ({ filename, is_hidden }) => {
             if (is_hidden && !showHiddenImages) {
-                continue
+                return
             }
 
             // Get image dimensions
@@ -71,7 +71,7 @@ function Grid() {
 
             // Add element's score to row
             row.score += ratio
-        }
+        }))
 
         setRows(newRows)
         setIsLoading(false)
