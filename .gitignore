@@ -7,8 +7,6 @@ templates/
 stickers/
 bucket*/
 
-public/js/*.bundle.*
-
 store/google-play/
 
 *.log
