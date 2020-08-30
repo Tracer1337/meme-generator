@@ -15,6 +15,13 @@ function compensateError(clonedDocument) {
     })
 
     /**
+     * Compensate font error
+     */
+    textboxes.forEach(textbox => {
+        textbox.style.fontFeatureSettings = '"liga" 0'
+    })
+
+    /**
      * Reverse order of elements
      */
     const elements = Array.from(clonedDocument.querySelectorAll(".element"))
