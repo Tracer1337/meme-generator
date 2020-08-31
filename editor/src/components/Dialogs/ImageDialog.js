@@ -10,6 +10,7 @@ import CloseIcon from "@material-ui/icons/Close"
 
 import ShareDialog from "./ShareDialog.js"
 import UploadTermsDialog from "./UploadTermsDialog.js"
+import AdSense from "../AdSense.js"
 
 import { AppContext } from "../../App.js"
 import downloadImageFromSrc from "../../utils/downloadImageFromSrc.js"
@@ -33,6 +34,7 @@ const useStyles = makeStyles(theme => {
 
         innerDialog: {
             margin: theme.spacing(1),
+            overflowX: "hidden",
             width: props => !props.imageData && "100%",
             height: props => !props.imageData && "50%",
             display: props => !props.imageData && "flex",
@@ -245,6 +247,14 @@ function ImageDialog({ open, onClose, imageData, elements }) {
                     <CircularProgress/>
                 ) : (
                     <>
+                        { !context.password && (
+                            <AdSense
+                                slot="5715862585"
+                                format="auto"
+                                responsive
+                            />
+                        ) }
+
                         <img alt="" src={imageData} className={classes.image}/>
 
                         <Paper variant="outlined" className={classes.linkWrapper} style={{ display: !link && "none" }}>

@@ -4,9 +4,9 @@ import { makeStyles } from "@material-ui/core/styles"
 import DeleteIcon from "@material-ui/icons/Delete"
 import CloseIcon from "@material-ui/icons/Close"
 
-import { AppContext } from "../../../App.js"
 import ConfirmDialog from "../ConfirmDialog.js"
 
+import { AppContext } from "../../../App.js"
 import { getTemplates, deleteTemplate } from "../../../utils/API.js"
 import { cacheImage } from "../../../utils/cache.js"
 
@@ -136,7 +136,7 @@ function Templates({ onLoad }) {
                     <CloseIcon />
                 </IconButton>
             </Paper>
-
+            
             <div className={classes.listWrapper}>
                 <GridList cellHeight={150} className={classes.list}>
                     {renderTemplates.map((template, i) => (
