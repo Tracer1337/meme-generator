@@ -53,6 +53,8 @@ function App() {
         }
     })
 
+    window.context = context
+
     return (
         <AppContext.Provider value={{ ...context, ...setter }}>
             <Analytics/>

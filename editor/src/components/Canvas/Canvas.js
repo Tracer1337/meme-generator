@@ -212,7 +212,8 @@ function Canvas() {
     const handleLoadTemplate = async ({ detail: { template } }) => {
         context.set({
             currentTemplate: template,
-            image: template.image_url
+            image: template.image_url,
+            label: template.label
         })
 
         // Wait until image is loaded into DOM and resized

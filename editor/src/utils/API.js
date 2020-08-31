@@ -12,6 +12,14 @@ export const uploadTemplate = (formData) => fetch(url("/templates"), {
     body: formData
 })
 
+export const editTemplate = (body) => fetch(url("/templates"), {
+    method: "PUT",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body)
+})
+
 export const getTemplates = () => {
     return cachedRequest(url("/templates"))
         .then(res => res.json())

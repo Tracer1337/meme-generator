@@ -16,7 +16,7 @@ import downloadImageFromSrc from "../../utils/downloadImageFromSrc.js"
 import dataURLToFile from "../../utils/dataURLToFile.js"
 import uploadImage from "../../utils/uploadImage.js"
 import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
-import { uploadTemplate, registerTemplateUse, registerStickerUse } from "../../utils/API.js"
+import { uploadTemplate, editTemplate, registerTemplateUse, registerStickerUse } from "../../utils/API.js"
 
 const useStyles = makeStyles(theme => {
     const spacing = {
@@ -94,10 +94,13 @@ function ImageDialog({ open, onClose, imageData, elements }) {
 
     const [link, setLink] = useState()
     const [isUploading, setIsUploading] = useState(false)
+    const [isPublishing, setIsPublishing] = useState(false)
     const [isShareDialogOpen, setIsShareDialogOpen] = useState(false)
     const [isUploadTermsDialogOpen, setIsUploadTermsDialogOpen] = useState(false)
     const [isUploadSnackbarOpen, setIsUploadSnackbarOpen] = useState(false)
     const [hasCreatedTemplate, setHasCreatedTemplate] = useState(false)
+
+    const isEditingTemplate = !!context.currentTemplate
 
     const dispatchEvent = (name, detail) => context.event.dispatchEvent(new CustomEvent(name, { detail }))
 
@@ -162,10 +165,12 @@ function ImageDialog({ open, onClose, imageData, elements }) {
         dispatchEvent("openShareModal")
     }
 
-    const handleTemplateClick = async () => {
+    const handlePublishTemplateClick = async () => {
         if(!getValues("label")) {
             return
         }
+
+        setIsPublishing(true)
 
         // Collect image data
         const label = getValues("label")
@@ -188,6 +193,41 @@ function ImageDialog({ open, onClose, imageData, elements }) {
                 setHasCreatedTemplate(true)
                 setIsUploadSnackbarOpen(true)
             }
+        }).finally(() => {
+            setIsPublishing(false)
+        })
+    }
+
+    const handleEditTemplateClick = async () => {
+        if(!getValues("label")) {
+            return
+        }
+
+        setIsPublishing(true)
+
+        // Collect image data
+        const label = getValues("label")
+        const metaData = {
+            textboxes: window.getTextboxes(),
+            border: window.getBorder()
+        }
+
+        // Create body object
+        const body = {
+            password: context.password,
+            id: context.currentTemplate.id,
+            label,
+            meta_data: metaData
+        }
+
+        // Upload data
+        editTemplate(body).then(res => {
+            if (res.ok) {
+                setHasCreatedTemplate(true)
+                setIsUploadSnackbarOpen(true)
+            }
+        }).finally(() => {
+            setIsPublishing(false)
         })
     }
 
@@ -225,7 +265,7 @@ function ImageDialog({ open, onClose, imageData, elements }) {
                                     variant="outlined"
                                     onClick={handleUploadClick}
                                     disabled={isUploading}
-                                    style={{ width: "100%" }}
+                                    fullWidth
                                 >
                                     Create Link
                                 </Button>
@@ -244,7 +284,7 @@ function ImageDialog({ open, onClose, imageData, elements }) {
                             Download
                         </Button>
 
-                        {context.password && !context.currentTemplate && !hasCreatedTemplate && (
+                        {context.password && !hasCreatedTemplate && (
                             <>
                                 <TextField
                                     inputRef={register()}
@@ -254,15 +294,21 @@ function ImageDialog({ open, onClose, imageData, elements }) {
                                     variant="outlined"
                                     defaultValue={context.label}
                                 />
-                                <Button
-                                    startIcon={<PublishIcon />}
-                                    color="primary"
-                                    variant="outlined"
-                                    className={classes.spacing}
-                                    onClick={handleTemplateClick}
-                                >
-                                    Publish Template
-                                </Button>
+                                
+                                <div className={classes.uploadButtonWrapper}>
+                                    <Button
+                                        startIcon={<PublishIcon />}
+                                        color="primary"
+                                        variant="outlined"
+                                        onClick={!isEditingTemplate ? handlePublishTemplateClick : handleEditTemplateClick}
+                                        disabled={isPublishing}
+                                        fullWidth
+                                    >
+                                        { !isEditingTemplate ? "Publish" : "Update" } Template
+                                    </Button>
+
+                                    {isPublishing && <CircularProgress size={24} className={classes.buttonLoader} />}
+                                </div>
                             </>
                         )}
 

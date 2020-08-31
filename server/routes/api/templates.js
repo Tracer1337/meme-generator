@@ -51,6 +51,26 @@ router.post("/", upload.single("image"), async (req, res) => {
     })
 })
 
+// Edit template
+router.put("/", async (req, res) => {
+    // Authorize
+    if (!authorize(req)) {
+        return res.status(403).end()
+    }
+
+    const values = {
+        label: req.body.label,
+        meta_data: JSON.stringify(req.body.meta_data)
+    }
+
+    // Update values in database
+    db.query(`UPDATE templates SET ? WHERE id = ${req.body.id}`, values, (error, results) => {
+        if (error) throw error
+
+        res.send()
+    })
+})
+
 // Delete template
 router.post("/delete/:id", async (req, res) => {
     // Authorize

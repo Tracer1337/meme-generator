@@ -111,7 +111,7 @@ function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dim
     const toObject = ({ image }) => {
         const toPercentage = (value, useWidth = false) => value / (useWidth ? image.clientWidth : image.clientHeight) * 100 + "%"
 
-        const changedSettings = {}
+        const changedSettings = template?.settings || {}
         for(let key in settings) {
             if(settings[key] !== defaultSettings[key]) {
                 changedSettings[key] = settings[key]
