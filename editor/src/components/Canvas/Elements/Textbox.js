@@ -6,10 +6,13 @@ import TextboxSettingsDialog from "../../Dialogs/TextboxSettingsDialog.js"
 import useSnapshots from "../../../utils/useSnapshots.js"
 import makeElement from "./makeElement.js"
 import fitText from "../../../utils/fitText.js"
+import getTextboxStyles from "../../../utils/getTextboxStyles.js"
 import { TEXTBOX_PLACEHOLDER, TEXTBOX_PADDING } from "../../../config/constants.js"
 
 const globalDefaultSettings = {
     color: "black",
+    textOutlineWidth: 2,
+    textOutlineColor: "white",
     textAlign: "center",
     fontFamily: "'Impact', fantasy",
     backgroundColor: "transparent",
@@ -19,30 +22,7 @@ const globalDefaultSettings = {
 }
 
 const useStyles = makeStyles(theme => ({
-    input: {
-        background: "none",
-        border: "none",
-        outline: props => !props.capture && props.isFocused ? "1px dashed gray" : "none",
-        fontSize: 24,
-        color: "white",
-        fontFamily: theme.typography.fontFamily,
-        textTransform: props => props.settings.caps && "uppercase",
-        resize: "none",
-        whiteSpace: "pre-wrap",
-        zIndex: 10,
-        padding: TEXTBOX_PADDING,
-        display: "flex",
-        flexDirection: "column",
-        fontWeight: props => props.settings.bold && "bold",
-        userSelect: props => !props.isEditing && "none",
-        cursor: props => !props.isEditing && "move",
-        justifyContent: props => (
-            props.settings.verticalTextAlign === "top" ? "flex-start" :
-            props.settings.verticalTextAlign === "bottom" ? "flex-end" :
-            props.settings.verticalTextAlign === "center" ? "center" :
-            null
-        )
-    }
+    input: props => getTextboxStyles({ theme, props })
 }))
 
 function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dimensions }, forwardedRef) {
@@ -158,7 +138,6 @@ function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dim
 
     // Generate stylings for textbox
     const styles = useMemo(() => ({
-        ...settings,
         width: dimensions.width + "px",
         height: dimensions.height + "px",
         fontSize: fitText({ styles: settings, text: value, ...dimensions })

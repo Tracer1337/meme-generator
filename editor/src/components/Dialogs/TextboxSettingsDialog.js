@@ -1,5 +1,5 @@
 import React, { useEffect } from "react"
-import { Dialog, Button } from "@material-ui/core"
+import { Dialog, Button, TextField } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import { useForm, FormContext } from "react-hook-form"
 
@@ -8,6 +8,7 @@ import Switch from "./components/Switch.js"
 
 import settingsOptions from "../../config/settings-options.json"
 import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
+import getTextboxStyles from "../../utils/getTextboxStyles.js"
 
 const useStyles = makeStyles(theme => ({
     form: {
@@ -15,10 +16,11 @@ const useStyles = makeStyles(theme => ({
         paddingTop: 0
     },
 
-    text: {
-        padding: `${theme.spacing(3)}px ${theme.spacing(2)}px`,
-        whiteSpace: "pre"
-    },
+    text: props => ({
+        ...getTextboxStyles({ theme, props }),
+        padding: theme.spacing(2),
+        minHeight: 40
+    }),
 
     applyButton: {
         marginTop: theme.spacing(2)
@@ -31,9 +33,9 @@ const useStyles = makeStyles(theme => ({
 
 function TextboxSettingsDialog({ onClose, open, values, text }) {
     const { getValues, handleSubmit, control, watch, reset, register, setValue } = useForm()
-
-    const classes = useStyles()
-
+    
+    const classes = useStyles({ settings: watch() })
+    
     const handleClose = () => {
         onClose(getValues())
     }
@@ -44,7 +46,7 @@ function TextboxSettingsDialog({ onClose, open, values, text }) {
 
     return (
         <Dialog onClose={handleClose} open={open}>
-            <div className={classes.text} style={watch()}>
+            <div className={classes.text}>
                 {text}
             </div>
             
@@ -75,10 +77,31 @@ function TextboxSettingsDialog({ onClose, open, values, text }) {
                         )}
                     />
 
+                    {/* Text Outline Width */}
+                    <TextField
+                        inputRef={register()}
+                        name="textOutlineWidth"
+                        label="Outline Width"
+                        className={classes.input}
+                        type="number"
+                        fullWidth
+                    />
+
+                    {/* Text Outline Color */}
+                    <Select
+                        name="textOutlineColor"
+                        label="Outline Color"
+                        options={settingsOptions.colors}
+                        className={classes.input}
+                        child={({ label, value }) => (
+                            <span style={{ color: value }}>{label}</span>
+                        )}
+                    />
+
                     {/* Text Align */}
                     <Select
                         name="textAlign"
-                        label="Text Align"
+                        label="Horizontal Align"
                         options={settingsOptions.textAlign}
                         className={classes.input}
                         child={({ label }) => label}
@@ -87,7 +110,7 @@ function TextboxSettingsDialog({ onClose, open, values, text }) {
                     {/* Vertical Text Align */}
                     <Select
                         name="verticalTextAlign"
-                        label="Vertical Text Align"
+                        label="Vertical Align"
                         options={settingsOptions.verticalTextAlign}
                         className={classes.input}
                         child={({ label }) => label}
