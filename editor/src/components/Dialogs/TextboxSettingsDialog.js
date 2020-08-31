@@ -68,12 +68,12 @@ function TextboxSettingsDialog({ onClose, open, values, text }) {
                         name="backgroundColor"
                         label="Background Color"
                         options={{
-                            "Transparent": "transparent",
+                            "None": "transparent",
                             ...settingsOptions.colors
                         }}
                         className={classes.input}
                         child={({ label, value }) => (
-                            <span style={{ color: value }}>{label}</span>
+                            <span style={{ color: value !== "transparent" && value }}>{label}</span>
                         )}
                     />
 

@@ -21,6 +21,8 @@ function Analytics() {
         ReactGA.pageview(window.location.pathname)
 
         setIsInitialized(true)
+
+        // eslint-disable-next-line
     }, [])
 
     /**

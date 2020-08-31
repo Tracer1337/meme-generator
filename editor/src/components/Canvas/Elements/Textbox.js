@@ -141,11 +141,13 @@ function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dim
         width: dimensions.width + "px",
         height: dimensions.height + "px",
         fontSize: fitText({ styles: settings, text: value, ...dimensions })
-    }), [value, settings, dimensions.width, dimensions.height])
+    }), [value, settings, dimensions])
 
     useEffect(() => {
         // Set initial value
         textboxRef.current.textContent = value
+
+        // eslint-disable-next-line
     }, [])
 
     useEffect(() => {
@@ -154,6 +156,8 @@ function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dim
             setValue(TEXTBOX_PLACEHOLDER)
             textboxRef.current.textContent = TEXTBOX_PLACEHOLDER
         }
+
+        // eslint-disable-next-line
     }, [isEditing])
     
     return (

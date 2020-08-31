@@ -16,10 +16,10 @@ import { AppContext } from "../../App.js"
 import importFile, { fileToImage } from "../../utils/importFile.js"
 import generateImage from "../../utils/generateImage.js"
 
-function showCanvas (canvas) {
-    const newWindow = window.open("", "canvas")
-    newWindow.document.body.appendChild(canvas)
-}
+// function showCanvas (canvas) {
+//     const newWindow = window.open("", "canvas")
+//     newWindow.document.body.appendChild(canvas)
+// }
 
 function getDimensionsWithoutPadding(element) {
     const styles = getComputedStyle(element)

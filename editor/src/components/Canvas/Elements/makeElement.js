@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo, useEffect, useContext } from "react"
+import React, { useState, useRef, useMemo, useEffect } from "react"
 import { DraggableCore } from "react-draggable"
 import { IconButton } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
@@ -8,7 +8,6 @@ import CloseIcon from "@material-ui/icons/Close"
 import HeightIcon from "@material-ui/icons/Height"
 import EditIcon from "@material-ui/icons/Edit"
 
-import { AppContext } from "../../../App.js"
 import useSnapshots from "../../../utils/useSnapshots.js"
 import { TEXTBOX_PADDING } from "../../../config/constants.js"
 
@@ -97,8 +96,6 @@ function makeElement({
     Child
 }) {
     return function Element({ onRemove, handle, grid, canvas, template, id, ...props }) {
-        const context = useContext(AppContext)
-
         const lastRotation = useRef(template?.rotation || 0)
         const container = useRef()
         const childRef = useRef()
@@ -127,7 +124,7 @@ function makeElement({
                     return [cellWidth, cellHeight]
                 }
             }
-        }, [grid, context.image])
+        }, [grid, canvas.clientWidth, canvas.clientHeight])
 
         const addSnapshot = useSnapshots({
             createSnapshot: () => ({ width, height, position, rotation }),
@@ -294,6 +291,8 @@ function makeElement({
                 const newHeight = height - (height + TEXTBOX_PADDING * 2) % dragGrid[1]
                 setHeight(newHeight)
             }
+
+            // eslint-disable-next-line
         }, [grid])
 
         useEffect(() => {
@@ -327,6 +326,8 @@ function makeElement({
                     }
                 }
             })()
+
+            // eslint-disable-next-line
         }, [])
 
         return (

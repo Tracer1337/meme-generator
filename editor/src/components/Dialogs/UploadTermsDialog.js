@@ -37,7 +37,6 @@ function UploadTermsDialog({ open, onAccept, onReject }) {
 
             const handleScroll = () => {
                 if (content.getBoundingClientRect().height + content.scrollTop >= content.scrollHeight) {
-                    console.log("Scrolling")
                     setHasScrolledToBottom(true)
                     content.removeEventListener("scroll", handleScroll)
                 }
@@ -47,6 +46,8 @@ function UploadTermsDialog({ open, onAccept, onReject }) {
 
             handleScroll()
         })()
+
+        // eslint-disable-next-line
     }, [open])
 
     const handleClose = () => {
