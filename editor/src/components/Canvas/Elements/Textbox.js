@@ -10,9 +10,9 @@ import getTextboxStyles from "../../../utils/getTextboxStyles.js"
 import { TEXTBOX_PLACEHOLDER, TEXTBOX_PADDING } from "../../../config/constants.js"
 
 const globalDefaultSettings = {
-    color: "black",
+    color: "white",
     textOutlineWidth: 2,
-    textOutlineColor: "white",
+    textOutlineColor: "black",
     textAlign: "center",
     fontFamily: "'Impact', fantasy",
     backgroundColor: "transparent",
