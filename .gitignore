@@ -1,12 +1,17 @@
 node_modules/
+*.pem
+*.log
+.env
+
 storage/*
 temp/*
-.env
+easymeme69-*/
 
 templates/
 stickers/
+uploads/
 bucket*/
 
 store/google-play/
 
-*.log
+meme-generator-old/

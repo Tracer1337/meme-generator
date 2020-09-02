@@ -1,5 +1,6 @@
 const path = require("path")
-const opn = require("opn")
+const open = require("open")
 require("dotenv").config({ path: path.join(__dirname, "..", ".env") })
 
-opn(`http://localhost:${process.env.PORT}`)
+// Open browser on port
+open(`http://${process.env.HOST}:${process.env.PORT}`)
