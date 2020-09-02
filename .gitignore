@@ -7,9 +7,6 @@ storage/*
 temp/*
 easymeme69-*/
 
-templates/
-stickers/
-uploads/
 bucket*/
 
 store/google-play/
