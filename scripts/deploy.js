@@ -29,9 +29,6 @@ makeRunnable(async () => {
         await run(moveBuild, "Put build into desired destination")
     }
 
-    // Push new version to git
-    await run(pushToRemote, "Push new version to git")
-
     // Connect to server via SSH
     await run(connectSSH, "Connect to server")
 
@@ -59,14 +56,6 @@ async function moveBuild() {
     } catch (error) {
         throw new Error(error)
     }
-}
-
-async function pushToRemote() {
-    await exec([
-        "git add .",
-        "git commit -m \"Create new build\"",
-        "git push"
-    ], { skipError: true })
 }
 
 async function connectSSH() {

@@ -12,3 +12,6 @@ bucket*/
 store/google-play/
 
 meme-generator-old/
+
+public/editor
+public/js/archive*
