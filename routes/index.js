@@ -67,7 +67,7 @@ if (process.env.NODE_ENV === "development") {
         ws: true
     }))
 } else {
-    rootRouter.get("/*", (req, res) => res.sendFile(path.resolve(ROOT_DIR, "public", "index.html")))
+    rootRouter.get("/*", (req, res) => res.sendFile(path.resolve(ROOT_DIR, "public", "editor", "index.html")))
 }
 
 module.exports = rootRouter
