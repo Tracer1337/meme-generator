@@ -18,6 +18,8 @@ async function getAll(req, res) {
         uploads.forEach(upload => delete upload.is_hidden)
     }
 
+    uploads.sort((a, b) => b.created_at - a.created_at)
+
     res.send(uploads)
 }
 
