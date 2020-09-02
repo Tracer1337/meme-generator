@@ -78,11 +78,15 @@ async function connectSSH() {
 }
 
 async function deploySSH() {
-    const { stderr } = await ssh.execCommand(`sudo git pull && sudo pm2 restart ${process.env.APP_NAME}`, { cwd: `/var/www/${process.env.APP_NAME}` })
+    await ssh.putDirectory(path.join(ROOT_DIR, "public"), `/var/www/${process.env.APP_NAME}/public`, {
+        recursive: true,
+
+        tick: (localPath, remotePath, error) => {
+            if (error) {
+                console.log(error)
+            }
+        }
+    })
 
     ssh.dispose()
-
-    if(stderr && stderr.indexOf("github.com") === -1) {
-        throw new Error(stderr)
-    }
 }
