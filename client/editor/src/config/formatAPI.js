@@ -1,17 +1,20 @@
+import { BASE_URL } from "../config/constants.js"
 import { getCachedImage } from "../utils/cache.js"
 
 export const TEMPLATES = "TEMPLATES"
 export const STICKERS = "STICKERS"
 
 async function formatTemplate(template) {
+    template.image_url = BASE_URL + template.image_url
     template.image_url = await getCachedImage(template.image_url)
-
+    
     if (template.meta_data) {
         template.meta_data = JSON.parse(template.meta_data)
     }
 }
 
 async function formatSticker(sticker) {
+    sticker.image_url = BASE_URL + sticker.image_url
     sticker.image_url = await getCachedImage(sticker.image_url)
 }
 

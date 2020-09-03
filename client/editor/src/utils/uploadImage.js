@@ -1,3 +1,4 @@
+import { BASE_URL } from "../config/constants.js"
 import { uploadFile } from "../config/api.js"
 
 async function uploadImage(image) {
@@ -9,7 +10,7 @@ async function uploadImage(image) {
     try {
         const response = await uploadFile(formData)
 
-        return "https://" + window.location.host + response.data.path
+        return BASE_URL + response.data.path
     } catch (error) {
         console.error(error)
         return

@@ -3,7 +3,7 @@ import ReactDOM from "react-dom"
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles"
 
 import App from "./App.js"
-import { IS_DEV } from "./config/constants.js"
+import { IS_DEV, IS_CORDOVA } from "./config/constants.js"
 import * as serviceWorker from "./serviceWorker.js"
 import "./index.css"
 
@@ -27,4 +27,6 @@ ReactDOM.render((
     </ThemeProvider>
 ), document.getElementById("root"))
 
-serviceWorker.register()
+if (!IS_CORDOVA) {
+    serviceWorker.register()
+}

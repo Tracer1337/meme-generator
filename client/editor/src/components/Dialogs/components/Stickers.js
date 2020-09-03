@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect, useRef } from "react"
 import ReactDOM from "react-dom"
-import { IconButton, GridList, GridListTile, CircularProgress, Fab, Zoom } from "@material-ui/core"
+import { IconButton, GridList, GridListTile, CircularProgress, Fab, Zoom, Typography } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import DeleteIcon from "@material-ui/icons/Delete"
 import AddIcon from "@material-ui/icons/Add"
@@ -144,6 +144,10 @@ function Stickers({ onLoad, active }) {
 
     if (isLoading) {
         return <CircularProgress />
+    }
+
+    if (!data) {
+        return <Typography>Could not load data</Typography>
     }
 
     // Sort by usage => Push most used stickers to the top

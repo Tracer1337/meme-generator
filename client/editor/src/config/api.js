@@ -4,7 +4,7 @@ import format, {
     TEMPLATES,
     STICKERS
 } from "./formatAPI.js"
-import { API_BASE_URL } from "./constants.js"
+import { BASE_URL, API_BASE_URL } from "./constants.js"
 import { cachedRequest } from "../utils/cache.js"
 
 export function setPasswordHeader(password) {
@@ -30,4 +30,4 @@ export const uploadSticker = (formData) => axios.post(url("/stickers"), formData
 export const deleteSticker = (id) => axios.post(url("/stickers/delete/" + id))
 export const registerStickerUse = (id) => axios.post(url("/stickers/register-use"), { id })
 
-export const uploadFile = (formData) => axios.post("/upload", formData)
+export const uploadFile = (formData) => axios.post(BASE_URL + "/upload", formData)

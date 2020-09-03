@@ -1,5 +1,5 @@
 import React, { useState, useContext, useRef } from "react"
-import { IconButton, GridList, GridListTile, GridListTileBar, CircularProgress, InputBase, Paper } from "@material-ui/core"
+import { IconButton, GridList, GridListTile, GridListTileBar, CircularProgress, InputBase, Paper, Typography } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import DeleteIcon from "@material-ui/icons/Delete"
 import CloseIcon from "@material-ui/icons/Close"
@@ -110,6 +110,10 @@ function Templates({ onLoad }) {
 
     if (isLoading) {
         return <CircularProgress />
+    }
+
+    if (!data) {
+        return <Typography>Could not load data</Typography>
     }
 
     // Filter by search string
