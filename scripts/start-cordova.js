@@ -31,9 +31,6 @@ const runnable = makeRunnable(async () => {
         await new Promise(resolve => {
             rmdir(CORDOVA_WWW_DIR, async (error) => {
                 if (error) throw error
-
-                await fs.promises.mkdir(CORDOVA_WWW_DIR)
-
                 resolve()
             })
         })
@@ -57,32 +54,34 @@ const runnable = makeRunnable(async () => {
  * Listen to reload event
  */
 
-function logReloadAdvice() {
-    console.log(chalk.green("Press 'r' to reload"))
-}
+runnable()
 
-;(async () => {
-    await runnable()
-    logReloadAdvice()
+// function logReloadAdvice() {
+//     console.log(chalk.green("Press 'r' to reload"))
+// }
 
-    readline.emitKeypressEvents(process.stdin)
+// ;(async () => {
+//     await runnable()
+//     logReloadAdvice()
 
-    process.stdin.on("keypress", async (char, key) => {
-        if (key.name === "r") {
-            if (isRunning) {
-                return
-            }
+//     readline.emitKeypressEvents(process.stdin)
 
-            await runnable()
-            logReloadAdvice()
-        }
+//     process.stdin.on("keypress", async (char, key) => {
+//         if (key.name === "r") {
+//             if (isRunning) {
+//                 return
+//             }
 
-        // Break script when pressing ctrl + c
-        if (key.ctrl && key.name === "c") {
-            process.stdin.removeAllListeners()
-            process.stdin.setRawMode(false)
-        }
-    })
+//             await runnable()
+//             logReloadAdvice()
+//         }
 
-    process.stdin.setRawMode(true)
-})()
+//         // Break script when pressing ctrl + c
+//         if (key.ctrl && key.name === "c") {
+//             process.stdin.removeAllListeners()
+//             process.stdin.setRawMode(false)
+//         }
+//     })
+
+//     process.stdin.setRawMode(true)
+// })()

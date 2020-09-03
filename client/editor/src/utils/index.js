@@ -7,16 +7,6 @@ export function dataURLToFile(dataurl, filename) {
     return new File([u8arr], filename, { type: mime });
 }
 
-
-export function downloadImageFromSrc(src) {
-    const a = document.createElement("a")
-    a.href = src
-    a.download = "download.png"
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-}
-
 export function importFile(accept) {
     return new Promise(resolve => {
         const input = document.createElement("input")
@@ -60,4 +50,25 @@ export function textShadow(stroke, color) {
     }
 
     return shadows.join(",")
+}
+
+// Source: https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
+
+export function makeId(length) {
+    var result = '';
+    var characters = '0123456789';
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
+
+export function getDateString() {
+    const today = new Date()
+    const dd = String(today.getDate()).padStart(2, "0")
+    const mm = String(today.getMonth() + 1).padStart(2, "0")
+    const yyyy = today.getFullYear()
+
+    return dd + mm + yyyy
 }

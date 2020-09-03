@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form"
 import { Dialog, Button, CircularProgress, Paper, Typography, IconButton, TextField, Snackbar } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import DownloadIcon from "@material-ui/icons/GetApp"
+import SaveIcon from "@material-ui/icons/Save"
 import LinkIcon from "@material-ui/icons/Link"
 import ShareIcon from "@material-ui/icons/Share"
 import PublishIcon from "@material-ui/icons/Publish"
@@ -12,10 +13,12 @@ import ShareDialog from "./ShareDialog.js"
 import UploadTermsDialog from "./UploadTermsDialog.js"
 
 import { AppContext } from "../../App.js"
-import { downloadImageFromSrc, dataURLToFile } from "../../utils"
+import { dataURLToFile } from "../../utils"
+import downloadDataURI from "../../utils/downloadDataURI.js"
 import uploadImage from "../../utils/uploadImage.js"
 import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
 import { uploadTemplate, editTemplate, registerTemplateUse, registerStickerUse } from "../../config/api.js"
+import { IS_CORDOVA } from "../../config/constants.js"
 
 const useStyles = makeStyles(theme => {
     const spacing = {
@@ -97,6 +100,7 @@ function ImageDialog({ open, onClose, imageData, elements }) {
     const [isShareDialogOpen, setIsShareDialogOpen] = useState(false)
     const [isUploadTermsDialogOpen, setIsUploadTermsDialogOpen] = useState(false)
     const [isUploadSnackbarOpen, setIsUploadSnackbarOpen] = useState(false)
+    const [isStoredSnackbarOpen, setIsStoredSnackbarOpen] = useState(false)
     const [hasCreatedTemplate, setHasCreatedTemplate] = useState(false)
 
     const isEditingTemplate = !!context.currentTemplate
@@ -127,8 +131,13 @@ function ImageDialog({ open, onClose, imageData, elements }) {
         onClose()
     }
 
-    const handleDownloadClick = () => {
-        downloadImageFromSrc(imageData)
+    const handleDownloadClick = async () => {
+        await downloadDataURI(imageData)
+
+        if (IS_CORDOVA) {
+            setIsStoredSnackbarOpen(true)
+        }
+        
         registerUsage()
         dispatchEvent("downloadImage")
     }
@@ -273,13 +282,13 @@ function ImageDialog({ open, onClose, imageData, elements }) {
                         )}
 
                         <Button
-                            startIcon={<DownloadIcon />}
+                            startIcon={!IS_CORDOVA ? <DownloadIcon /> : <SaveIcon />}
                             color="primary"
                             variant="outlined"
                             className={classes.spacing}
                             onClick={handleDownloadClick}
                         >
-                            Download
+                            { !IS_CORDOVA ? "Download" : "Store" }
                         </Button>
 
                         {context.password && !hasCreatedTemplate && (
@@ -338,6 +347,22 @@ function ImageDialog({ open, onClose, imageData, elements }) {
                 action={
                     <IconButton onClick={() => setIsUploadSnackbarOpen(false)} className={classes.snackbarClose}>
                         <CloseIcon/>
+                    </IconButton>
+                }
+            />
+
+            <Snackbar
+                anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "left"
+                }}
+                open={isStoredSnackbarOpen}
+                autoHideDuration={3000}
+                onClose={() => setIsStoredSnackbarOpen(false)}
+                message="Stored in gallery"
+                action={
+                    <IconButton onClick={() => setIsStoredSnackbarOpen(false)} className={classes.snackbarClose}>
+                        <CloseIcon />
                     </IconButton>
                 }
             />

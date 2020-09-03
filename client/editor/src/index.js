@@ -17,16 +17,21 @@ const theme = createMuiTheme({
     }
 })
 
-if (IS_DEV) {
-    console.log(theme)
+function start() {
+    ReactDOM.render((
+        <ThemeProvider theme={theme}>
+            <App />
+        </ThemeProvider>
+    ), document.getElementById("root"))
 }
 
-ReactDOM.render((
-    <ThemeProvider theme={theme}>
-        <App />
-    </ThemeProvider>
-), document.getElementById("root"))
-
 if (!IS_CORDOVA) {
+    start()
     serviceWorker.register()
+} else {
+    document.addEventListener("deviceready", start, false)
+}
+
+if (IS_DEV) {
+    console.log(theme)
 }

@@ -8,7 +8,7 @@
     "start-server": "node scripts/start-server.js && nodemon server.js",
     "start-editor": "cd client/editor && npm run start",
     "start-archive": "cd client/archive && npm run start",
-    "start-cordova": "node scripts/start-cordova.js",
+    "cordova": "node scripts/start-cordova.js",
     "setup-db": "npm run migrate && npm run seed",
     "migrate": "node ./scripts/migrate.js",
     "seed": "node ./scripts/seed.js",
