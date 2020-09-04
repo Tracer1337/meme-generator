@@ -1,12 +1,13 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.memegenerator" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>EasyMeme</name>
+<widget id="com.memegenerator" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+    <name>Easy Meme</name>
     <description>
-        A sample Apache Cordova application that responds to the deviceready event.
+        The Easiest Meme Generator Available
     </description>
-    <author email="dev@cordova.apache.org" href="http://cordova.io">
-        Apache Cordova Team
+    <author email="info@merlinmoelter.com" href="https://merlinmoelter.com">
+        Merlin Moelter
     </author>
+
     <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
@@ -15,9 +16,38 @@
     <allow-intent href="sms:*" />
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
+    <allow-navigation href="*" />
+
+    <preference name="SplashMaintainAspectRatio" value="true" />
+    <preference name="ShowSplashScreenSpinner" value="false" />
+
     <platform name="android">
         <allow-intent href="market:*" />
+        <!--
+            mdpi    : 48x48 px
+            hdpi    : 72x72 px
+            xhdpi   : 96x96 px
+            xxhdpi  : 144x144 px
+            xxxhdpi : 192x192 px
+        -->
+        <icon src="../store/images/icons/res/mipmap-mdpi/ic_launcher.png" density="mdpi" />
+        <icon src="../store/images/icons/res/mipmap-hdpi/ic_launcher.png" density="hdpi" />
+        <icon src="../store/images/icons/res/mipmap-xhdpi/ic_launcher.png" density="xhdpi" />
+        <icon src="../store/images/icons/res/mipmap-xxhdpi/ic_launcher.png" density="xxhdpi" />
+        <icon src="../store/images/icons/res/mipmap-xxxhdpi/ic_launcher.png" density="xxxhdpi" />
+
+        <splash src="../store/images/splashscreens/splash-port-hdpi.png" density="port-hdpi"/>
+        <splash src="../store/images/splashscreens/splash-port-mdpi.png" density="port-mdpi"/>
+        <splash src="../store/images/splashscreens/splash-port-xhdpi.png" density="port-xhdpi"/>
+        <splash src="../store/images/splashscreens/splash-port-xxhdpi.png" density="port-xxhdpi"/>
+        <splash src="../store/images/splashscreens/splash-port-xxxhdpi.png" density="port-xxxhdpi"/>
+
+        <!-- Allow API calls -->
+        <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application">
+            <application android:usesCleartextTraffic="true" />
+        </edit-config>
     </platform>
+
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />

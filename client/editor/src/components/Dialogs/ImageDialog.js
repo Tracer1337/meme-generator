@@ -288,7 +288,7 @@ function ImageDialog({ open, onClose, imageData, elements }) {
                             className={classes.spacing}
                             onClick={handleDownloadClick}
                         >
-                            { !IS_CORDOVA ? "Download" : "Store" }
+                            { !IS_CORDOVA ? "Download" : "Save Image" }
                         </Button>
 
                         {context.password && !hasCreatedTemplate && (
