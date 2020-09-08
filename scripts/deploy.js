@@ -34,8 +34,6 @@ makeRunnable(async () => {
 
     // Deploy new version on server
     await run(deploySSH, "Deploy new version")
-
-    await run(clear, "Clear up")
 })()
 
 
@@ -80,8 +78,4 @@ async function deploySSH() {
     })
 
     ssh.dispose()
-}
-
-async function clear() {
-    await fs.promises.rmdir(EDITOR_OUTPUT_DIR)
 }
