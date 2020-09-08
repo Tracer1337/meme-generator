@@ -1,4 +1,4 @@
-import { IS_CORDOVA } from "../config/constants.js"
+import { IS_CORDOVA, GALLERY_FOLDER_NAME } from "../config/constants.js"
 import { getDateString, makeId } from "./index.js"
 
 // Source: https://forum.ionicframework.com/t/save-base64-encoded-image-to-specific-filepath/96180/3
@@ -49,25 +49,24 @@ function downloadDataURI(src) {
 
         return new Promise(resolve => {
             window.resolveLocalFileSystemURL(storageLocation, dir => {
-    
+                
                 // Get / Create "Pictures" Folder
-                dir.getDirectory("Pictures", { create: true }, dir => {
-    
-                    // Get / Create "Easy Meme" Folder
-                    dir.getDirectory("Easy Meme", { create: true }, dir => {
-    
+                dir.getDirectory("Pictures", { create: true, exclusive: false }, dir => {
+                    
+                    // Get / Create Gallery Folder
+                    dir.getDirectory(GALLERY_FOLDER_NAME, { create: true, exclusive: false }, dir => {
+                        console.log(dir)
+                        
                         // Create image
                         dir.getFile(filename, { create: true }, file => {
                             file.createWriter(fileWriter => {
                                 fileWriter.write(blob)
                                 resolve()
-                            }, error => {
-                                console.error(error)
-                            })
-                        })
-                    })
-                })
-            })
+                            }, console.error)
+                        }, console.error)
+                    }, console.error)
+                }, console.error)
+            }, console.error)
         })
     }
 }

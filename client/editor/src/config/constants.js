@@ -14,3 +14,5 @@ export const IS_CORDOVA = !!window.cordova
 export const CACHE_NAME = "v1"
 
 export const GA_TRACKING_ID = "UA-162994094-2"
+
+export const GALLERY_FOLDER_NAME = "Memes"

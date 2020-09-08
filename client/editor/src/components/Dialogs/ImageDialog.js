@@ -102,6 +102,7 @@ function ImageDialog({ open, onClose, imageData, elements }) {
     const [isUploadSnackbarOpen, setIsUploadSnackbarOpen] = useState(false)
     const [isStoredSnackbarOpen, setIsStoredSnackbarOpen] = useState(false)
     const [hasCreatedTemplate, setHasCreatedTemplate] = useState(false)
+    const [hasStoredImage, setHasStoredImage] = useState(false)
 
     const isEditingTemplate = !!context.currentTemplate
 
@@ -136,6 +137,7 @@ function ImageDialog({ open, onClose, imageData, elements }) {
 
         if (IS_CORDOVA) {
             setIsStoredSnackbarOpen(true)
+            setHasStoredImage(true)
         }
         
         registerUsage()
@@ -281,15 +283,17 @@ function ImageDialog({ open, onClose, imageData, elements }) {
                             </div>
                         )}
 
-                        <Button
-                            startIcon={!IS_CORDOVA ? <DownloadIcon /> : <SaveIcon />}
-                            color="primary"
-                            variant="outlined"
-                            className={classes.spacing}
-                            onClick={handleDownloadClick}
-                        >
-                            { !IS_CORDOVA ? "Download" : "Save Image" }
-                        </Button>
+                        {!hasStoredImage && (
+                                <Button
+                                    startIcon={!IS_CORDOVA ? <DownloadIcon /> : <SaveIcon />}
+                                    color="primary"
+                                    variant="outlined"
+                                    className={classes.spacing}
+                                    onClick={handleDownloadClick}
+                                >
+                                    {!IS_CORDOVA ? "Download" : "Save Image"}
+                                </Button>
+                        )}
 
                         {context.password && !hasCreatedTemplate && (
                             <>
