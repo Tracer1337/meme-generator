@@ -10,6 +10,7 @@ export const LONG_PRESS_DURATION = 1000
 
 export const IS_DEV = process.env.NODE_ENV === "development"
 export const IS_CORDOVA = !!window.cordova
+export const IS_OFFLINE = !IS_CORDOVA ? navigator.onLine : window.navigator.connection.type === "none"
 
 export const CACHE_NAME = "v1"
 

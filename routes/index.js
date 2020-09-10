@@ -53,9 +53,11 @@ rootRouter.use("/nudes", require("./upload.js"))
 /**
  * Serve static files
  */
-rootRouter.use(express.static(path.join(ROOT_DIR, "public")))
-
-rootRouter.use("/storage", express.static(path.join(ROOT_DIR, "storage")))
+function serveStaticFiles() {
+    rootRouter.use(express.static(path.join(ROOT_DIR, "public")))
+    
+    rootRouter.use("/storage", express.static(path.join(ROOT_DIR, "storage")))
+}
 
 /**
  * Serve react app
@@ -66,7 +68,11 @@ if (process.env.NODE_ENV === "development") {
         target: "http://localhost:3000/",
         ws: true
     }))
+
+    serveStaticFiles()
 } else {
+    serveStaticFiles()
+
     rootRouter.get("/*", (req, res) => res.sendFile(path.resolve(ROOT_DIR, "public", "editor", "index.html")))
 }
 

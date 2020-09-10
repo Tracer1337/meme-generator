@@ -1,6 +1,6 @@
 import axios from "axios"
 
-import { IS_DEV, CACHE_NAME } from "../config/constants.js"
+import { IS_DEV, CACHE_NAME, IS_OFFLINE } from "../config/constants.js"
 
 const isCacheSupported = "caches" in window
 
@@ -13,7 +13,7 @@ export async function cachedRequest(url) {
     const cache = await caches.open(CACHE_NAME)
     
     // Return cached data if neccessary
-    if (!navigator.onLine) {
+    if (IS_OFFLINE) {
         const cachedData = await cache.match(url)
 
         return {
