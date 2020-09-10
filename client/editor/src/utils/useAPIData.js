@@ -61,6 +61,8 @@ function useAPIData(props) {
                 }
             })
             .catch(error => {
+                console.error(error)
+                
                 setData(null)
                 setError(error)
                 setIsLoading(false)
