@@ -186,7 +186,7 @@ export default makeElement({
     defaultValues: {
         width: 160,
         height: 24,
-        zIndex: 2
+        zIndex: 3
     },
     Child: React.forwardRef(Textbox)
 })

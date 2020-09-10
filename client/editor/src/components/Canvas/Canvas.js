@@ -6,6 +6,7 @@ import CloudDownloadIcon from "@material-ui/icons/CloudDownload"
 
 import Textbox from "./Elements/Textbox.js"
 import Sticker from "./Elements/Sticker.js"
+import Rectangle from "./Elements/Rectangle.js"
 import Grid from "./Grid.js"
 import BorderDialog from "../Dialogs/BorderDialog.js"
 import ImageDialog from "../Dialogs/ImageDialog.js"
@@ -151,6 +152,14 @@ function Canvas() {
         return newElementKey
     }
 
+    const handleAddRectangle = () => {
+        const newElementKey = createNewElement("rectangle")
+
+        setElementKeys([...elementKeys, newElementKey])
+
+        return newElementKey
+    }
+
     const addSticker = (src, id) => {
         const newElementKey = createNewElement("sticker", { src, id })
         setElementKeys([...elementKeys, newElementKey])
@@ -285,19 +294,21 @@ function Canvas() {
     useEffect(() => {
         context.event.addEventListener("importImage", handleImportImage)
         context.event.addEventListener("addTextbox", handleAddTextbox)
+        context.event.addEventListener("addRectangle", handleAddRectangle)
         context.event.addEventListener("importSticker", handleImportSticker)
         context.event.addEventListener("generateImage", handleGenerateImage)
         context.event.addEventListener("setBorder", handleSetBorder)
         context.event.addEventListener("setGrid", handleSetGrid)
         context.event.addEventListener("loadTemplate", handleLoadTemplate)
         context.event.addEventListener("loadSticker", handleLoadSticker)
-
+        
         window.getTextboxes = handleGetTextboxes
         window.getBorder = handleGetBorder
         
         return () => {
             context.event.removeEventListener("importImage", handleImportImage)
             context.event.removeEventListener("addTextbox", handleAddTextbox)
+            context.event.removeEventListener("addRectangle", handleAddRectangle)
             context.event.removeEventListener("importSticker", handleImportSticker)
             context.event.removeEventListener("generateImage", handleGenerateImage)
             context.event.removeEventListener("setBorder", handleSetBorder)
@@ -388,28 +399,33 @@ function Canvas() {
                 )}
 
                 {elementKeys.map(({ type, key, data }) => {
+                    const props = {
+                        key,
+                        id: key,
+                        onRemove: handleRemoveElement,
+                        handle: elementRefs.current[key],
+                        grid: gridValues,
+                        canvas: canvas.current
+                    }
+
                     if(type === "textbox") {
                         return (
                             <Textbox
-                                key={key}
-                                id={key}
-                                onRemove={handleRemoveElement}
-                                handle={elementRefs.current[key]}
-                                grid={gridValues}
+                                {...props}
                                 template={data.template}
-                                canvas={canvas.current}
                             />
                         )
                     } else if (type === "sticker") {
                         return (
                             <Sticker
-                                key={key}
-                                id={key}
-                                onRemove={handleRemoveElement}
-                                handle={elementRefs.current[key]}
-                                grid={gridValues}
-                                canvas={canvas.current}
+                                {...props}
                                 src={data.src}
+                            />
+                        )
+                    } else if (type === "rectangle") {
+                        return (
+                            <Rectangle
+                                {...props}
                             />
                         )
                     }
