@@ -18,7 +18,8 @@ function App() {
         image: null,
         label: null,
         currentTemplate: null,
-        password: localStorage.getItem("password")
+        password: localStorage.getItem("password"),
+        drawing: { enabled: false }
     })
 
     const setter = {

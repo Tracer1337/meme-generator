@@ -6,6 +6,7 @@ import GridIcon from "@material-ui/icons/GridOn"
 import AddPhotoIcon from "@material-ui/icons/AddPhotoAlternate"
 import PhotoLibraryIcon from "@material-ui/icons/PhotoLibrary"
 import RectangleIcon from "@material-ui/icons/CheckBoxOutlineBlank"
+import EditIcon from "@material-ui/icons/Edit"
 
 import { AppContext } from "../../App.js"
 
@@ -45,6 +46,14 @@ function Menu({ open, anchorEl, onClose }) {
                     <RectangleIcon fontSize="small"/>
                 </ListItemIcon>
                 <ListItemText primary="Add Rectangle"/>
+            </MenuItem>
+
+            {/* Draw */}
+            <MenuItem onClick={dispatchEvent("toggleDrawing")}>
+                <ListItemIcon className={classes.icon}>
+                    <EditIcon fontSize="small"/>
+                </ListItemIcon>
+                <ListItemText primary={!context.drawing.enabled ? "Enable Drawing" : "Disable Drawing"}/>
             </MenuItem>
 
             {/* Border */}

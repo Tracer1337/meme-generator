@@ -8,6 +8,7 @@ import Textbox from "./Elements/Textbox.js"
 import Sticker from "./Elements/Sticker.js"
 import Rectangle from "./Elements/Rectangle.js"
 import Grid from "./Grid.js"
+import DrawingCanvas from "./DrawingCanvas.js"
 import BorderDialog from "../Dialogs/BorderDialog.js"
 import ImageDialog from "../Dialogs/ImageDialog.js"
 import GridDialog from "../Dialogs/GridDialog.js"
@@ -160,6 +161,15 @@ function Canvas() {
         return newElementKey
     }
 
+    const handleToggleDrawing = () => {
+        context.set({
+            drawing: {
+                ...context.drawing,
+                enabled: !context.drawing.enabled
+            }
+        })
+    }
+
     const addSticker = (src, id) => {
         const newElementKey = createNewElement("sticker", { src, id })
         setElementKeys([...elementKeys, newElementKey])
@@ -295,6 +305,7 @@ function Canvas() {
         context.event.addEventListener("importImage", handleImportImage)
         context.event.addEventListener("addTextbox", handleAddTextbox)
         context.event.addEventListener("addRectangle", handleAddRectangle)
+        context.event.addEventListener("toggleDrawing", handleToggleDrawing)
         context.event.addEventListener("importSticker", handleImportSticker)
         context.event.addEventListener("generateImage", handleGenerateImage)
         context.event.addEventListener("setBorder", handleSetBorder)
@@ -309,6 +320,7 @@ function Canvas() {
             context.event.removeEventListener("importImage", handleImportImage)
             context.event.removeEventListener("addTextbox", handleAddTextbox)
             context.event.removeEventListener("addRectangle", handleAddRectangle)
+            context.event.removeEventListener("toggleDrawing", handleToggleDrawing)
             context.event.removeEventListener("importSticker", handleImportSticker)
             context.event.removeEventListener("generateImage", handleGenerateImage)
             context.event.removeEventListener("setBorder", handleSetBorder)
@@ -432,6 +444,8 @@ function Canvas() {
 
                     throw new Error("Type " + type + " is not defined")
                 })}
+
+                <DrawingCanvas canvas={canvas.current} border={borderValues} />
             </div>
 
             <Grid config={gridValues} canvas={canvas.current} border={borderValues}/>
