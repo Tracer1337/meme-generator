@@ -22,7 +22,9 @@ function useSnapshots({ createSnapshot, applySnapshot, onSnapshotsEmpty }) {
     const handleUndo = () => {
         // No snapshots left
         if (snapshots.current.length === 0) {
-            onSnapshotsEmpty()
+            if (onSnapshotsEmpty) {
+                onSnapshotsEmpty()
+            }
             return
         }
 

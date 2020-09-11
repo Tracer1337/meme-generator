@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useContext } from "react"
 import { makeStyles } from "@material-ui/core/styles"
 
 import { AppContext } from "../../../App.js"
+import useSnapshots from "../../../utils/useSnapshots.js"
 import Path from "./Path.js"
 
 const useStyles = makeStyles(theme => ({
@@ -25,6 +26,15 @@ function DrawingCanvas({ canvas, border }) {
 
     const [isDrawing, setIsDrawing] = useState(false)
 
+    const addSnapshot = useSnapshots({
+        createSnapshot: () => ({ paths: [...paths.current] }),
+
+        applySnapshot: (snapshot) => {
+            paths.current = snapshot.paths
+            draw()
+        }
+    })
+
     const setDimensions = () => {
         const canvasRect = canvas.getBoundingClientRect()
 
@@ -46,16 +56,17 @@ function DrawingCanvas({ canvas, border }) {
         const y = clientY - canvasRect.y
 
         currentPath.current.addPoint([x, y])
-        update()
+        draw()
     }
 
     const handleDrawStart = () => {
         setIsDrawing(true)
+        addSnapshot()
     }
     
     const handleDrawEnd = () => {
         paths.current.push(currentPath.current)
-        currentPath.current = new Path()
+        currentPath.current = new Path({ color: context.drawing.color })
 
         setIsDrawing(false)
     }
@@ -86,7 +97,7 @@ function DrawingCanvas({ canvas, border }) {
         }
     }
 
-    const update = () => {
+    const draw = () => {
         clearCanvas()
         drawPath()
     }
@@ -97,10 +108,10 @@ function DrawingCanvas({ canvas, border }) {
         }
         
         setDimensions()
-        update()
+        draw()
 
         // eslint-disable-next-line
-    }, [canvas, border])
+    }, [canvas?.clientWidth, canvas?.clientHeight, border])
 
     useEffect(() => {
         currentPath.current.color = context.drawing.color

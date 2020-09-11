@@ -1,8 +1,8 @@
 class Path {
-    constructor() {
+    constructor({ color, width } = {}) {
         this.points = []
-        this.color = "black"
-        this.width = 5
+        this.color = color || "black"
+        this.width = width || 5
     }
 
     addPoint(point) {

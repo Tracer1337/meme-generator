@@ -40,20 +40,20 @@ function Menu({ open, anchorEl, onClose }) {
                 horizontal: "left"
             }}
         >
-            {/* Rectangle */}
-            <MenuItem onClick={dispatchEvent("addRectangle")}>
-                <ListItemIcon className={classes.icon}>
-                    <RectangleIcon fontSize="small"/>
-                </ListItemIcon>
-                <ListItemText primary="Add Rectangle"/>
-            </MenuItem>
-
             {/* Draw */}
             <MenuItem onClick={dispatchEvent("toggleDrawing")}>
                 <ListItemIcon className={classes.icon}>
                     <EditIcon fontSize="small"/>
                 </ListItemIcon>
                 <ListItemText primary={!context.drawing.enabled ? "Enable Drawing" : "Disable Drawing"}/>
+            </MenuItem>
+            
+            {/* Rectangle */}
+            <MenuItem onClick={dispatchEvent("addRectangle")}>
+                <ListItemIcon className={classes.icon}>
+                    <RectangleIcon fontSize="small"/>
+                </ListItemIcon>
+                <ListItemText primary="Add Rectangle"/>
             </MenuItem>
 
             {/* Border */}

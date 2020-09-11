@@ -10,7 +10,8 @@ const useStyles = makeStyles(theme => ({
     drawingActions: {
         position: "absolute",
         bottom: theme.mixins.toolbar.minHeight + theme.spacing(2),
-        right: theme.spacing(2)
+        right: theme.spacing(2),
+        pointerEvents: "none"
     },
 
     fab: {
