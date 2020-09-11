@@ -5,6 +5,7 @@ import BottomBar from "./components/BottomBar/BottomBar.js"
 import Analytics from "./utils/Analytics.js"
 import OfflineUseAlerts from "./utils/OfflineUseAlerts.js"
 import { setPasswordHeader } from "./config/api.js"
+import settingsOptions from "./config/settings-options.json"
 
 const AppContext = React.createContext()
 
@@ -19,7 +20,10 @@ function App() {
         label: null,
         currentTemplate: null,
         password: localStorage.getItem("password"),
-        drawing: { enabled: false }
+        drawing: {
+            enabled: false,
+            color: settingsOptions.colors["Red"]
+        }
     })
 
     const setter = {

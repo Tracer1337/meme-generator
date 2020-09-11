@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, useContext } from "react"
 import { makeStyles } from "@material-ui/core/styles"
 
-import { AppContext } from "../../App.js"
+import { AppContext } from "../../../App.js"
+import Path from "./Path.js"
 
 const useStyles = makeStyles(theme => ({
     drawingCanvas: {
@@ -20,7 +21,7 @@ function DrawingCanvas({ canvas, border }) {
     const drawingCanvasRef = useRef()
     const renderContext = useRef()
     const paths = useRef([])
-    const currentPath = useRef([])
+    const currentPath = useRef(new Path())
 
     const [isDrawing, setIsDrawing] = useState(false)
 
@@ -44,7 +45,7 @@ function DrawingCanvas({ canvas, border }) {
         const x = clientX - canvasRect.x
         const y = clientY - canvasRect.y
 
-        currentPath.current.push([x, y])
+        currentPath.current.addPoint([x, y])
         update()
     }
 
@@ -54,7 +55,7 @@ function DrawingCanvas({ canvas, border }) {
     
     const handleDrawEnd = () => {
         paths.current.push(currentPath.current)
-        currentPath.current = []
+        currentPath.current = new Path()
 
         setIsDrawing(false)
     }
@@ -69,8 +70,8 @@ function DrawingCanvas({ canvas, border }) {
         for (let path of paths.current.concat([currentPath.current])) {
             context.beginPath()
 
-            for (let i = 0; i < path.length; i++) {
-                const [x, y] = path[i]
+            for (let i = 0; i < path.points.length; i++) {
+                const [x, y] = path.points[i]
 
                 if (i === 0) {
                     context.moveTo(x, y)
@@ -79,6 +80,8 @@ function DrawingCanvas({ canvas, border }) {
                 context.lineTo(x, y)
             }
 
+            context.strokeStyle = path.color
+            context.lineWidth = path.width
             context.stroke()
         }
     }
@@ -98,6 +101,10 @@ function DrawingCanvas({ canvas, border }) {
 
         // eslint-disable-next-line
     }, [canvas, border])
+
+    useEffect(() => {
+        currentPath.current.color = context.drawing.color
+    }, [context.drawing])
 
     useEffect(() => {
         const drawingCanvas = drawingCanvasRef.current

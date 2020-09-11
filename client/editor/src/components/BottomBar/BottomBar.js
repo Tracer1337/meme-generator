@@ -12,6 +12,7 @@ import Menu from "./Menu.js"
 import TemplatesDialog from "../Dialogs/TemplatesDialog.js"
 import HelpDialog from "../Dialogs/HelpDialog.js"
 import AuthDialog from "../Dialogs/AuthDialog.js"
+import DrawingActions from "./DrawingActions.js"
 
 import { AppContext } from "../../App.js"
 import { LONG_PRESS_DURATION } from "../../config/constants.js"
@@ -124,6 +125,8 @@ function BottomBar() {
                 </IconButton>
 
                 <Menu open={isMenuOpen} anchorEl={openMenuButton.current} onClose={handleMenuClose}/>
+
+                <DrawingActions/>
 
                 <TemplatesDialog open={isTemplatesOpen} onClose={() => setIsTemplatesOpen(false)}/>
                 <HelpDialog open={isHelpOpen} onClose={() => setIsHelpOpen(false)}/>
