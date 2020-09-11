@@ -43,6 +43,7 @@ function DrawingCanvas({ canvas, border }) {
     }
 
     const handleTouchMove = (event) => {
+        event.preventDefault()
         handleMouseMove(event.touches[0])
     }
 
@@ -122,25 +123,24 @@ function DrawingCanvas({ canvas, border }) {
 
         renderContext.current = drawingCanvas.getContext("2d")
 
-        drawingCanvas.addEventListener("touchstart", handleDrawStart)
-        drawingCanvas.addEventListener("touchend", handleDrawEnd)
-        drawingCanvas.addEventListener("touchcancel", handleDrawEnd)
-        drawingCanvas.addEventListener("touchmove", handleTouchMove)
-        
-        drawingCanvas.addEventListener("mousedown", handleDrawStart)
-        drawingCanvas.addEventListener("mouseup", handleDrawEnd)
-        drawingCanvas.addEventListener("mousemove", handleMouseMove)
-        
-        return () => {
-            drawingCanvas.removeEventListener("touchstart", handleDrawStart)
-            drawingCanvas.removeEventListener("touchmove", handleTouchMove)
-            drawingCanvas.removeEventListener("touchend", handleDrawEnd)
-            drawingCanvas.removeEventListener("touchcancel", handleDrawEnd)
+        const events = [
+            ["touchstart", handleDrawStart],
+            ["touchend", handleDrawEnd],
+            ["touchcancel", handleDrawEnd],
+            ["touchmove", handleTouchMove],
 
-            drawingCanvas.removeEventListener("mousedown", handleDrawStart)
-            drawingCanvas.removeEventListener("mouseup", handleDrawEnd)
-            drawingCanvas.removeEventListener("mousemove", handleMouseMove)
-        }
+            ["mousedown", handleDrawStart],
+            ["mouseup", handleDrawEnd],
+            ["mousemove", handleMouseMove]
+        ]
+
+        events.forEach(([name, fn]) => {
+            drawingCanvas.addEventListener(name, fn, false)
+        })
+        
+        return () => events.forEach(([name, fn]) => {
+            drawingCanvas.removeEventListener(name, fn, false)
+        })
     })
 
     return (
