@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles"
 
 import { AppContext } from "../../../App.js"
 import useSnapshots from "../../../utils/useSnapshots.js"
+import { createListeners } from "../../../utils"
 import Path from "./Path.js"
 
 const useStyles = makeStyles(theme => ({
@@ -44,10 +45,10 @@ function DrawingCanvas({ canvas, border }) {
 
     const handleTouchMove = (event) => {
         event.preventDefault()
-        handleMouseMove(event.touches[0])
+        handleDraw(event.touches[0])
     }
 
-    const handleMouseMove = ({ clientX, clientY }) => {
+    const handleDraw = ({ clientX, clientY }) => {
         if (!isDrawing) {
             return
         }
@@ -59,7 +60,7 @@ function DrawingCanvas({ canvas, border }) {
         currentPath.current.addPoint([x, y])
         draw()
     }
-
+    
     const handleDrawStart = () => {
         setIsDrawing(true)
         addSnapshot()
@@ -131,16 +132,12 @@ function DrawingCanvas({ canvas, border }) {
 
             ["mousedown", handleDrawStart],
             ["mouseup", handleDrawEnd],
-            ["mousemove", handleMouseMove]
+            ["mousemove", handleDraw]
         ]
 
-        events.forEach(([name, fn]) => {
-            drawingCanvas.addEventListener(name, fn, false)
-        })
+        const removeListeners = createListeners(drawingCanvas, events)
         
-        return () => events.forEach(([name, fn]) => {
-            drawingCanvas.removeEventListener(name, fn, false)
-        })
+        return removeListeners
     })
 
     return (

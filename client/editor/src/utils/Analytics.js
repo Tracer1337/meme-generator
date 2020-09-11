@@ -3,6 +3,7 @@ import ReactGA from "react-ga"
 
 import { AppContext } from "../App.js"
 import { GA_TRACKING_ID, IS_DEV } from "../config/constants.js"
+import { createListeners } from "../utils"
 
 function Analytics() {
     const context = useContext(AppContext)
@@ -33,7 +34,7 @@ function Analytics() {
             return
         }
 
-        const generateImageEvent = ReactGA.event.bind(null, {
+        const generateImageEvent = () => ReactGA.event({
             category: "Editor",
             action: "Generate Image",
             ...(context.currentTemplate ? {
@@ -67,22 +68,19 @@ function Analytics() {
             action: "Share",
             label
         })
+        
+        const events = [
+            ["generateImage", generateImageEvent],
+            ["loadTemplate", loadTemplateEvent],
+            ["openShareModal", shareModalModalview],
+            ["uploadImage", uploadImageEvent],
+            ["downloadImage", downloadImageEvent],
+            ["share", shareEvent],
+        ]
 
-        context.event.addEventListener("generateImage", generateImageEvent)
-        context.event.addEventListener("loadTemplate", loadTemplateEvent)
-        context.event.addEventListener("openShareModal", shareModalModalview)
-        context.event.addEventListener("uploadImage", uploadImageEvent)
-        context.event.addEventListener("downloadImage", downloadImageEvent)
-        context.event.addEventListener("share", shareEvent)
+        const removeListeners = createListeners(context.event, events)
 
-        return () => {
-            context.event.removeEventListener("generateImage", generateImageEvent)
-            context.event.removeEventListener("loadTemplate", loadTemplateEvent)
-            context.event.removeEventListener("openShareModal", shareModalModalview)
-            context.event.removeEventListener("uploadImage", uploadImageEvent)
-            context.event.removeEventListener("downloadImage", downloadImageEvent)
-            context.event.removeEventListener("share", shareEvent)
-        }
+        return removeListeners
     }, [context, isInitialized])
 
     return null

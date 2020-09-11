@@ -15,7 +15,7 @@ import GridDialog from "../Dialogs/GridDialog.js"
 
 import { AppContext } from "../../App.js"
 
-import { fileToImage, importFile } from "../../utils"
+import { fileToImage, importFile, createListeners } from "../../utils"
 import generateImage from "../../utils/generateImage.js"
 
 // function showCanvas (canvas) {
@@ -302,32 +302,25 @@ function Canvas() {
 
     // Set event listeners
     useEffect(() => {
-        context.event.addEventListener("importImage", handleImportImage)
-        context.event.addEventListener("addTextbox", handleAddTextbox)
-        context.event.addEventListener("addRectangle", handleAddRectangle)
-        context.event.addEventListener("toggleDrawing", handleToggleDrawing)
-        context.event.addEventListener("importSticker", handleImportSticker)
-        context.event.addEventListener("generateImage", handleGenerateImage)
-        context.event.addEventListener("setBorder", handleSetBorder)
-        context.event.addEventListener("setGrid", handleSetGrid)
-        context.event.addEventListener("loadTemplate", handleLoadTemplate)
-        context.event.addEventListener("loadSticker", handleLoadSticker)
-        
         window.getTextboxes = handleGetTextboxes
         window.getBorder = handleGetBorder
-        
-        return () => {
-            context.event.removeEventListener("importImage", handleImportImage)
-            context.event.removeEventListener("addTextbox", handleAddTextbox)
-            context.event.removeEventListener("addRectangle", handleAddRectangle)
-            context.event.removeEventListener("toggleDrawing", handleToggleDrawing)
-            context.event.removeEventListener("importSticker", handleImportSticker)
-            context.event.removeEventListener("generateImage", handleGenerateImage)
-            context.event.removeEventListener("setBorder", handleSetBorder)
-            context.event.removeEventListener("setGrid", handleSetGrid)
-            context.event.removeEventListener("loadTemplate", handleLoadTemplate)
-            context.event.removeEventListener("loadSticker", handleLoadSticker)
-        }
+
+        const events = [
+            ["importImage", handleImportImage],
+            ["addTextbox", handleAddTextbox],
+            ["addRectangle", handleAddRectangle],
+            ["toggleDrawing", handleToggleDrawing],
+            ["importSticker", handleImportSticker],
+            ["generateImage", handleGenerateImage],
+            ["setBorder", handleSetBorder],
+            ["setGrid", handleSetGrid],
+            ["loadTemplate", handleLoadTemplate],
+            ["loadSticker", handleLoadSticker],
+        ]
+
+        const removeListeners = createListeners(context.event, events)
+
+        return removeListeners
     })
 
     // Set image dimensions
