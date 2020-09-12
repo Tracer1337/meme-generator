@@ -64,7 +64,7 @@ function Fade({ children }) {
         hasDrawingStateChanged.current = true
     }
 
-    return <MuiFade in={!context.drawing.enabled} className={!hasDrawingStateChanged.current && classes.fade}>{children}</MuiFade>
+    return <MuiFade in={!context.drawing.enabled} className={!hasDrawingStateChanged.current ? classes.fade : ""}>{children}</MuiFade>
 }
 
 function BottomBar() {

@@ -5,6 +5,7 @@ import { AppContext } from "../../../App.js"
 import useSnapshots from "../../../utils/useSnapshots.js"
 import { createListeners } from "../../../utils"
 import Path from "./Path.js"
+import { PIXEL_RATIO } from "../../../config/constants.js"
 
 const useStyles = makeStyles(theme => ({
     drawingCanvas: {
@@ -39,8 +40,11 @@ function DrawingCanvas({ canvas, border }) {
     const setDimensions = () => {
         const canvasRect = canvas.getBoundingClientRect()
 
-        drawingCanvasRef.current.width = canvasRect.width
-        drawingCanvasRef.current.height = canvasRect.height
+        drawingCanvasRef.current.width = canvasRect.width * PIXEL_RATIO
+        drawingCanvasRef.current.height = canvasRect.height * PIXEL_RATIO
+
+        drawingCanvasRef.current.style.width = canvasRect.width + "px"
+        drawingCanvasRef.current.style.height = canvasRect.height + "px"
     }
 
     const handleTouchMove = (event) => {
@@ -93,19 +97,32 @@ function DrawingCanvas({ canvas, border }) {
         for (let path of paths.current.concat([currentPath.current])) {
             context.beginPath()
 
-            for (let i = 0; i < path.points.length; i++) {
-                const [x, y] = path.points[i]
-
-                if (i === 0) {
-                    context.moveTo(x, y)
-                }
-
-                context.lineTo(x, y)
-            }
-
+            context.fillStyle = path.color
             context.strokeStyle = path.color
             context.lineWidth = path.width
-            context.stroke()
+
+            for (let i = 0; i < path.points.length; i++) {
+                const [x, y] = path.points[i]
+                
+                // Draw circle at the beginning
+                if (i === 0) {
+                    context.moveTo(x, y)
+                    context.arc(x, y, path.width / 2, 0, Math.PI * 2, false)
+                    context.fill()
+                    context.beginPath()
+                }
+
+                // Draw a line from the last point to this point
+                context.lineTo(x, y)
+                
+                // Draw circle the end
+                if (i === path.points.length - 1) {
+                    context.stroke()
+                    context.beginPath()
+                    context.arc(x, y, path.width / 2, 0, Math.PI * 2, false)
+                    context.fill()
+                }
+            }
         }
     }
 
