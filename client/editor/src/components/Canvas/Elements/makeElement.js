@@ -139,7 +139,7 @@ function makeElement({
 
             onSnapshotsEmpty: () => {
                 // Remove element if it does not come from template
-                if (!data.defaultValues) {
+                if (!data.fromTemplate) {
                     onRemove(id)
                 }
             }

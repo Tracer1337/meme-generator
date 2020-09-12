@@ -155,8 +155,8 @@ function Canvas() {
         return newElementKey
     }
 
-    const handleAddTextbox = ({ defaultValues }) => {
-        const newElementKey = createNewElement("textbox", { defaultValues })
+    const handleAddTextbox = ({ data }) => {
+        const newElementKey = createNewElement("textbox", data)
 
         setElements([...elements, newElementKey])
 
@@ -286,7 +286,10 @@ function Canvas() {
                 formatPercentage(textbox, "y")
 
                 // Add textbox
-                const newKey = handleAddTextbox({ defaultValues: textbox })
+                const newKey = handleAddTextbox({ data: {
+                    defaultValues: textbox,
+                    fromTemplate: true
+                } })
                 elements.push(newKey)
             }
         }
