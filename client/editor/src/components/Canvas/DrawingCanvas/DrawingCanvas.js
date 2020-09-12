@@ -112,9 +112,12 @@ function DrawingCanvas({ canvas, border }) {
             context.fillStyle = path.color
             context.strokeStyle = path.color
             context.lineWidth = path.width
+            context.lineCap = "round"
 
-            for (let i = 0; i < path.points.length; i++) {
-                const [x, y] = path.points[i]
+            const points = path.getPoints()
+
+            for (let i = 0; i < points.length; i++) {
+                const [x, y] = points[i]
                 
                 // Draw circle at the beginning
                 if (i === 0) {
@@ -126,15 +129,9 @@ function DrawingCanvas({ canvas, border }) {
 
                 // Draw a line from the last point to this point
                 context.lineTo(x, y)
-                
-                // Draw circle the end
-                if (i === path.points.length - 1) {
-                    context.stroke()
-                    context.beginPath()
-                    context.arc(x, y, path.width / 2, 0, Math.PI * 2, false)
-                    context.fill()
-                }
             }
+
+            context.stroke()
         }
     }
 
