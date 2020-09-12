@@ -159,6 +159,14 @@ function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dim
 
         // eslint-disable-next-line
     }, [isEditing])
+
+    useEffect(() => {
+        textboxRef.current.addEventListener("dblclick", handleEditClicked)
+        
+        return () => {
+            textboxRef.current.removeEventListener("dblclick", handleEditClicked)
+        }
+    })
     
     return (
         <>
