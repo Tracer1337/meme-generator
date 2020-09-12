@@ -114,10 +114,8 @@ function DrawingCanvas({ canvas, border }) {
             context.lineWidth = path.width
             context.lineCap = "round"
 
-            const points = path.getPoints()
-
-            for (let i = 0; i < points.length; i++) {
-                const [x, y] = points[i]
+            for (let i = 0; i < path.points.length; i++) {
+                const [x, y] = path.points[i]
                 
                 // Draw circle at the beginning
                 if (i === 0) {

@@ -1,5 +1,4 @@
 import { PIXEL_RATIO } from "../../../config/constants.js"
-import simplifyPath from "../../../utils/simplifyPath.js"
 
 class Path {
     constructor({ color, width } = {}) {
@@ -10,10 +9,6 @@ class Path {
 
     addPoint([x, y]) {
         this.points.push([x * PIXEL_RATIO, y * PIXEL_RATIO])
-    }
-
-    getPoints() {
-        return simplifyPath(this.points)
     }
 }
 
