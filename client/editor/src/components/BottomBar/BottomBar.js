@@ -1,5 +1,5 @@
 import React, { useContext, useState, useRef, useEffect } from "react"
-import { AppBar, Toolbar, Fab, IconButton } from "@material-ui/core"
+import { AppBar, Toolbar, Fab, IconButton, Snackbar } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import DoneIcon from "@material-ui/icons/Done"
 import TextFieldsIcon from "@material-ui/icons/TextFields"
@@ -7,6 +7,7 @@ import MoreVertIcon from "@material-ui/icons/MoreVert"
 import CloudDownloadIcon from "@material-ui/icons/CloudDownload"
 import HelpIcon from "@material-ui/icons/Help"
 import UndoIcon from "@material-ui/icons/Undo"
+import CloseIcon from "@material-ui/icons/Close"
 
 import Menu from "./Menu.js"
 import TemplatesDialog from "../Dialogs/TemplatesDialog.js"
@@ -37,6 +38,10 @@ const useStyles = makeStyles(theme => ({
 
     spacer: {
         flexGrow: 1
+    },
+
+    snackbarClose: {
+        color: theme.palette.primary.variant
     }
 }))
 
@@ -52,6 +57,7 @@ function BottomBar() {
     const [isTemplatesOpen, setIsTemplatesOpen] = useState(false)
     const [isHelpOpen, setIsHelpOpen] = useState(false)
     const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false)
+    const [isLoggedOutSnackbarOpen, setIsLoggedOutSnackbarOpen] = useState(false)
 
     const handleMoreClick = () => {
         setIsMenuOpen(!isMenuOpen)
@@ -70,12 +76,13 @@ function BottomBar() {
     }
 
     const handleTouchStart = () => {
-        if(context.password) {
-            return
-        }
-
         helpButtonTimer.current = setTimeout(() => {
-            setIsAuthDialogOpen(true)
+            if (!context.password) {
+                setIsAuthDialogOpen(true)
+            } else {
+                context.setPassword(null)
+                setIsLoggedOutSnackbarOpen(true)
+            }
         }, LONG_PRESS_DURATION)
     }
 
@@ -131,6 +138,22 @@ function BottomBar() {
                 <TemplatesDialog open={isTemplatesOpen} onClose={() => setIsTemplatesOpen(false)}/>
                 <HelpDialog open={isHelpOpen} onClose={() => setIsHelpOpen(false)}/>
                 <AuthDialog open={isAuthDialogOpen} onClose={() => setIsAuthDialogOpen(false)}/>
+
+                <Snackbar
+                    anchorOrigin={{
+                        vertical: "bottom",
+                        horizontal: "right"
+                    }}
+                    open={isLoggedOutSnackbarOpen}
+                    autoHideDuration={3000}
+                    onClose={() => setIsLoggedOutSnackbarOpen(false)}
+                    message="Logged Out"
+                    action={
+                        <IconButton onClick={() => setIsLoggedOutSnackbarOpen(false)} className={classes.snackbarClose}>
+                            <CloseIcon />
+                        </IconButton>
+                    }
+                />
             </Toolbar>
         </AppBar>
     )

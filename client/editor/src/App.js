@@ -30,7 +30,11 @@ function App() {
         set: values => setContext({ ...context, ...values }),
         setPassword: password => {
             // Store password in localstorage
-            localStorage.setItem("password", password)
+            if (!password) {
+                localStorage.removeItem("password")
+            } else {
+                localStorage.setItem("password", password)
+            }
             setPasswordHeader(password)
             setContext({ ...context, password })
         }
