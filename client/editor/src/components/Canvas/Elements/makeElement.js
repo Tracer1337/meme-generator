@@ -96,11 +96,12 @@ function makeElement({
     defaultValues,
     Child
 }) {
-    return function Element({ onRemove, onClone, handle, grid, canvas, data, id, ...props }) {
+    return function Element({ onRemove, onTemporaryRemove, onUndoRemove, onClone, handle, grid, canvas, data, id, ...props }) {
         const lastRotation = useRef(data.defaultValues?.rotation || 0)
         const container = useRef()
         const childRef = useRef()
         const hasCreatedSnapshot = useRef(false)
+        const removedSinceCounter = useRef(0)
 
         const [position, setPosition] = useState({ x: data.defaultValues?.x || 0, y: data.defaultValues?.y || 0 })
         const [rotation, setRotation] = useState(data.defaultValues?.rotation || 0)
@@ -128,18 +129,28 @@ function makeElement({
         }, [grid, canvas.clientWidth, canvas.clientHeight])
 
         const addSnapshot = useSnapshots({
-            createSnapshot: () => ({ width, height, position, rotation }),
+            createSnapshot: () => {
+                if (data.isRemoved) {
+                    removedSinceCounter.current++
+                }
+
+                return { width, height, position, rotation }
+            },
 
             applySnapshot: (snapshot) => {
                 setWidth(snapshot.width)
                 setHeight(snapshot.height)
                 setPosition(snapshot.position)
                 setRotation(snapshot.rotation)
+
+                if (data.isRemoved && removedSinceCounter.current-- === 0) {
+                    onUndoRemove(id)
+                }
             },
 
             onSnapshotsEmpty: () => {
                 // Remove element if it does not come from template
-                if (!data.fromTemplate) {
+                if (!data.fromTemplate && !data.isRemoved) {
                     onRemove(id)
                 }
             }
@@ -246,30 +257,15 @@ function makeElement({
             hasCreatedSnapshot.current = false
         }
 
-        const handleFocus = () => {
-            setIsFocused(true)
-        }
-
-        const handleBlur = () => {
-            setIsFocused(false)
-        }
-
-        const handleToggleMovement = (state = true) => {
-            setShouldMove(state)
-        }
-
-        const beforeCapturing = () => {
-            setCapture(true)
-        }
-
-        const afterCapturing = () => {
-            setCapture(false)
+        const handleTemporaryRemove = () => {
+            addSnapshot()
+            onTemporaryRemove(id)
         }
 
         // Expose methods to parent
         if (handle) {
-            handle.beforeCapturing = beforeCapturing
-            handle.afterCapturing = afterCapturing
+            handle.beforeCapturing = () => setCapture(true)
+            handle.afterCapturing = () => setCapture(false)
         }
 
         useEffect(() => {
@@ -296,7 +292,7 @@ function makeElement({
             // Handle click-away event
             const handleClick = (event) => {
                 if (isFocused && !container.current.contains(event.target)) {
-                    handleBlur()
+                    setIsFocused(false)
                 }
             }
 
@@ -334,7 +330,8 @@ function makeElement({
                     style={{
                         transform: `translate(${position.x}px, ${position.y}px) rotate(${rotation}rad)`,
                         transformOrigin: `center center`,
-                        zIndex: defaultValues.zIndex || 0
+                        zIndex: defaultValues.zIndex || 0,
+                        display: data.isRemoved && "none"
                     }}
                     ref={container}
                     data-id={id}
@@ -342,9 +339,9 @@ function makeElement({
                     <Child
                         id={id}
                         handle={handle}
-                        onFocus={handleFocus}
+                        onFocus={() => setIsFocused(true)}
                         isFocused={isFocused}
-                        toggleMovement={handleToggleMovement}
+                        toggleMovement={(state = true) => setShouldMove(state)}
                         dimensions={{ width, height, ...position, rotation }}
                         ref={childRef}
                         capture={capture}
@@ -406,7 +403,7 @@ function makeElement({
                                 )}
 
                                 {controls.includes("remove") && (
-                                    <IconButton className={classes.button} onClick={() => onRemove(id)}>
+                                    <IconButton className={classes.button} onClick={() => handleTemporaryRemove(id)}>
                                         <CloseIcon />
                                     </IconButton>
                                 )}

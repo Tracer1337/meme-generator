@@ -123,11 +123,23 @@ function Canvas() {
         setGeneratedImage(null)
     }
 
-    const handleRemoveElement = (removeKey) => {
-        const newKeys = elements.filter(({ key }) => key !== removeKey)
-        setElements(newKeys)
+    const handleRemoveElement = (elementKey) => {
+        const newElements = elements.filter(({ key }) => key !== elementKey)
+        setElements(newElements)
 
-        delete elementRefs.current[removeKey]
+        delete elementRefs.current[elementKey]
+    }
+
+    const handleTemporaryRemoveElement = (elementKey) => {
+        const element = elements.find(({ key }) => key === elementKey)
+        element.data.isRemoved = true
+        setElements([...elements])
+    }
+
+    const handleUndoRemoveElement = (elementKey) => {
+        const element = elements.find(({ key }) => key === elementKey)
+        element.data.isRemoved = false
+        setElements([...elements])
     }
 
     const handleCloneElement = (elementKey) => {
@@ -422,6 +434,8 @@ function Canvas() {
                         id: key,
                         data,
                         onRemove: handleRemoveElement,
+                        onTemporaryRemove: handleTemporaryRemoveElement,
+                        onUndoRemove: handleUndoRemoveElement,
                         onClone: handleCloneElement,
                         handle: elementRefs.current[key],
                         grid: gridValues,
