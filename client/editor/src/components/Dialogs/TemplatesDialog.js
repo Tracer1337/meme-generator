@@ -93,7 +93,7 @@ function TemplatesDialog({ onClose, open }) {
                     </div>
                     
                     <div className={classes.toolbarItem}>
-                        {!IS_OFFLINE && (
+                        {context.password && !IS_OFFLINE && (
                             <IconButton edge="end" color="inherit" onClick={handleReload}>
                                 <ReloadIcon fontSize="small" />
                             </IconButton>
