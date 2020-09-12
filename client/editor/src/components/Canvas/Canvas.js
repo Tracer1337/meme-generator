@@ -79,14 +79,15 @@ const useStyles = makeStyles(theme => ({
         position: "absolute",
         top: 0, left: 0,
         width: "100%",
-        height: "100%"
+        height: "100%",
+        pointerEvents: props => !props.context.image && "none"
     }
 }))
 
 function Canvas() {
     const context = useContext(AppContext)
 
-    const classes = useStyles()
+    const classes = useStyles({ context })
 
     const idCounter = useRef(0)
 
