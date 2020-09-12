@@ -278,8 +278,12 @@ function Canvas() {
         const textboxes = template.meta_data.textboxes
 
         // Format border size
-        if (typeof border?.size === "string") {
-            formatPercentage(border, "size")
+        if (border?.size) {
+            if (typeof border?.size === "string") {
+                formatPercentage(border, "size")
+            }
+
+            border.size = Math.floor(border.size)
         }
 
         // Set border

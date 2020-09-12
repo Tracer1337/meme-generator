@@ -47,13 +47,24 @@ const useStyles = makeStyles(theme => ({
 
     snackbarClose: {
         color: theme.palette.primary.variant
+    },
+
+    fade: {
+        transitionDuration: "0ms !important"
     }
 }))
 
-function CustomFade({ children }) {
+function Fade({ children }) {
     const context = useContext(AppContext)
+    const classes = useStyles()
 
-    return <MuiFade in={!context.drawing.enabled}>{children}</MuiFade>
+    const hasDrawingStateChanged = useRef(false)
+
+    if (context.drawing.enabled && !hasDrawingStateChanged.current) {
+        hasDrawingStateChanged.current = true
+    }
+
+    return <MuiFade in={!context.drawing.enabled} className={!hasDrawingStateChanged.current && classes.fade}>{children}</MuiFade>
 }
 
 function BottomBar() {
@@ -63,11 +74,6 @@ function BottomBar() {
 
     const openMenuButton = useRef()
     const helpButtonTimer = useRef()
-    const hasDrawingStateChanged = useRef(false)
-
-    if (context.drawing.enabled && !hasDrawingStateChanged.current) {
-        hasDrawingStateChanged.current = true
-    }
 
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [isTemplatesOpen, setIsTemplatesOpen] = useState(false)
@@ -126,8 +132,6 @@ function BottomBar() {
             context.event.removeEventListener("openTemplatesDialog", handleTemplatesClick)
         }
     })
-    
-    const Fade = !hasDrawingStateChanged.current ? React.Fragment : CustomFade
 
     return (
         <AppBar position="fixed" className={classes.appBar}>
