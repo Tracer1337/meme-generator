@@ -44,15 +44,24 @@ function DrawingCanvas({ canvas, border }) {
     }
 
     const handleTouchMove = (event) => {
+        // This line is neccessary for performance reasons
         event.preventDefault()
         handleDraw(event.touches[0])
     }
 
-    const handleDraw = ({ clientX, clientY }) => {
+    const handleTouchStart = (event) => {
+        handleDrawStart(event.touches[0])
+    }
+
+    const handleMouseMove = (event) => {
         if (!isDrawing) {
             return
         }
 
+        handleDraw(event)
+    }
+
+    const handleDraw = ({ clientX, clientY }) => {
         const canvasRect = canvas.getBoundingClientRect()
         const x = clientX - canvasRect.x
         const y = clientY - canvasRect.y
@@ -61,9 +70,10 @@ function DrawingCanvas({ canvas, border }) {
         draw()
     }
     
-    const handleDrawStart = () => {
+    const handleDrawStart = (event) => {
         setIsDrawing(true)
         addSnapshot()
+        handleDraw(event)
     }
     
     const handleDrawEnd = () => {
@@ -125,14 +135,14 @@ function DrawingCanvas({ canvas, border }) {
         renderContext.current = drawingCanvas.getContext("2d")
 
         const events = [
-            ["touchstart", handleDrawStart],
+            ["touchstart", handleTouchStart],
             ["touchend", handleDrawEnd],
             ["touchcancel", handleDrawEnd],
             ["touchmove", handleTouchMove],
 
             ["mousedown", handleDrawStart],
             ["mouseup", handleDrawEnd],
-            ["mousemove", handleDraw]
+            ["mousemove", handleMouseMove]
         ]
 
         const removeListeners = createListeners(drawingCanvas, events)
