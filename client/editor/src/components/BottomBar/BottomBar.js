@@ -1,5 +1,5 @@
 import React, { useContext, useState, useRef, useEffect } from "react"
-import { AppBar, Toolbar, Fab, IconButton, Snackbar, Zoom, Fade } from "@material-ui/core"
+import { AppBar, Toolbar, Fab, IconButton, Snackbar, Zoom, Fade as MuiFade } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import DoneIcon from "@material-ui/icons/Done"
 import TextFieldsIcon from "@material-ui/icons/TextFields"
@@ -49,6 +49,12 @@ const useStyles = makeStyles(theme => ({
         color: theme.palette.primary.variant
     }
 }))
+
+function CustomFade({ children }) {
+    const context = useContext(AppContext)
+
+    return <MuiFade in={!context.drawing.enabled}>{children}</MuiFade>
+}
 
 function BottomBar() {
     const context = useContext(AppContext)
@@ -121,7 +127,7 @@ function BottomBar() {
         }
     })
     
-    const AnimationContainer = !hasDrawingStateChanged.current ? React.Fragment : Fade
+    const Fade = !hasDrawingStateChanged.current ? React.Fragment : CustomFade
 
     return (
         <AppBar position="fixed" className={classes.appBar}>
@@ -146,21 +152,23 @@ function BottomBar() {
 
                 {/* Right */}
 
-                <AnimationContainer {...(hasDrawingStateChanged.current ? { in: !context.drawing.enabled } : {})}>
-                    <div className={classes.elementRight}>
+                <div className={classes.elementRight}>
+                    <Fade>
                         <IconButton onClick={dispatchEvent("addTextbox")} id="textbox-button">
                             <TextFieldsIcon />
                         </IconButton>
+                    </Fade>
 
-                        <IconButton onClick={dispatchEvent("undo")} id="undo-button">
-                            <UndoIcon />
-                        </IconButton>
+                    <IconButton onClick={dispatchEvent("undo")} id="undo-button">
+                        <UndoIcon />
+                    </IconButton>
 
+                    <Fade>
                         <IconButton onClick={handleMoreClick} ref={openMenuButton}>
                             <MoreVertIcon />
                         </IconButton>
-                    </div>
-                </AnimationContainer>
+                    </Fade>
+                </div>
 
                 <Zoom in={context.drawing.enabled}>
                     <IconButton onClick={handleDisableDrawingClick} className={classes.elementRight}>
