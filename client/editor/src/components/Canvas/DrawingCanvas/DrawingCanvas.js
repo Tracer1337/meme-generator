@@ -94,7 +94,10 @@ function DrawingCanvas({ canvas, border }) {
     
     const handleDrawEnd = () => {
         paths.current.push(currentPath.current)
-        currentPath.current = new Path({ color: context.drawing.color })
+        currentPath.current = new Path({
+            color: context.drawing.color,
+            width: context.drawing.lineWidth
+        })
 
         setIsDrawing(false)
     }
@@ -114,8 +117,10 @@ function DrawingCanvas({ canvas, border }) {
             context.lineWidth = path.width
             context.lineCap = "round"
 
-            for (let i = 0; i < path.points.length; i++) {
-                const [x, y] = path.points[i]
+            const points = path.getPoints()
+
+            for (let i = 0; i < points.length; i++) {
+                const [x, y] = points[i]
                 
                 // Draw circle at the beginning
                 if (i === 0) {
@@ -150,7 +155,8 @@ function DrawingCanvas({ canvas, border }) {
     }, [canvas?.clientWidth, canvas?.clientHeight, border])
 
     useEffect(() => {
-        currentPath.current.color = context.drawing.color
+        currentPath.current.setColor(context.drawing.color)
+        currentPath.current.setWidth(context.drawing.lineWidth)
     }, [context.drawing])
 
     useEffect(() => {

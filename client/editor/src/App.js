@@ -22,7 +22,8 @@ function App() {
         password: localStorage.getItem("password"),
         drawing: {
             enabled: false,
-            color: settingsOptions.colors["Red"]
+            color: settingsOptions.colors["Red"],
+            lineWidth: settingsOptions.lineWidth[1]
         }
     })
 

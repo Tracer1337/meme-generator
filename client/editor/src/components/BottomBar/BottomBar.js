@@ -134,79 +134,81 @@ function BottomBar() {
     })
 
     return (
-        <AppBar position="fixed" className={classes.appBar}>
-            <Toolbar>
-                {/* Left */}
+        <>
+            <DrawingActions />
+            
+            <AppBar position="fixed" className={classes.appBar}>
+                <Toolbar>
+                    {/* Left */}
 
-                <IconButton onClick={handleHelpClick} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onMouseDown={handleTouchStart} onMouseUp={handleTouchEnd}>
-                    <HelpIcon/>
-                </IconButton>
-
-                <IconButton onClick={handleTemplatesClick} id="templates-button">
-                    <CloudDownloadIcon/>
-                </IconButton>
-
-                {/* Center */}
-
-                <div className={classes.spacer}/>
-
-                <Fab color="primary" className={classes.fabButton} onClick={dispatchEvent("generateImage")} disabled={!context.image}>
-                    <DoneIcon/>
-                </Fab>
-
-                {/* Right */}
-
-                <div className={classes.elementRight}>
-                    <Fade>
-                        <IconButton onClick={dispatchEvent("addTextbox")} id="textbox-button">
-                            <TextFieldsIcon />
-                        </IconButton>
-                    </Fade>
-
-                    <IconButton onClick={dispatchEvent("undo")} id="undo-button">
-                        <UndoIcon />
+                    <IconButton onClick={handleHelpClick} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onMouseDown={handleTouchStart} onMouseUp={handleTouchEnd}>
+                        <HelpIcon/>
                     </IconButton>
 
-                    <Fade>
-                        <IconButton onClick={handleMoreClick} ref={openMenuButton}>
-                            <MoreVertIcon />
-                        </IconButton>
-                    </Fade>
-                </div>
-
-                <Zoom in={context.drawing.enabled}>
-                    <IconButton onClick={handleDisableDrawingClick} className={classes.elementRight}>
-                        <CloseIcon />
+                    <IconButton onClick={handleTemplatesClick} id="templates-button">
+                        <CloudDownloadIcon/>
                     </IconButton>
-                </Zoom>
 
-                {/* Off-Layout */}
+                    {/* Center */}
 
-                <DrawingActions/>
+                    <div className={classes.spacer}/>
 
-                <Menu open={isMenuOpen} anchorEl={openMenuButton.current} onClose={handleMenuClose}/>
+                    <Fab color="primary" className={classes.fabButton} onClick={dispatchEvent("generateImage")} disabled={!context.image}>
+                        <DoneIcon/>
+                    </Fab>
 
-                <TemplatesDialog open={isTemplatesOpen} onClose={() => setIsTemplatesOpen(false)}/>
-                <HelpDialog open={isHelpOpen} onClose={() => setIsHelpOpen(false)}/>
-                <AuthDialog open={isAuthDialogOpen} onClose={() => setIsAuthDialogOpen(false)}/>
+                    {/* Right */}
 
-                <Snackbar
-                    anchorOrigin={{
-                        vertical: "bottom",
-                        horizontal: "right"
-                    }}
-                    open={isLoggedOutSnackbarOpen}
-                    autoHideDuration={3000}
-                    onClose={() => setIsLoggedOutSnackbarOpen(false)}
-                    message="Logged Out"
-                    action={
-                        <IconButton onClick={() => setIsLoggedOutSnackbarOpen(false)} className={classes.snackbarClose}>
+                    <div className={classes.elementRight}>
+                        <Fade>
+                            <IconButton onClick={dispatchEvent("addTextbox")} id="textbox-button">
+                                <TextFieldsIcon />
+                            </IconButton>
+                        </Fade>
+
+                        <IconButton onClick={dispatchEvent("undo")} id="undo-button">
+                            <UndoIcon />
+                        </IconButton>
+
+                        <Fade>
+                            <IconButton onClick={handleMoreClick} ref={openMenuButton}>
+                                <MoreVertIcon />
+                            </IconButton>
+                        </Fade>
+                    </div>
+
+                    <Zoom in={context.drawing.enabled}>
+                        <IconButton onClick={handleDisableDrawingClick} className={classes.elementRight}>
                             <CloseIcon />
                         </IconButton>
-                    }
-                />
-            </Toolbar>
-        </AppBar>
+                    </Zoom>
+
+                    {/* Off-Layout */}
+
+                    <Menu open={isMenuOpen} anchorEl={openMenuButton.current} onClose={handleMenuClose}/>
+
+                    <TemplatesDialog open={isTemplatesOpen} onClose={() => setIsTemplatesOpen(false)}/>
+                    <HelpDialog open={isHelpOpen} onClose={() => setIsHelpOpen(false)}/>
+                    <AuthDialog open={isAuthDialogOpen} onClose={() => setIsAuthDialogOpen(false)}/>
+
+                    <Snackbar
+                        anchorOrigin={{
+                            vertical: "bottom",
+                            horizontal: "right"
+                        }}
+                        open={isLoggedOutSnackbarOpen}
+                        autoHideDuration={3000}
+                        onClose={() => setIsLoggedOutSnackbarOpen(false)}
+                        message="Logged Out"
+                        action={
+                            <IconButton onClick={() => setIsLoggedOutSnackbarOpen(false)} className={classes.snackbarClose}>
+                                <CloseIcon />
+                            </IconButton>
+                        }
+                    />
+                </Toolbar>
+            </AppBar>
+        </>
     )
 }
 

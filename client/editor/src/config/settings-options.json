@@ -27,5 +27,7 @@
         "Comic Sans": "'Comic Sans', cursive",
         "Courier": "'Courier', monospace",
         "Times New Roman": "'Times New Roman', 'Times', serif"
-    }
+    },
+
+    "lineWidth": [2, 5, 10, 20, 30]
 }
