@@ -62,7 +62,6 @@ const useStyles = makeStyles(theme => ({
         top: 0, bottom: 0,
         left: 0, right: 0,
         backgroundColor: theme.palette.background.default,
-        // outline: `${theme.spacing(1)}px solid ${theme.palette.background.default}`,
         padding: theme.spacing(1),
         paddingBottom: theme.mixins.toolbar.minHeight + theme.spacing(1),
         display: "flex",
@@ -74,6 +73,13 @@ const useStyles = makeStyles(theme => ({
     canvas: {
         position: "relative",
         display: "flex"
+    },
+
+    elements: {
+        position: "absolute",
+        top: 0, left: 0,
+        width: "100%",
+        height: "100%"
     }
 }))
 
@@ -428,36 +434,38 @@ function Canvas() {
                     </>
                 )}
 
-                {elements.map(({ type, key, data }) => {
-                    const props = {
-                        key,
-                        id: key,
-                        data,
-                        onRemove: handleRemoveElement,
-                        onTemporaryRemove: handleTemporaryRemoveElement,
-                        onUndoRemove: handleUndoRemoveElement,
-                        onClone: handleCloneElement,
-                        handle: elementRefs.current[key],
-                        grid: gridValues,
-                        canvas: canvas.current,
-                    }
+                <div className={classes.elements}>
+                    {elements.map(({ type, key, data }) => {
+                        const props = {
+                            key,
+                            id: key,
+                            data,
+                            onRemove: handleRemoveElement,
+                            onTemporaryRemove: handleTemporaryRemoveElement,
+                            onUndoRemove: handleUndoRemoveElement,
+                            onClone: handleCloneElement,
+                            handle: elementRefs.current[key],
+                            grid: gridValues,
+                            canvas: canvas.current,
+                        }
 
-                    if(type === "textbox") {
-                        return (
-                            <Textbox {...props} />
-                        )
-                    } else if (type === "sticker") {
-                        return (
-                            <Sticker {...props} />
-                        )
-                    } else if (type === "rectangle") {
-                        return (
-                            <Rectangle {...props} />
-                        )
-                    }
+                        if (type === "textbox") {
+                            return (
+                                <Textbox {...props} />
+                            )
+                        } else if (type === "sticker") {
+                            return (
+                                <Sticker {...props} />
+                            )
+                        } else if (type === "rectangle") {
+                            return (
+                                <Rectangle {...props} />
+                            )
+                        }
 
-                    throw new Error("Type " + type + " is not defined")
-                })}
+                        throw new Error("Type " + type + " is not defined")
+                    })}
+                </div>
 
                 <DrawingCanvas canvas={canvas.current} border={borderValues} />
             </div>
