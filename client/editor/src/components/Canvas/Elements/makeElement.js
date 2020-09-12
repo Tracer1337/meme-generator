@@ -7,6 +7,7 @@ import SettingsIcon from "@material-ui/icons/Settings"
 import CloseIcon from "@material-ui/icons/Close"
 import HeightIcon from "@material-ui/icons/Height"
 import EditIcon from "@material-ui/icons/Edit"
+import CloneIcon from "@material-ui/icons/LibraryAddOutlined"
 
 import useSnapshots from "../../../utils/useSnapshots.js"
 import { TEXTBOX_PADDING } from "../../../config/constants.js"
@@ -95,16 +96,16 @@ function makeElement({
     defaultValues,
     Child
 }) {
-    return function Element({ onRemove, handle, grid, canvas, template, id, ...props }) {
-        const lastRotation = useRef(template?.rotation || 0)
+    return function Element({ onRemove, onClone, handle, grid, canvas, data, id, ...props }) {
+        const lastRotation = useRef(data.defaultValues?.rotation || 0)
         const container = useRef()
         const childRef = useRef()
         const hasCreatedSnapshot = useRef(false)
 
-        const [position, setPosition] = useState({ x: template?.x || 0, y: template?.y || 0 })
-        const [rotation, setRotation] = useState(template?.rotation || 0)
-        const [height, setHeight] = useState((template?.height && template.height - TEXTBOX_PADDING * 2) || defaultValues.height)
-        const [width, setWidth] = useState((template?.width && template.width - TEXTBOX_PADDING * 2) || defaultValues.width)
+        const [position, setPosition] = useState({ x: data.defaultValues?.x || 0, y: data.defaultValues?.y || 0 })
+        const [rotation, setRotation] = useState(data.defaultValues?.rotation || 0)
+        const [height, setHeight] = useState((data.defaultValues?.height && data.defaultValues.height - TEXTBOX_PADDING * 2) || defaultValues.height)
+        const [width, setWidth] = useState((data.defaultValues?.width && data.defaultValues.width - TEXTBOX_PADDING * 2) || defaultValues.width)
         const [capture, setCapture] = useState(false)
         const [isFocused, setIsFocused] = useState(false)
         const [shouldMove, setShouldMove] = useState(true)
@@ -138,7 +139,7 @@ function makeElement({
 
             onSnapshotsEmpty: () => {
                 // Remove element if it does not come from template
-                if (!template) {
+                if (!data.defaultValues) {
                     onRemove(id)
                 }
             }
@@ -245,10 +246,6 @@ function makeElement({
             hasCreatedSnapshot.current = false
         }
 
-        const handleRemoveClicked = () => {
-            onRemove(id)
-        }
-
         const handleFocus = () => {
             setIsFocused(true)
         }
@@ -345,13 +342,13 @@ function makeElement({
                     <Child
                         id={id}
                         handle={handle}
-                        template={template}
                         onFocus={handleFocus}
                         isFocused={isFocused}
                         toggleMovement={handleToggleMovement}
                         dimensions={{ width, height, ...position, rotation }}
                         ref={childRef}
                         capture={capture}
+                        data={data}
                         {...props}
                     />
 
@@ -402,8 +399,14 @@ function makeElement({
                                     </IconButton>
                                 )}
 
+                                {controls.includes("clone") && (
+                                    <IconButton className={classes.button} onClick={() => onClone(id)}>
+                                        <CloneIcon fontSize="small"/>
+                                    </IconButton>
+                                )}
+
                                 {controls.includes("remove") && (
-                                    <IconButton className={classes.button} onClick={handleRemoveClicked}>
+                                    <IconButton className={classes.button} onClick={() => onRemove(id)}>
                                         <CloseIcon />
                                     </IconButton>
                                 )}

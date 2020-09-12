@@ -89,7 +89,7 @@ function Canvas() {
     const container = useRef()
     const elementRefs = useRef({})
 
-    let [elementKeys, setElementKeys] = useState([])
+    let [elements, setElements] = useState([])
     const [borderValues, setBorderValues] = useState(defaultBorderValues)
     const [gridValues, setGridValues] = useState(defaultGridValues)
     const [isBorderDialogOpen, setIsBorderDialogOpen] = useState(false)
@@ -98,7 +98,7 @@ function Canvas() {
     const [generatedImage, setGeneratedImage] = useState(null)
 
     elementRefs.current = {}
-    for (let element of elementKeys) {
+    for (let element of elements) {
         elementRefs.current[element.key] = {}
     }
 
@@ -124,18 +124,28 @@ function Canvas() {
     }
 
     const handleRemoveElement = (removeKey) => {
-        const newKeys = elementKeys.filter(({ key }) => key !== removeKey)
-        setElementKeys(newKeys)
+        const newKeys = elements.filter(({ key }) => key !== removeKey)
+        setElements(newKeys)
 
         delete elementRefs.current[removeKey]
     }
 
+    const handleCloneElement = (elementKey) => {
+        const element = elements.find(({ key }) => key === elementKey)
+
+        const newElement = createNewElement(element.type, {
+            defaultValues: elementRefs.current[element.key].getValues()
+        })
+
+        setElements([...elements, newElement])
+    }
+
     const clearElements = () => {
-        setElementKeys([])
+        setElements([])
         elementRefs.current = {}
     }
 
-    const createNewElement = (type, data) => {
+    const createNewElement = (type, data = {}) => {
         const newElementKey = {
             type,
             data,
@@ -145,10 +155,10 @@ function Canvas() {
         return newElementKey
     }
 
-    const handleAddTextbox = ({ template }) => {
-        const newElementKey = createNewElement("textbox", { template })
+    const handleAddTextbox = ({ defaultValues }) => {
+        const newElementKey = createNewElement("textbox", { defaultValues })
 
-        setElementKeys([...elementKeys, newElementKey])
+        setElements([...elements, newElementKey])
 
         return newElementKey
     }
@@ -156,7 +166,7 @@ function Canvas() {
     const handleAddRectangle = () => {
         const newElementKey = createNewElement("rectangle")
 
-        setElementKeys([...elementKeys, newElementKey])
+        setElements([...elements, newElementKey])
 
         return newElementKey
     }
@@ -172,7 +182,7 @@ function Canvas() {
 
     const addSticker = (src, id) => {
         const newElementKey = createNewElement("sticker", { src, id })
-        setElementKeys([...elementKeys, newElementKey])
+        setElements([...elements, newElementKey])
     }
 
     const handleImportSticker = async () => {
@@ -240,7 +250,7 @@ function Canvas() {
         
         // Check if value is given as percentage string and convert it if true
         const formatPercentage = (object, selector, useWidth = false) => {
-            if(/\d+%/.test(object[selector])) {
+            if (/\d+%/.test(object[selector])) {
                 const percentage = parseFloat(object[selector])
                 object[selector] = (useWidth ? image.current.clientWidth : image.current.clientHeight) * (percentage / 100)
             }
@@ -248,10 +258,10 @@ function Canvas() {
 
         // Delete all elements
         clearElements()
-        elementKeys = []
+        elements = []
 
         // Stop if no metadata exists
-        if(!template.meta_data) {
+        if (!template.meta_data) {
             return
         }
 
@@ -267,8 +277,8 @@ function Canvas() {
         setBorderValues(border || defaultBorderValues)
 
         // Handle textboxes
-        if(textboxes) {
-            for(let textbox of textboxes){
+        if (textboxes) {
+            for (let textbox of textboxes) {
                 // Format values
                 formatPercentage(textbox, "width", true)
                 formatPercentage(textbox, "height")
@@ -276,13 +286,13 @@ function Canvas() {
                 formatPercentage(textbox, "y")
 
                 // Add textbox
-                const newKey = handleAddTextbox({ template: textbox })
-                elementKeys.push(newKey)
+                const newKey = handleAddTextbox({ defaultValues: textbox })
+                elements.push(newKey)
             }
         }
 
         // Set new keys
-        setElementKeys(elementKeys)
+        setElements(elements)
     }
 
     const handleLoadSticker = ({ detail: { sticker } }) => {
@@ -290,7 +300,7 @@ function Canvas() {
     }
 
     const handleGetTextboxes = () => {
-        const textboxKeys = elementKeys.filter(({ type }) => type === "textbox").map(({ key }) => key)
+        const textboxKeys = elements.filter(({ type }) => type === "textbox").map(({ key }) => key)
         const formatted = textboxKeys.map(key => elementRefs.current[key].toObject({ image: image.current }))
 
         return formatted
@@ -315,7 +325,7 @@ function Canvas() {
             ["setBorder", handleSetBorder],
             ["setGrid", handleSetGrid],
             ["loadTemplate", handleLoadTemplate],
-            ["loadSticker", handleLoadSticker],
+            ["loadSticker", handleLoadSticker]
         ]
 
         const removeListeners = createListeners(context.event, events)
@@ -403,35 +413,29 @@ function Canvas() {
                     </>
                 )}
 
-                {elementKeys.map(({ type, key, data }) => {
+                {elements.map(({ type, key, data }) => {
                     const props = {
                         key,
                         id: key,
+                        data,
                         onRemove: handleRemoveElement,
+                        onClone: handleCloneElement,
                         handle: elementRefs.current[key],
                         grid: gridValues,
-                        canvas: canvas.current
+                        canvas: canvas.current,
                     }
 
                     if(type === "textbox") {
                         return (
-                            <Textbox
-                                {...props}
-                                template={data.template}
-                            />
+                            <Textbox {...props} />
                         )
                     } else if (type === "sticker") {
                         return (
-                            <Sticker
-                                {...props}
-                                src={data.src}
-                            />
+                            <Sticker {...props} />
                         )
                     } else if (type === "rectangle") {
                         return (
-                            <Rectangle
-                                {...props}
-                            />
+                            <Rectangle {...props} />
                         )
                     }
 
@@ -445,7 +449,7 @@ function Canvas() {
 
             <BorderDialog open={isBorderDialogOpen} onClose={handleBorderDialogClose} values={borderValues}/>
             <GridDialog open={isGridDialogOpen} onClose={handleGridDialogClose} values={gridValues}/>
-            <ImageDialog open={isImageDialogOpen} onClose={handleImageDialogClose} imageData={generatedImage} elements={elementKeys}/>
+            <ImageDialog open={isImageDialogOpen} onClose={handleImageDialogClose} imageData={generatedImage} elements={elements}/>
         </div>
     )
 }

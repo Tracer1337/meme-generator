@@ -24,8 +24,8 @@ const useStyles = makeStyles(theme => ({
     })
 }))
 
-function Rectangle({ id, onFocus, dimensions, handle }, forwardedRef) {
-    const [settings, setSettings] = useState(defaultSettings)
+function Rectangle({ id, onFocus, dimensions, handle, data: { defaultValues } }, forwardedRef) {
+    const [settings, setSettings] = useState({ ...defaultSettings, ...defaultValues?.settings })
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     
     const classes = useStyles({ settings })
@@ -44,6 +44,7 @@ function Rectangle({ id, onFocus, dimensions, handle }, forwardedRef) {
 
     if (handle) {
         handle.onSettingsClicked = () => setIsDialogOpen(true)
+        handle.getValues = () => ({ settings })
     }
 
     return (
@@ -64,7 +65,7 @@ function Rectangle({ id, onFocus, dimensions, handle }, forwardedRef) {
 }
 
 export default makeElement({
-    controls: ["resize", "rotate", "remove", "settings"],
+    controls: ["resize", "rotate", "remove", "settings", "clone"],
     defaultValues: {
         width: 100,
         height: 75,

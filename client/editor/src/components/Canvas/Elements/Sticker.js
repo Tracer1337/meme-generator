@@ -17,12 +17,14 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-function Sticker({ src, id, onFocus, dimensions, handle }, forwardedRef) {
+function Sticker({ data: { defaultValues, src }, id, onFocus, dimensions, handle }, forwardedRef) {
+    src = defaultValues?.src || src
+
     const classes = useStyles()
 
     const imageRef = useRef()
 
-    const [settings, setSettings] = useState(defaultSettings)
+    const [settings, setSettings] = useState({...defaultSettings, ...defaultValues?.settings})
     const [isDialogOpen, setIsDialogOpen] = useState(false)
 
     const handleSettingsApply = (values) => {
@@ -40,6 +42,7 @@ function Sticker({ src, id, onFocus, dimensions, handle }, forwardedRef) {
 
     if(handle) {
         handle.onSettingsClicked = () => setIsDialogOpen(true)
+        handle.getValues = () => ({ src, settings })
 
         if(settings.keepAspectRatio) {
             Object.defineProperty(handle, "aspectRatio", { 
@@ -76,7 +79,7 @@ function Sticker({ src, id, onFocus, dimensions, handle }, forwardedRef) {
 }
 
 export default makeElement({
-    controls: ["resize", "rotate", "remove", "settings"],
+    controls: ["resize", "rotate", "remove", "settings", "clone"],
     defaultValues: {
         width: 100,
         zIndex: 1

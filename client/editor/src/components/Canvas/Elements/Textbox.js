@@ -9,7 +9,7 @@ import fitText from "../../../utils/fitText.js"
 import getTextboxStyles from "../../../utils/getTextboxStyles.js"
 import { TEXTBOX_PLACEHOLDER, TEXTBOX_PADDING } from "../../../config/constants.js"
 
-const globalDefaultSettings = {
+const defaultSettings = {
     color: "white",
     textOutlineWidth: 2,
     textOutlineColor: "black",
@@ -25,24 +25,13 @@ const useStyles = makeStyles(theme => ({
     input: props => getTextboxStyles({ theme, props })
 }))
 
-function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dimensions }, forwardedRef) {
-    const defaultSettings = {...globalDefaultSettings}
-
-    // Apply template settings
-    if(template?.settings) {
-        for(let key in defaultSettings) {
-            if(template.settings[key]) {
-                defaultSettings[key] = template.settings[key]
-            }
-        }
-    }
-
+function Textbox({ id, handle, onFocus, isFocused, toggleMovement, dimensions, data: { defaultValues } }, forwardedRef) {
     const textboxRef = useRef()
     const shouldEmitSnapshot = useRef(false)
 
-    const [value, setValue] = useState(TEXTBOX_PLACEHOLDER)
+    const [value, setValue] = useState(defaultValues?.value || TEXTBOX_PLACEHOLDER)
     const [dialogOpen, setDialogOpen] = useState(false)
-    const [settings, setSettings] = useState(defaultSettings)
+    const [settings, setSettings] = useState({ ...defaultSettings, ...defaultValues?.settings })
     const [isEditing, setIsEditing] = useState(false)
 
     const classes = useStyles({ settings, isFocused, isEditing }) 
@@ -111,7 +100,7 @@ function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dim
     const toObject = ({ image }) => {
         const toPercentage = (value, useWidth = false) => value / (useWidth ? image.clientWidth : image.clientHeight) * 100 + "%"
 
-        const changedSettings = template?.settings || {}
+        const changedSettings = defaultValues?.settings || {}
         for(let key in settings) {
             if(settings[key] !== defaultSettings[key]) {
                 changedSettings[key] = settings[key]
@@ -134,6 +123,7 @@ function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dim
         handle.toObject = toObject
         handle.onEditClicked = handleEditClicked
         handle.onSettingsClicked = handleSettingsClicked
+        handle.getValues = () => ({ value, settings })
     }
 
     // Generate stylings for textbox
@@ -190,7 +180,7 @@ function Textbox({ id, handle, template, onFocus, isFocused, toggleMovement, dim
 }
 
 export default makeElement({
-    controls: ["resize", "rotate", "edit", "settings", "remove"],
+    controls: ["resize", "rotate", "edit", "settings", "remove", "clone"],
     defaultValues: {
         width: 160,
         height: 24,
