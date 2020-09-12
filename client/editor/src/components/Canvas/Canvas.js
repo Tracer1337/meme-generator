@@ -189,15 +189,6 @@ function Canvas() {
         return newElementKey
     }
 
-    const handleToggleDrawing = () => {
-        context.set({
-            drawing: {
-                ...context.drawing,
-                enabled: !context.drawing.enabled
-            }
-        })
-    }
-
     const addSticker = (src, id) => {
         const newElementKey = createNewElement("sticker", { src, id })
         setElements([...elements, newElementKey])
@@ -340,7 +331,6 @@ function Canvas() {
             ["importImage", handleImportImage],
             ["addTextbox", handleAddTextbox],
             ["addRectangle", handleAddRectangle],
-            ["toggleDrawing", handleToggleDrawing],
             ["importSticker", handleImportSticker],
             ["generateImage", handleGenerateImage],
             ["setBorder", handleSetBorder],

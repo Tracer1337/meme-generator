@@ -1,5 +1,5 @@
 import React, { useContext, useState, useRef, useEffect } from "react"
-import { AppBar, Toolbar, Fab, IconButton, Snackbar } from "@material-ui/core"
+import { AppBar, Toolbar, Fab, IconButton, Snackbar, Zoom, Fade } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import DoneIcon from "@material-ui/icons/Done"
 import TextFieldsIcon from "@material-ui/icons/TextFields"
@@ -40,6 +40,11 @@ const useStyles = makeStyles(theme => ({
         flexGrow: 1
     },
 
+    elementRight: {
+        position: "absolute",
+        right: theme.spacing(2)
+    },
+
     snackbarClose: {
         color: theme.palette.primary.variant
     }
@@ -52,6 +57,11 @@ function BottomBar() {
 
     const openMenuButton = useRef()
     const helpButtonTimer = useRef()
+    const hasDrawingStateChanged = useRef(false)
+
+    if (context.drawing.enabled && !hasDrawingStateChanged.current) {
+        hasDrawingStateChanged.current = true
+    }
 
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [isTemplatesOpen, setIsTemplatesOpen] = useState(false)
@@ -73,6 +83,15 @@ function BottomBar() {
 
     const handleHelpClick = () => {
         setIsHelpOpen(true)
+    }
+
+    const handleDisableDrawingClick = () => {
+        context.set({
+            drawing: {
+                ...context.drawing,
+                enabled: false
+            }
+        })
     }
 
     const handleTouchStart = () => {
@@ -101,10 +120,14 @@ function BottomBar() {
             context.event.removeEventListener("openTemplatesDialog", handleTemplatesClick)
         }
     })
+    
+    const AnimationContainer = !hasDrawingStateChanged.current ? React.Fragment : Fade
 
     return (
         <AppBar position="fixed" className={classes.appBar}>
             <Toolbar>
+                {/* Left */}
+
                 <IconButton onClick={handleHelpClick} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onMouseDown={handleTouchStart} onMouseUp={handleTouchEnd}>
                     <HelpIcon/>
                 </IconButton>
@@ -113,27 +136,43 @@ function BottomBar() {
                     <CloudDownloadIcon/>
                 </IconButton>
 
+                {/* Center */}
+
                 <div className={classes.spacer}/>
 
                 <Fab color="primary" className={classes.fabButton} onClick={dispatchEvent("generateImage")} disabled={!context.image}>
                     <DoneIcon/>
                 </Fab>
 
-                <IconButton onClick={dispatchEvent("addTextbox")} id="textbox-button">
-                    <TextFieldsIcon/>
-                </IconButton>
+                {/* Right */}
 
-                <IconButton onClick={dispatchEvent("undo")} id="undo-button">
-                    <UndoIcon/>
-                </IconButton>
+                <AnimationContainer {...(hasDrawingStateChanged.current ? { in: !context.drawing.enabled } : {})}>
+                    <div className={classes.elementRight}>
+                        <IconButton onClick={dispatchEvent("addTextbox")} id="textbox-button">
+                            <TextFieldsIcon />
+                        </IconButton>
 
-                <IconButton onClick={handleMoreClick} ref={openMenuButton}>
-                    <MoreVertIcon/>
-                </IconButton>
+                        <IconButton onClick={dispatchEvent("undo")} id="undo-button">
+                            <UndoIcon />
+                        </IconButton>
 
-                <Menu open={isMenuOpen} anchorEl={openMenuButton.current} onClose={handleMenuClose}/>
+                        <IconButton onClick={handleMoreClick} ref={openMenuButton}>
+                            <MoreVertIcon />
+                        </IconButton>
+                    </div>
+                </AnimationContainer>
+
+                <Zoom in={context.drawing.enabled}>
+                    <IconButton onClick={handleDisableDrawingClick} className={classes.elementRight}>
+                        <CloseIcon />
+                    </IconButton>
+                </Zoom>
+
+                {/* Off-Layout */}
 
                 <DrawingActions/>
+
+                <Menu open={isMenuOpen} anchorEl={openMenuButton.current} onClose={handleMenuClose}/>
 
                 <TemplatesDialog open={isTemplatesOpen} onClose={() => setIsTemplatesOpen(false)}/>
                 <HelpDialog open={isHelpOpen} onClose={() => setIsHelpOpen(false)}/>

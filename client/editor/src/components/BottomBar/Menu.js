@@ -24,7 +24,17 @@ function Menu({ open, anchorEl, onClose }) {
     const dispatchEvent = (name) => () => {
         context.event.dispatchEvent(new CustomEvent(name))
         onClose()
-    } 
+    }
+
+    const handleEnableDrawing = () => {
+        context.set({
+            drawing: {
+                ...context.drawing,
+                enabled: true
+            }
+        })
+        onClose()
+    }
 
     return (
         <MuiMenu
@@ -41,11 +51,11 @@ function Menu({ open, anchorEl, onClose }) {
             }}
         >
             {/* Draw */}
-            <MenuItem onClick={dispatchEvent("toggleDrawing")}>
+            <MenuItem onClick={handleEnableDrawing}>
                 <ListItemIcon className={classes.icon}>
                     <EditIcon fontSize="small"/>
                 </ListItemIcon>
-                <ListItemText primary={!context.drawing.enabled ? "Enable Drawing" : "Disable Drawing"}/>
+                <ListItemText primary="Enable Drawing"/>
             </MenuItem>
             
             {/* Rectangle */}
@@ -72,7 +82,7 @@ function Menu({ open, anchorEl, onClose }) {
                 <ListItemText primary="Set Grid"/>
             </MenuItem>
 
-            {/* Import Sticker */}
+            {/* Sticker */}
             <MenuItem onClick={dispatchEvent("importSticker")}>
                 <ListItemIcon className={classes.icon}>
                     <AddPhotoIcon fontSize="small" />
@@ -80,7 +90,7 @@ function Menu({ open, anchorEl, onClose }) {
                 <ListItemText primary="Import Sticker" />
             </MenuItem>
 
-            {/* Import Meme */}
+            {/* Meme */}
             <MenuItem onClick={dispatchEvent("importImage")}>
                 <ListItemIcon className={classes.icon}>
                     <PhotoLibraryIcon fontSize="small" />
