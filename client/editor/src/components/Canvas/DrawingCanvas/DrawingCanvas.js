@@ -25,6 +25,7 @@ function DrawingCanvas({ canvas, border }) {
     const renderContext = useRef()
     const paths = useRef([])
     const currentPath = useRef(new Path())
+    const isUsingTouchEvents = useRef(false)
 
     const [isDrawing, setIsDrawing] = useState(false)
 
@@ -47,22 +48,33 @@ function DrawingCanvas({ canvas, border }) {
         drawingCanvasRef.current.style.height = canvasRect.height + "px"
     }
 
+    const handleTouchStart = (event) => {
+        isUsingTouchEvents.current = true
+        handleDrawStart(event.touches[0])
+    }
+    
     const handleTouchMove = (event) => {
         // This line is neccessary for performance reasons
         event.preventDefault()
         handleDraw(event.touches[0])
     }
 
-    const handleTouchStart = (event) => {
-        handleDrawStart(event.touches[0])
+    const handleMouseDown = (event) => {
+        if (!isUsingTouchEvents.current) {
+            handleDrawStart(event)
+        }
     }
 
     const handleMouseMove = (event) => {
-        if (!isDrawing) {
-            return
+        if (isDrawing && !isUsingTouchEvents.current) {
+            handleDraw(event)
         }
+    }
 
-        handleDraw(event)
+    const handleMouseUp = () => {
+        if (!isUsingTouchEvents.current) {
+            handleDrawEnd()
+        }
     }
 
     const handleDraw = ({ clientX, clientY }) => {
@@ -157,8 +169,8 @@ function DrawingCanvas({ canvas, border }) {
             ["touchcancel", handleDrawEnd],
             ["touchmove", handleTouchMove],
 
-            ["mousedown", handleDrawStart],
-            ["mouseup", handleDrawEnd],
+            ["mousedown", handleMouseDown],
+            ["mouseup", handleMouseUp],
             ["mousemove", handleMouseMove]
         ]
 
