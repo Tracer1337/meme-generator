@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useRef } from "react"
+import React, { useState, useContext, useEffect, useRef, useImperativeHandle } from "react"
 import ReactDOM from "react-dom"
 import { IconButton, GridList, GridListTile, CircularProgress, Fab, Zoom, Typography } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
@@ -97,7 +97,7 @@ function InnerTile({ sticker, onDelete }) {
     )
 }
 
-function Stickers({ onLoad, active }) {
+function Stickers({ onLoad, active }, ref) {
     const context = useContext(AppContext)
 
     const classes = useStyles()
@@ -142,6 +142,10 @@ function Stickers({ onLoad, active }) {
         reload()
     }
 
+    useImperativeHandle(ref, () => ({
+        reload
+    }))
+
     if (isLoading) {
         return <CircularProgress />
     }
@@ -182,4 +186,4 @@ function Stickers({ onLoad, active }) {
     )
 }
 
-export default Stickers
+export default React.forwardRef(Stickers)

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from "react"
+import React, { useState, useContext, useRef, useImperativeHandle } from "react"
 import { IconButton, GridList, GridListTile, GridListTileBar, CircularProgress, InputBase, Paper, Typography } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import DeleteIcon from "@material-ui/icons/Delete"
@@ -67,7 +67,7 @@ const getSubtitle = (count) => {
     }
 }
 
-function Templates({ onLoad }) {
+function Templates({ onLoad }, ref) {
     const context = useContext(AppContext)
 
     const classes = useStyles()
@@ -107,6 +107,10 @@ function Templates({ onLoad }) {
     const handleImageLoad = (template) => {
         cacheImage(template.image_url)
     }
+
+    useImperativeHandle(ref, () => ({
+        reload
+    }))
 
     if (isLoading) {
         return <CircularProgress />
@@ -161,4 +165,4 @@ function Templates({ onLoad }) {
     )
 }
 
-export default Templates
+export default React.forwardRef(Templates)
