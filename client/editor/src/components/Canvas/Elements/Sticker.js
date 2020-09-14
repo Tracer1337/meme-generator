@@ -79,10 +79,9 @@ function Sticker({ data: { defaultValues, src }, id, onFocus, dimensions, handle
 }
 
 export default makeElement({
-    controls: ["resize", "rotate", "remove", "settings", "clone"],
+    controls: ["resize", "rotate", "remove", "settings", "clone", "layers"],
     defaultValues: {
-        width: 100,
-        zIndex: 1
+        width: 100
     },
     Child: React.forwardRef(Sticker)
 })

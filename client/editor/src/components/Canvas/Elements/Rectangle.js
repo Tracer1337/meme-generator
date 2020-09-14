@@ -65,11 +65,10 @@ function Rectangle({ id, onFocus, dimensions, handle, data: { defaultValues } },
 }
 
 export default makeElement({
-    controls: ["resize", "rotate", "remove", "settings", "clone"],
+    controls: ["resize", "rotate", "remove", "settings", "clone", "layers"],
     defaultValues: {
         width: 100,
-        height: 75,
-        zIndex: 2
+        height: 75
     },
     Child: React.forwardRef(Rectangle)
 })

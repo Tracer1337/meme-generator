@@ -8,6 +8,8 @@ import CloseIcon from "@material-ui/icons/Close"
 import HeightIcon from "@material-ui/icons/Height"
 import EditIcon from "@material-ui/icons/Edit"
 import CloneIcon from "@material-ui/icons/LibraryAddOutlined"
+import FlipToBackIcon from "@material-ui/icons/FlipToBack"
+import FlipToFrontIcon from "@material-ui/icons/FlipToFront"
 
 import useSnapshots from "../../../utils/useSnapshots.js"
 import { TEXTBOX_PADDING } from "../../../config/constants.js"
@@ -96,7 +98,7 @@ function makeElement({
     defaultValues,
     Child
 }) {
-    return function Element({ onRemove, onTemporaryRemove, onUndoRemove, onClone, handle, grid, canvas, data, id, ...props }) {
+    return function Element({ onRemove, onTemporaryRemove, onUndoRemove, onClone, onToFront, onToBack, handle, grid, canvas, data, id, ...props }) {
         const lastRotation = useRef(data.defaultValues?.rotation || 0)
         const container = useRef()
         const childRef = useRef()
@@ -331,7 +333,6 @@ function makeElement({
                     style={{
                         transform: `translate(${position.x}px, ${position.y}px) rotate(${rotation}rad)`,
                         transformOrigin: `center center`,
-                        zIndex: defaultValues.zIndex || 0,
                         display: data.isRemoved && "none"
                     }}
                     ref={container}
@@ -400,6 +401,18 @@ function makeElement({
                                 {controls.includes("clone") && (
                                     <IconButton className={classes.button} onClick={() => onClone(id)}>
                                         <CloneIcon fontSize="small"/>
+                                    </IconButton>
+                                )}
+
+                                {controls.includes("layers") && (
+                                    <IconButton className={classes.button} onClick={() => onToBack(id)}>
+                                        <FlipToBackIcon fontSize="small"/>
+                                    </IconButton>
+                                )}
+
+                                {controls.includes("layers") && (
+                                    <IconButton className={classes.button} onClick={() => onToFront(id)}>
+                                        <FlipToFrontIcon fontSize="small"/>
                                     </IconButton>
                                 )}
 

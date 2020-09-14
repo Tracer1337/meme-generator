@@ -8,6 +8,7 @@ import Element from "../../../Models/Element.js"
 import { ELEMENT_TYPES } from "../../../config/constants.js"
 import { createListeners, fileToImage, importFile } from "../../../utils"
 import { AppContext } from "../../../App.js"
+import useSnapshots from "../../../utils/useSnapshots.js"
 
 const useStyles = makeStyles(theme => ({
     elements: {
@@ -31,6 +32,14 @@ function Elements({ base, grid, canvas }, ref) {
     for (let element of context.elements) {
         elementRefs.current[element.id] = {}
     }
+
+    const addSnapshot = useSnapshots({
+        createSnapshot: () => ({ elements: [...context.elements] }),
+
+        applySnapshot: (snapshot) => {
+            context.set({ elements: snapshot.elements })
+        }
+    })
 
     const addElement = (element) => {
         context.set({
@@ -69,6 +78,20 @@ function Elements({ base, grid, canvas }, ref) {
         })
 
         addElement(newElement)
+    }
+
+    const handleToFront = (elementId) => {
+        addSnapshot()
+        const index = context.elements.findIndex(({ id }) => id === elementId)
+        const element = context.elements.splice(index, 1)[0]
+        context.set({ elements: [...context.elements, element] })
+    }
+    
+    const handleToBack = (elementId) => {
+        addSnapshot()
+        const index = context.elements.findIndex(({ id }) => id === elementId)
+        const element = context.elements.splice(index, 1)[0]
+        context.set({ elements: [element, ...context.elements] })
     }
 
     const clearElements = () => {
@@ -149,6 +172,8 @@ function Elements({ base, grid, canvas }, ref) {
                     onTemporaryRemove: handleTemporaryRemoveElement,
                     onUndoRemove: handleUndoRemoveElement,
                     onClone: handleCloneElement,
+                    onToFront: handleToFront,
+                    onToBack: handleToBack,
                     handle: elementRefs.current[id]
                 }
 

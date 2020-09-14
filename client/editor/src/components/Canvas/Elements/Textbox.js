@@ -180,11 +180,10 @@ function Textbox({ id, handle, onFocus, isFocused, toggleMovement, dimensions, d
 }
 
 export default makeElement({
-    controls: ["resize", "rotate", "edit", "settings", "remove", "clone"],
+    controls: ["resize", "rotate", "edit", "settings", "remove", "clone", "layers"],
     defaultValues: {
         width: 160,
-        height: 24,
-        zIndex: 3
+        height: 24
     },
     Child: React.forwardRef(Textbox)
 })
