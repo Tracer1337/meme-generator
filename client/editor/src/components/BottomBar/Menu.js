@@ -66,6 +66,14 @@ function Menu({ open, anchorEl, onClose }) {
                 <ListItemText primary="Rectangle"/>
             </MenuItem>
 
+            {/* Sticker */}
+            <MenuItem onClick={dispatchEvent("importSticker")}>
+                <ListItemIcon className={classes.icon}>
+                    <AddPhotoIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText primary="Sticker" />
+            </MenuItem>
+
             <Divider/>
 
             {/* Border */}
@@ -85,14 +93,6 @@ function Menu({ open, anchorEl, onClose }) {
             </MenuItem>
 
             <Divider/>
-
-            {/* Sticker */}
-            <MenuItem onClick={dispatchEvent("importSticker")}>
-                <ListItemIcon className={classes.icon}>
-                    <AddPhotoIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText primary="Sticker" />
-            </MenuItem>
 
             {/* Base */}
             <MenuItem onClick={dispatchEvent("openBaseSelection")}>

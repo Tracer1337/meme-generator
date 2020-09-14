@@ -1,18 +1,16 @@
 import React, { useContext, useEffect, useState, useRef } from "react"
 import { makeStyles } from "@material-ui/core/styles"
 
-import Textbox from "./Elements/Textbox.js"
-import Sticker from "./Elements/Sticker.js"
-import Rectangle from "./Elements/Rectangle.js"
 import Grid from "./Grid.js"
 import DrawingCanvas from "./DrawingCanvas.js"
 import BorderDialog from "../Dialogs/BorderDialog.js"
 import ImageDialog from "../Dialogs/ImageDialog.js"
 import GridDialog from "../Dialogs/GridDialog.js"
 import Base from "./Base.js"
+import Elements from "./Elements/Elements.js"
 
 import { AppContext } from "../../App.js"
-import { fileToImage, importFile, createListeners } from "../../utils"
+import { createListeners } from "../../utils"
 import generateImage from "../../utils/generateImage.js"
 import BaseElement from "../../Models/BaseElement.js"
 import { BASE_ELEMENT_TYPES } from "../../config/constants.js"
@@ -67,41 +65,25 @@ const useStyles = makeStyles(theme => ({
     canvas: {
         position: "relative",
         display: "flex"
-    },
-
-    elements: {
-        position: "absolute",
-        top: 0, left: 0,
-        width: "100%",
-        height: "100%",
-        pointerEvents: props => props.context.isEmptyState && "none"
     }
 }))
 
 function Canvas() {
     const context = useContext(AppContext)
 
-    const classes = useStyles({ context })
-
-    const idCounter = useRef(0)
+    const classes = useStyles()
 
     const baseRef = useRef()
+    const elementsRef = useRef()
     const canvas = useRef()
     const container = useRef()
-    const elementRefs = useRef({})
 
-    let [elements, setElements] = useState([])
     const [borderValues, setBorderValues] = useState(defaultBorderValues)
     const [gridValues, setGridValues] = useState(defaultGridValues)
     const [isBorderDialogOpen, setIsBorderDialogOpen] = useState(false)
     const [isImageDialogOpen, setIsImageDialogOpen] = useState(false)
     const [isGridDialogOpen, setIsGridDialogOpen] = useState(false)
     const [generatedImage, setGeneratedImage] = useState(null)
-
-    elementRefs.current = {}
-    for (let element of elements) {
-        elementRefs.current[element.key] = {}
-    }
 
     const handleBorderDialogClose = (values) => {
         if(values) {
@@ -124,86 +106,15 @@ function Canvas() {
         setGeneratedImage(null)
     }
 
-    const handleRemoveElement = (elementKey) => {
-        const newElements = elements.filter(({ key }) => key !== elementKey)
-        setElements(newElements)
-
-        delete elementRefs.current[elementKey]
-    }
-
-    const handleTemporaryRemoveElement = (elementKey) => {
-        const element = elements.find(({ key }) => key === elementKey)
-        element.data.isRemoved = true
-        setElements([...elements])
-    }
-
-    const handleUndoRemoveElement = (elementKey) => {
-        const element = elements.find(({ key }) => key === elementKey)
-        element.data.isRemoved = false
-        setElements([...elements])
-    }
-
-    const handleCloneElement = (elementKey) => {
-        const element = elements.find(({ key }) => key === elementKey)
-
-        const newElement = createNewElement(element.type, {
-            defaultValues: elementRefs.current[element.key].getValues()
-        })
-
-        setElements([...elements, newElement])
-    }
-
-    const clearElements = () => {
-        setElements([])
-        elementRefs.current = {}
-    }
-
-    const createNewElement = (type, data = {}) => {
-        const newElementKey = {
-            type,
-            data,
-            key: idCounter.current++
-        }
-
-        return newElementKey
-    }
-
-    const handleAddTextbox = ({ data }) => {
-        const newElementKey = createNewElement("textbox", data)
-
-        setElements([...elements, newElementKey])
-
-        return newElementKey
-    }
-
-    const handleAddRectangle = () => {
-        const newElementKey = createNewElement("rectangle")
-
-        setElements([...elements, newElementKey])
-
-        return newElementKey
-    }
-
-    const addSticker = (src, id) => {
-        const newElementKey = createNewElement("sticker", { src, id })
-        setElements([...elements, newElementKey])
-    }
-
-    const handleImportSticker = async () => {
-        const file = await importFile("image/*")
-        const base64Image = await fileToImage(file)
-        addSticker(base64Image)
-    }
-
     const beforeCapturing = async container => {
-        Object.values(elementRefs.current).forEach(textbox => textbox.beforeCapturing())
+        Object.values(elementsRef.current).forEach(textbox => textbox.beforeCapturing())
         
         // Wait until the dom changes have applied
         await waitFrames(3)
     }
 
     const afterCapturing = container => {
-        Object.values(elementRefs.current).forEach(textbox => textbox.afterCapturing())
+        Object.values(elementsRef.current).forEach(textbox => textbox.afterCapturing())
     }
 
     const handleGenerateImage = async () => {
@@ -234,13 +145,13 @@ function Canvas() {
     const handleResetCanvas = () => {
         setBorderValues(defaultBorderValues)
         setGridValues(defaultGridValues)
-        clearElements()
     }
 
     const handleLoadTemplate = async ({ detail: { template } }) => {
         context.set({
             currentTemplate: template,
             isEmptyState: false,
+            elements: [],
             rootElement: new BaseElement({
                 type: BASE_ELEMENT_TYPES["IMAGE"],
                 image: template.image_url,
@@ -260,10 +171,6 @@ function Canvas() {
                 object[selector] = (useWidth ? baseRef.current.clientWidth : baseRef.current.clientHeight) * (percentage / 100)
             }
         }
-
-        // Delete all elements
-        clearElements()
-        elements = []
 
         // Stop if no metadata exists
         if (!template.meta_data) {
@@ -295,27 +202,12 @@ function Canvas() {
                 formatPercentage(textbox, "y")
 
                 // Add textbox
-                const newKey = handleAddTextbox({ data: {
+                elementsRef.current.addTextbox({ data: {
                     defaultValues: textbox,
                     fromTemplate: true
                 } })
-                elements.push(newKey)
             }
         }
-
-        // Set new keys
-        setElements(elements)
-    }
-
-    const handleLoadSticker = ({ detail: { sticker } }) => {
-        addSticker(sticker.image_url, sticker.id)
-    }
-
-    const handleGetTextboxes = () => {
-        const textboxKeys = elements.filter(({ type }) => type === "textbox").map(({ key }) => key)
-        const formatted = textboxKeys.map(key => elementRefs.current[key].toObject({ image: baseRef.current }))
-
-        return formatted
     }
 
     const handleGetBorder = () => {
@@ -332,18 +224,13 @@ function Canvas() {
 
     // Set event listeners
     useEffect(() => {
-        window.getTextboxes = handleGetTextboxes
         window.getBorder = handleGetBorder
 
         const events = [
-            ["importSticker", handleImportSticker],
-            ["addTextbox", handleAddTextbox],
-            ["addRectangle", handleAddRectangle],
             ["resetCanvas", handleResetCanvas],
             ["setBorder", handleSetBorder],
             ["setGrid", handleSetGrid],
             ["loadTemplate", handleLoadTemplate],
-            ["loadSticker", handleLoadSticker],
             ["generateImage", handleGenerateImage]
         ]
 
@@ -419,38 +306,7 @@ function Canvas() {
             >
                 <Base ref={baseRef}/>
 
-                <div className={classes.elements}>
-                    {elements.map(({ type, key, data }) => {
-                        const props = {
-                            key,
-                            id: key,
-                            data,
-                            onRemove: handleRemoveElement,
-                            onTemporaryRemove: handleTemporaryRemoveElement,
-                            onUndoRemove: handleUndoRemoveElement,
-                            onClone: handleCloneElement,
-                            handle: elementRefs.current[key],
-                            grid: gridValues,
-                            canvas: canvas.current,
-                        }
-
-                        if (type === "textbox") {
-                            return (
-                                <Textbox {...props} />
-                            )
-                        } else if (type === "sticker") {
-                            return (
-                                <Sticker {...props} />
-                            )
-                        } else if (type === "rectangle") {
-                            return (
-                                <Rectangle {...props} />
-                            )
-                        }
-
-                        throw new Error(`Type ${type} is not defined`)
-                    })}
-                </div>
+                <Elements ref={elementsRef} base={baseRef.current} grid={gridValues} canvas={canvas.current}/>
 
                 <DrawingCanvas canvas={canvas.current} border={borderValues} />
             </div>
@@ -459,7 +315,7 @@ function Canvas() {
 
             <BorderDialog open={isBorderDialogOpen} onClose={handleBorderDialogClose} values={borderValues}/>
             <GridDialog open={isGridDialogOpen} onClose={handleGridDialogClose} values={gridValues}/>
-            <ImageDialog open={isImageDialogOpen} onClose={handleImageDialogClose} imageData={generatedImage} elements={elements}/>
+            <ImageDialog open={isImageDialogOpen} onClose={handleImageDialogClose} imageData={generatedImage}/>
         </div>
     )
 }

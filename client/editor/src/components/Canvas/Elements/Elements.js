@@ -1,0 +1,173 @@
+import React, { useEffect, useRef, useContext, useImperativeHandle } from "react"
+import { makeStyles } from "@material-ui/core/styles"
+
+import Textbox from "./Textbox.js"
+import Sticker from "./Sticker.js"
+import Rectangle from "./Rectangle.js"
+import Element from "../../../Models/Element.js"
+import { ELEMENT_TYPES } from "../../../config/constants.js"
+import { createListeners, fileToImage, importFile } from "../../../utils"
+import { AppContext } from "../../../App.js"
+
+const useStyles = makeStyles(theme => ({
+    elements: {
+        position: "absolute",
+        top: 0, left: 0,
+        width: "100%",
+        height: "100%",
+        pointerEvents: props => props.context.isEmptyState && "none"
+    }
+}))
+
+function Elements({ base, grid, canvas }, ref) {
+    const context = useContext(AppContext)
+
+    const classes = useStyles({ context })
+
+    const idCounter = useRef(0)
+    const elementRefs = useRef({})
+
+    elementRefs.current = {}
+    for (let element of context.elements) {
+        elementRefs.current[element.id] = {}
+    }
+
+    const addElement = (element) => {
+        context.set({
+            elements: [...context.elements, element]
+        })
+    }
+
+    const setElements = (elements) => {
+        context.set({ elements })
+    }
+
+    const handleRemoveElement = (elementId) => {
+        const newElements = context.elements.filter(({ id }) => id !== elementId)
+        setElements(newElements)
+
+        delete elementRefs.current[elementId]
+    }
+
+    const handleTemporaryRemoveElement = (elementId) => {
+        const element = context.elements.find(({ id }) => id === elementId)
+        element.data.isRemoved = true
+        setElements([...context.elements])
+    }
+
+    const handleUndoRemoveElement = (elementId) => {
+        const element = context.elements.find(({ id }) => id === elementId)
+        element.data.isRemoved = false
+        setElements([...context.elements])
+    }
+
+    const handleCloneElement = (elementId) => {
+        const element = context.elements.find(({ id }) => id === elementId)
+
+        const newElement = createNewElement(element.type, {
+            defaultValues: elementRefs.current[element.id].getValues()
+        })
+
+        addElement(newElement)
+    }
+
+    const clearElements = () => {
+        setElements([])
+        elementRefs.current = {}
+    }
+
+    const createNewElement = (type, data = {}) => {
+        const newElement = new Element({
+            type,
+            data,
+            id: idCounter.current++
+        })
+
+        return newElement
+    }
+
+    const handleAddTextbox = ({ data }) => {
+        const newElement = createNewElement("textbox", data)
+        addElement(newElement)
+
+        return newElement
+    }
+
+    const handleAddRectangle = () => {
+        const newElement = createNewElement("rectangle")
+        addElement(newElement)
+
+        return newElement
+    }
+
+    const addSticker = (src, id) => {
+        const newElement = createNewElement("sticker", { src, id })
+        addElement(newElement)
+    }
+
+    const handleImportSticker = async () => {
+        const file = await importFile("image/*")
+        const base64Image = await fileToImage(file)
+        addSticker(base64Image)
+    }
+
+    const handleLoadSticker = ({ detail: { sticker } }) => {
+        addSticker(sticker.image_url, sticker.id)
+    }
+
+    const handleGetTextboxes = () => {
+        const textboxIds = context.elements.filter(({ type }) => type === "textbox").map(({ id }) => id)
+        const formatted = textboxIds.map(id => elementRefs.current[id].toObject({ image: base }))
+        return formatted
+    }
+
+    useEffect(() => {
+        window.getTextboxes = handleGetTextboxes
+
+        return createListeners(context.event, [
+            ["resetCanvas", clearElements],
+            ["importSticker", handleImportSticker],
+            ["addTextbox", handleAddTextbox],
+            ["addRectangle", handleAddRectangle],
+            ["loadSticker", handleLoadSticker],
+        ])
+    })
+
+    useImperativeHandle(ref, () => ({
+        addTextbox: handleAddTextbox,
+        createId: () => idCounter.current++
+    }))
+
+    return (
+        <div className={classes.elements}>
+            {context.elements.map(({ type, id, data }) => {
+                const props = {
+                    key: id, id, data, grid, canvas,
+                    onRemove: handleRemoveElement,
+                    onTemporaryRemove: handleTemporaryRemoveElement,
+                    onUndoRemove: handleUndoRemoveElement,
+                    onClone: handleCloneElement,
+                    handle: elementRefs.current[id]
+                }
+
+                if (type === ELEMENT_TYPES["TEXTBOX"]) {
+                    return (
+                        <Textbox {...props} />
+                    )
+                } else if (type === ELEMENT_TYPES["STICKER"]) {
+                    return (
+                        <Sticker {...props} />
+                    )
+                } else if (type === ELEMENT_TYPES["RECTANGLE"]) {
+                    return (
+                        <Rectangle {...props} />
+                    )
+                } else {
+                    return null
+                }
+            })}
+        </div>
+    )
+}
+
+export default React.forwardRef(Elements)

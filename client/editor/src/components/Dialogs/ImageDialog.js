@@ -82,7 +82,7 @@ const useStyles = makeStyles(theme => {
     }
 })
 
-function ImageDialog({ open, onClose, imageData, elements }) {
+function ImageDialog({ open, onClose, imageData }) {
     const context = useContext(AppContext)
 
     const classes = useStyles({ imageData })
@@ -117,7 +117,7 @@ function ImageDialog({ open, onClose, imageData, elements }) {
         }
 
         // Register sticker usage
-        for(let element of elements) {
+        for(let element of context.elements) {
             if (element.type === "sticker" && element.data.id !== undefined) {
                 await registerStickerUse(element.data.id)
             }

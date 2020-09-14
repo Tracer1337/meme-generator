@@ -20,6 +20,7 @@ function App() {
         isEmptyState: true,
         password: localStorage.getItem("password"),
         rootElement: null,
+        elements: [],
         drawing: {
             enabled: false,
             color: settingsOptions.colors["Red"],

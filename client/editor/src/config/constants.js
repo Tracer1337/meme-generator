@@ -24,3 +24,9 @@ export const BASE_ELEMENT_TYPES = {
     "IMAGE": "image",
     "BLANK": "blank"
 }
+
+export const ELEMENT_TYPES = {
+    "TEXTBOX": "textbox",
+    "STICKER": "sticker",
+    "RECTANGLE": "rectangle"
+}
