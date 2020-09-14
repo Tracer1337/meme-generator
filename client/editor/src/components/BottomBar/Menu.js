@@ -1,5 +1,5 @@
 import React, { useContext } from "react"
-import { Menu as MuiMenu, MenuItem, ListItemIcon, ListItemText } from "@material-ui/core"
+import { Menu as MuiMenu, MenuItem, ListItemIcon, ListItemText, Divider } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import BorderOuterIcon from "@material-ui/icons/BorderOuter"
 import GridIcon from "@material-ui/icons/GridOn"
@@ -55,7 +55,7 @@ function Menu({ open, anchorEl, onClose }) {
                 <ListItemIcon className={classes.icon}>
                     <EditIcon fontSize="small"/>
                 </ListItemIcon>
-                <ListItemText primary="Enable Drawing"/>
+                <ListItemText primary="Draw"/>
             </MenuItem>
             
             {/* Rectangle */}
@@ -63,15 +63,17 @@ function Menu({ open, anchorEl, onClose }) {
                 <ListItemIcon className={classes.icon}>
                     <RectangleIcon fontSize="small"/>
                 </ListItemIcon>
-                <ListItemText primary="Add Rectangle"/>
+                <ListItemText primary="Rectangle"/>
             </MenuItem>
+
+            <Divider/>
 
             {/* Border */}
             <MenuItem onClick={dispatchEvent("setBorder")}>
                 <ListItemIcon className={classes.icon}>
                     <BorderOuterIcon fontSize="small"/>
                 </ListItemIcon>
-                <ListItemText primary="Set Border"/>
+                <ListItemText primary="Border"/>
             </MenuItem>
 
             {/* Grid */}
@@ -79,23 +81,25 @@ function Menu({ open, anchorEl, onClose }) {
                 <ListItemIcon className={classes.icon}>
                     <GridIcon fontSize="small"/>
                 </ListItemIcon>
-                <ListItemText primary="Set Grid"/>
+                <ListItemText primary="Grid"/>
             </MenuItem>
+
+            <Divider/>
 
             {/* Sticker */}
             <MenuItem onClick={dispatchEvent("importSticker")}>
                 <ListItemIcon className={classes.icon}>
                     <AddPhotoIcon fontSize="small" />
                 </ListItemIcon>
-                <ListItemText primary="Import Sticker" />
+                <ListItemText primary="Sticker" />
             </MenuItem>
 
-            {/* Meme */}
+            {/* Image */}
             <MenuItem onClick={dispatchEvent("importImage")}>
                 <ListItemIcon className={classes.icon}>
                     <PhotoLibraryIcon fontSize="small" />
                 </ListItemIcon>
-                <ListItemText primary={context.image ? "Replace Meme" : "Import Meme"} />
+                <ListItemText primary="Image" />
             </MenuItem>
         </MuiMenu>
     )
