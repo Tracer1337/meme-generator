@@ -54,6 +54,7 @@ function TemplatesDialog({ onClose, open }) {
     }
 
     const handleTemplateLoad = (template) => {
+        context.event.dispatchEvent(new CustomEvent("resetCanvas"))
         context.event.dispatchEvent(new CustomEvent("loadTemplate", { detail: { template } }))
         handleClose()
     }

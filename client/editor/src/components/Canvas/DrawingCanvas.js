@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef, useContext } from "react"
 import { makeStyles } from "@material-ui/core/styles"
 
-import { AppContext } from "../../../App.js"
-import useSnapshots from "../../../utils/useSnapshots.js"
-import { createListeners } from "../../../utils"
-import Path from "./Path.js"
-import { PIXEL_RATIO } from "../../../config/constants.js"
+import { AppContext } from "../../App.js"
+import useSnapshots from "../../utils/useSnapshots.js"
+import { createListeners } from "../../utils"
+import Path from "../../Models/Path.js"
+import { PIXEL_RATIO } from "../../config/constants.js"
 
 const useStyles = makeStyles(theme => ({
     drawingCanvas: {
@@ -102,6 +102,11 @@ function DrawingCanvas({ canvas, border }) {
         setIsDrawing(false)
     }
 
+    const handleResetCanvas = () => {
+        paths.current = []
+        draw()
+    }
+
     const clearCanvas = () => {
         renderContext.current.clearRect(0, 0, drawingCanvasRef.current.width, drawingCanvasRef.current.height)
     }
@@ -176,8 +181,13 @@ function DrawingCanvas({ canvas, border }) {
         ]
 
         const removeListeners = createListeners(drawingCanvas, events)
+
+        context.event.addEventListener("resetCanvas", handleResetCanvas)
         
-        return removeListeners
+        return () => {
+            removeListeners()
+            context.event.removeEventListener("resetCanvas", handleResetCanvas)
+        }
     })
 
     return (

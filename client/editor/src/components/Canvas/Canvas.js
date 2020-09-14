@@ -1,22 +1,21 @@
 import React, { useContext, useEffect, useState, useRef } from "react"
-import { IconButton } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
-import PhotoLibraryIcon from "@material-ui/icons/PhotoLibrary"
-import CloudDownloadIcon from "@material-ui/icons/CloudDownload"
 
 import Textbox from "./Elements/Textbox.js"
 import Sticker from "./Elements/Sticker.js"
 import Rectangle from "./Elements/Rectangle.js"
 import Grid from "./Grid.js"
-import DrawingCanvas from "./DrawingCanvas/DrawingCanvas.js"
+import DrawingCanvas from "./DrawingCanvas.js"
 import BorderDialog from "../Dialogs/BorderDialog.js"
 import ImageDialog from "../Dialogs/ImageDialog.js"
 import GridDialog from "../Dialogs/GridDialog.js"
+import Base from "./Base.js"
 
 import { AppContext } from "../../App.js"
-
 import { fileToImage, importFile, createListeners } from "../../utils"
 import generateImage from "../../utils/generateImage.js"
+import BaseElement from "../../Models/BaseElement.js"
+import { BASE_ELEMENT_TYPES } from "../../config/constants.js"
 
 function getDimensionsWithoutPadding(element) {
     const styles = getComputedStyle(element)
@@ -75,7 +74,7 @@ const useStyles = makeStyles(theme => ({
         top: 0, left: 0,
         width: "100%",
         height: "100%",
-        pointerEvents: props => !props.context.image && "none"
+        pointerEvents: props => props.context.isEmptyState && "none"
     }
 }))
 
@@ -86,7 +85,7 @@ function Canvas() {
 
     const idCounter = useRef(0)
 
-    const image = useRef()
+    const baseRef = useRef()
     const canvas = useRef()
     const container = useRef()
     const elementRefs = useRef({})
@@ -207,17 +206,6 @@ function Canvas() {
         Object.values(elementRefs.current).forEach(textbox => textbox.afterCapturing())
     }
 
-    const handleImportImage = async () => {
-        const file = await importFile("image/*")
-        const base64Image = await fileToImage(file)
-
-        clearElements()
-        context.set({
-            currentTemplate: null,
-            image: base64Image
-        })
-    }
-
     const handleGenerateImage = async () => {
         setIsImageDialogOpen(true)
 
@@ -243,11 +231,21 @@ function Canvas() {
         setIsGridDialogOpen(true)
     }
 
+    const handleResetCanvas = () => {
+        setBorderValues(defaultBorderValues)
+        setGridValues(defaultGridValues)
+        clearElements()
+    }
+
     const handleLoadTemplate = async ({ detail: { template } }) => {
         context.set({
             currentTemplate: template,
-            image: template.image_url,
-            label: template.label
+            isEmptyState: false,
+            rootElement: new BaseElement({
+                type: BASE_ELEMENT_TYPES["IMAGE"],
+                image: template.image_url,
+                label: template.label
+            })
         })
 
         // Wait until image is loaded into DOM and resized
@@ -259,7 +257,7 @@ function Canvas() {
         const formatPercentage = (object, selector, useWidth = false) => {
             if (/\d+%/.test(object[selector])) {
                 const percentage = parseFloat(object[selector])
-                object[selector] = (useWidth ? image.current.clientWidth : image.current.clientHeight) * (percentage / 100)
+                object[selector] = (useWidth ? baseRef.current.clientWidth : baseRef.current.clientHeight) * (percentage / 100)
             }
         }
 
@@ -315,7 +313,7 @@ function Canvas() {
 
     const handleGetTextboxes = () => {
         const textboxKeys = elements.filter(({ type }) => type === "textbox").map(({ key }) => key)
-        const formatted = textboxKeys.map(key => elementRefs.current[key].toObject({ image: image.current }))
+        const formatted = textboxKeys.map(key => elementRefs.current[key].toObject({ image: baseRef.current }))
 
         return formatted
     }
@@ -325,11 +323,11 @@ function Canvas() {
     }
 
     const awaitImageLoad = () => new Promise(resolve => {
-        if (image.current.complete) {
+        if (context.rootElement?.type !== BASE_ELEMENT_TYPES["IMAGE"] || baseRef.current.complete) {
             resolve()
         }
 
-        image.current.addEventListener("load", resolve, { once: true })
+        baseRef.current.addEventListener("load", resolve, { once: true })
     })
 
     // Set event listeners
@@ -338,15 +336,15 @@ function Canvas() {
         window.getBorder = handleGetBorder
 
         const events = [
-            ["importImage", handleImportImage],
+            ["importSticker", handleImportSticker],
             ["addTextbox", handleAddTextbox],
             ["addRectangle", handleAddRectangle],
-            ["importSticker", handleImportSticker],
-            ["generateImage", handleGenerateImage],
+            ["resetCanvas", handleResetCanvas],
             ["setBorder", handleSetBorder],
             ["setGrid", handleSetGrid],
             ["loadTemplate", handleLoadTemplate],
-            ["loadSticker", handleLoadSticker]
+            ["loadSticker", handleLoadSticker],
+            ["generateImage", handleGenerateImage]
         ]
 
         const removeListeners = createListeners(context.event, events)
@@ -354,51 +352,56 @@ function Canvas() {
         return removeListeners
     })
 
-    // Set image dimensions
+    // Set base dimensions
     useEffect(() => {
         (async () => {
-            if (!image.current || !container.current || !canvas.current) {
+            if (!baseRef.current || !container.current || !canvas.current) {
                 return
             }
             
             // Wait until image is loaded
             await awaitImageLoad()
 
-            // Get image dimensions
-            const imgWidth = image.current.naturalWidth
-            const imgHeight = image.current.naturalHeight
-            const imgRatio = imgHeight / imgWidth
+            // Get base (image) ratio
+            let ratio = 1
+            if (context.rootElement.type === BASE_ELEMENT_TYPES["IMAGE"]) {
+                const imgWidth = baseRef.current.naturalWidth
+                const imgHeight = baseRef.current.naturalHeight
+                ratio = imgHeight / imgWidth
+            }
 
             // Get container size
             const { width: maxWidth, height: maxHeight } = getDimensionsWithoutPadding(container.current)
 
             let newWidth, newHeight
 
-            if (maxWidth * imgRatio > maxHeight) {
+            if (maxWidth * ratio > maxHeight) {
                 // Height is larger than max height => Constrain height
                 const margin = 32
                 const borderSize = (borderValues.top || 0 + borderValues.bottom || 0) * borderValues.size
                 newHeight = maxHeight - margin - borderSize
-                newWidth = newHeight * (1 / imgRatio)
+                newWidth = newHeight * (1 / ratio)
             } else {
                 // Width is larger than max width => Constrain width
                 const borderSize = (borderValues.left || 0 + borderValues.right || 0) * borderValues.size
                 newWidth = maxWidth - borderSize
-                newHeight = newWidth * imgRatio
+                newHeight = newWidth * ratio
             }
 
             newWidth = Math.floor(newWidth)
             newHeight = Math.floor(newHeight)
 
-            // Apply sizing to image
-            image.current.style.width = newWidth + "px"
-            image.current.style.height = newHeight + "px"
+            // Apply sizing to base
+            baseRef.current.style.width = newWidth + "px"
+            baseRef.current.style.height = newHeight + "px"
 
             // Apply sizing to canvas
             canvas.current.style.width = newWidth + "px"
             canvas.current.style.height = newHeight + "px"
         })()
-    }, [context.image, image, container, canvas, borderValues])
+
+        // eslint-disable-next-line
+    }, [context.rootElement, baseRef, container, canvas, borderValues])
 
     return (
         <div className={classes.canvasWrapper} ref={container}>
@@ -409,30 +412,12 @@ function Canvas() {
                     paddingBottom: borderValues.bottom && borderValues.size + "px",
                     paddingLeft: borderValues.left && borderValues.size + "px",
                     paddingRight: borderValues.right && borderValues.size + "px",
-                    backgroundColor: context.image && borderValues.color,
-                    width: !context.image && "unset"
+                    backgroundColor: !context.isEmptyState && borderValues.color,
+                    width: context.isEmptyState && "unset"
                 }}
                 ref={canvas}
             >
-                {context.image ? (
-                    <img
-                        alt=""
-                        src={context.image}
-                        className="meme-image"
-                        ref={image}
-                        draggable="false"
-                    />
-                ) : (
-                    <>
-                        <IconButton onClick={() => context.event.dispatchEvent(new CustomEvent("openTemplatesDialog"))}>
-                            <CloudDownloadIcon fontSize="large" />
-                        </IconButton>
-                        
-                        <IconButton onClick={handleImportImage}>
-                            <PhotoLibraryIcon fontSize="large" />
-                        </IconButton>
-                    </>
-                )}
+                <Base ref={baseRef}/>
 
                 <div className={classes.elements}>
                     {elements.map(({ type, key, data }) => {
@@ -463,7 +448,7 @@ function Canvas() {
                             )
                         }
 
-                        throw new Error("Type " + type + " is not defined")
+                        throw new Error(`Type ${type} is not defined`)
                     })}
                 </div>
 

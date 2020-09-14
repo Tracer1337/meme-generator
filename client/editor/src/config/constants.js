@@ -19,3 +19,8 @@ export const GA_TRACKING_ID = "UA-162994094-2"
 export const GALLERY_FOLDER_NAME = "Memes"
 
 export const PIXEL_RATIO = window.devicePixelRatio || 1
+
+export const BASE_ELEMENT_TYPES = {
+    "IMAGE": "image",
+    "BLANK": "blank"
+}

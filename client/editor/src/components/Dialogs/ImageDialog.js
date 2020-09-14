@@ -18,7 +18,7 @@ import downloadDataURI from "../../utils/downloadDataURI.js"
 import uploadImage from "../../utils/uploadImage.js"
 import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
 import { uploadTemplate, editTemplate, registerTemplateUse, registerStickerUse } from "../../config/api.js"
-import { IS_CORDOVA } from "../../config/constants.js"
+import { IS_CORDOVA, BASE_ELEMENT_TYPES } from "../../config/constants.js"
 
 const useStyles = makeStyles(theme => {
     const spacing = {
@@ -176,7 +176,7 @@ function ImageDialog({ open, onClose, imageData, elements }) {
     }
 
     const handlePublishTemplateClick = async () => {
-        if(!getValues("label")) {
+        if (!getValues("label") || context.rootElement.type !== BASE_ELEMENT_TYPES["IMAGE"]) {
             return
         }
 
@@ -184,7 +184,7 @@ function ImageDialog({ open, onClose, imageData, elements }) {
 
         // Collect image data
         const label = getValues("label")
-        const image = dataURLToFile(context.image, "image.png")
+        const image = dataURLToFile(context.rootElement.image, "image.png")
         const metaData = {
             textboxes: window.getTextboxes(),
             border: window.getBorder()
@@ -303,7 +303,7 @@ function ImageDialog({ open, onClose, imageData, elements }) {
                                     label="Label"
                                     className={classes.spacing}
                                     variant="outlined"
-                                    defaultValue={context.label}
+                                    defaultValue={context.rootElement.label}
                                 />
                                 
                                 <div className={classes.uploadButtonWrapper}>

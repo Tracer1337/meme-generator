@@ -30,7 +30,7 @@ function Analytics() {
      * Forward events to GA
      */
     useEffect(() => {
-        if (!isInitialized) {
+        if (context.password || !isInitialized) {
             return
         }
 

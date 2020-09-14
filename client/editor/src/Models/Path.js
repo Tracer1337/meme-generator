@@ -1,4 +1,4 @@
-import { PIXEL_RATIO } from "../../../config/constants.js"
+import { PIXEL_RATIO } from "../config/constants.js"
 
 const defaultValues = {
     color: "black",

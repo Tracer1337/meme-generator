@@ -36,7 +36,7 @@ function compensateError(clonedDocument) {
     /**
      * Remove white border
      */
-    const image = clonedDocument.querySelector(".meme-image")
+    const image = clonedDocument.querySelector(".base-element")
     image.style.minWidth = (image.clientWidth + 1) + "px"
     image.style.minHeight = (image.clientHeight + 1) + "px"
 }

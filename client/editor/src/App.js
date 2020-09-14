@@ -16,10 +16,10 @@ if (localStorage.getItem("password")) {
 function App() {
     const [context, setContext] = useState({
         event: new EventTarget(),
-        image: null,
-        label: null,
         currentTemplate: null,
+        isEmptyState: true,
         password: localStorage.getItem("password"),
+        rootElement: null,
         drawing: {
             enabled: false,
             color: settingsOptions.colors["Red"],

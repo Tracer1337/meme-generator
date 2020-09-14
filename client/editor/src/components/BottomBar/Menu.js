@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/core/styles"
 import BorderOuterIcon from "@material-ui/icons/BorderOuter"
 import GridIcon from "@material-ui/icons/GridOn"
 import AddPhotoIcon from "@material-ui/icons/AddPhotoAlternate"
-import PhotoLibraryIcon from "@material-ui/icons/PhotoLibrary"
+import ReloadIcon from "@material-ui/icons/Replay"
 import RectangleIcon from "@material-ui/icons/CheckBoxOutlineBlank"
 import EditIcon from "@material-ui/icons/Edit"
 
@@ -94,12 +94,12 @@ function Menu({ open, anchorEl, onClose }) {
                 <ListItemText primary="Sticker" />
             </MenuItem>
 
-            {/* Image */}
-            <MenuItem onClick={dispatchEvent("importImage")}>
+            {/* Base */}
+            <MenuItem onClick={dispatchEvent("openBaseSelection")}>
                 <ListItemIcon className={classes.icon}>
-                    <PhotoLibraryIcon fontSize="small" />
+                    <ReloadIcon fontSize="small" />
                 </ListItemIcon>
-                <ListItemText primary="Image" />
+                <ListItemText primary="Base" />
             </MenuItem>
         </MuiMenu>
     )

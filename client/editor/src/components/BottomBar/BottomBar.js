@@ -153,7 +153,7 @@ function BottomBar() {
 
                     <div className={classes.spacer}/>
 
-                    <Fab color="primary" className={classes.fabButton} onClick={dispatchEvent("generateImage")} disabled={!context.image}>
+                    <Fab color="primary" className={classes.fabButton} onClick={dispatchEvent("generateImage")} disabled={context.isEmptyState}>
                         <DoneIcon/>
                     </Fab>
 
