@@ -145,6 +145,7 @@ function makeElement({
 
                 if (data.isRemoved && removedSinceCounter.current-- === 0) {
                     onUndoRemove(id)
+                    removedSinceCounter.current = 0
                 }
             },
 

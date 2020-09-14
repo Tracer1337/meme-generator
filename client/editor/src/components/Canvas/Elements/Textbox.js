@@ -47,8 +47,8 @@ function Textbox({ id, handle, onFocus, isFocused, toggleMovement, dimensions, d
 
         onSnapshotsEmpty: () => {
             // Set initial values
-            setValue(TEXTBOX_PLACEHOLDER)
-            setSettings(defaultSettings)
+            setValue(defaultValues?.value || TEXTBOX_PLACEHOLDER)
+            setSettings({ ...defaultSettings, ...defaultValues?.settings })
         }
     })
 
