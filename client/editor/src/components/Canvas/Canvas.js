@@ -18,11 +18,6 @@ import { AppContext } from "../../App.js"
 import { fileToImage, importFile, createListeners } from "../../utils"
 import generateImage from "../../utils/generateImage.js"
 
-// function showCanvas (canvas) {
-//     const newWindow = window.open("", "canvas")
-//     newWindow.document.body.appendChild(canvas)
-// }
-
 function getDimensionsWithoutPadding(element) {
     const styles = getComputedStyle(element)
 
@@ -256,7 +251,9 @@ function Canvas() {
         })
 
         // Wait until image is loaded into DOM and resized
-        await waitFrames(2)
+        await waitFrames(1)
+        await awaitImageLoad()
+        await waitFrames(1)
         
         // Check if value is given as percentage string and convert it if true
         const formatPercentage = (object, selector, useWidth = false) => {
@@ -327,6 +324,14 @@ function Canvas() {
         return borderValues
     }
 
+    const awaitImageLoad = () => new Promise(resolve => {
+        if (image.current.complete) {
+            resolve()
+        }
+
+        image.current.addEventListener("load", resolve, { once: true })
+    })
+
     // Set event listeners
     useEffect(() => {
         window.getTextboxes = handleGetTextboxes
@@ -352,12 +357,12 @@ function Canvas() {
     // Set image dimensions
     useEffect(() => {
         (async () => {
-            // Wait until image is loaded
-            await waitFrames(1)
-
             if (!image.current || !container.current || !canvas.current) {
                 return
             }
+            
+            // Wait until image is loaded
+            await awaitImageLoad()
 
             // Get image dimensions
             const imgWidth = image.current.naturalWidth
