@@ -97,7 +97,7 @@ function DrawingActions() {
                 {settingsOptions.lineWidth.map((value, i) => (
                     <SpeedDialAction
                         key={i}
-                        tooltipTitle={value}
+                        tooltipTitle={value + "px"}
                         onClick={() => handleLineWidthClick(value)}
                         classes={{ fab: context.drawing.lineWidth === value && classes.selected }}
                         icon={<LineWidthIcon value={value} isOption/>}
