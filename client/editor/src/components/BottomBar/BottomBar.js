@@ -161,17 +161,17 @@ function BottomBar() {
 
                     <div className={classes.elementRight}>
                         <Fade>
-                            <IconButton onClick={dispatchEvent("addTextbox")} id="textbox-button">
+                            <IconButton onClick={dispatchEvent("addTextbox")} id="textbox-button" disabled={context.isEmptyState}>
                                 <TextFieldsIcon />
                             </IconButton>
                         </Fade>
 
-                        <IconButton onClick={dispatchEvent("undo")} id="undo-button">
+                        <IconButton onClick={dispatchEvent("undo")} id="undo-button" disabled={context.isEmptyState}>
                             <UndoIcon />
                         </IconButton>
 
                         <Fade>
-                            <IconButton onClick={handleMoreClick} ref={openMenuButton}>
+                            <IconButton onClick={handleMoreClick} ref={openMenuButton} disabled={context.isEmptyState}>
                                 <MoreVertIcon />
                             </IconButton>
                         </Fade>
