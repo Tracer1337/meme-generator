@@ -87,22 +87,15 @@ function Elements({ base, grid, canvas }, ref) {
     }
 
     const handleAddTextbox = ({ data }) => {
-        const newElement = createNewElement("textbox", data)
-        addElement(newElement)
-
-        return newElement
+        addElement(createNewElement("textbox", data))
     }
 
     const handleAddRectangle = () => {
-        const newElement = createNewElement("rectangle")
-        addElement(newElement)
-
-        return newElement
+        addElement(createNewElement("rectangle"))
     }
 
     const addSticker = (src, id) => {
-        const newElement = createNewElement("sticker", { src, id })
-        addElement(newElement)
+        addElement(createNewElement("sticker", { src, id }))
     }
 
     const handleImportSticker = async () => {
@@ -121,6 +114,14 @@ function Elements({ base, grid, canvas }, ref) {
         return formatted
     }
 
+    const beforeCapturing = () => {
+        Object.values(elementRefs.current).forEach(textbox => textbox.beforeCapturing())
+    }
+
+    const afterCapturing = () => {
+        Object.values(elementRefs.current).forEach(textbox => textbox.afterCapturing())
+    }
+
     useEffect(() => {
         window.getTextboxes = handleGetTextboxes
 
@@ -134,8 +135,9 @@ function Elements({ base, grid, canvas }, ref) {
     })
 
     useImperativeHandle(ref, () => ({
-        addTextbox: handleAddTextbox,
-        createId: () => idCounter.current++
+        createId: () => idCounter.current++,
+        beforeCapturing,
+        afterCapturing
     }))
 
     return (

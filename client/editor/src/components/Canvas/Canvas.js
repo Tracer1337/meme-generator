@@ -13,7 +13,8 @@ import { AppContext } from "../../App.js"
 import { createListeners } from "../../utils"
 import generateImage from "../../utils/generateImage.js"
 import BaseElement from "../../Models/BaseElement.js"
-import { BASE_ELEMENT_TYPES } from "../../config/constants.js"
+import Element from "../../Models/Element.js"
+import { BASE_ELEMENT_TYPES, ELEMENT_TYPES } from "../../config/constants.js"
 
 function getDimensionsWithoutPadding(element) {
     const styles = getComputedStyle(element)
@@ -106,17 +107,6 @@ function Canvas() {
         setGeneratedImage(null)
     }
 
-    const beforeCapturing = async container => {
-        Object.values(elementsRef.current).forEach(textbox => textbox.beforeCapturing())
-        
-        // Wait until the dom changes have applied
-        await waitFrames(3)
-    }
-
-    const afterCapturing = container => {
-        Object.values(elementsRef.current).forEach(textbox => textbox.afterCapturing())
-    }
-
     const handleGenerateImage = async () => {
         setIsImageDialogOpen(true)
 
@@ -125,13 +115,16 @@ function Canvas() {
 
         const container = document.querySelector(`.${classes.canvas}`)
 
-        await beforeCapturing(container)
+        await elementsRef.current.beforeCapturing()
+
+        // Wait until the dom changes have applied
+        await waitFrames(3)
 
         const imageData = await generateImage(container)
 
         setGeneratedImage(imageData)
         
-        afterCapturing(container)
+        elementsRef.current.afterCapturing()
     }
 
     const handleSetBorder = () => {
@@ -148,7 +141,7 @@ function Canvas() {
     }
 
     const handleLoadTemplate = async ({ detail: { template } }) => {
-        context.set({
+        const newContextValue = {
             currentTemplate: template,
             isEmptyState: false,
             elements: [],
@@ -157,7 +150,9 @@ function Canvas() {
                 image: template.image_url,
                 label: template.label
             })
-        })
+        }
+
+        context.set(newContextValue)
 
         // Wait until image is loaded into DOM and resized
         await waitFrames(1)
@@ -193,6 +188,7 @@ function Canvas() {
         setBorderValues(border || defaultBorderValues)
 
         // Handle textboxes
+        const elements = []
         if (textboxes) {
             for (let textbox of textboxes) {
                 // Format values
@@ -202,12 +198,19 @@ function Canvas() {
                 formatPercentage(textbox, "y")
 
                 // Add textbox
-                elementsRef.current.addTextbox({ data: {
-                    defaultValues: textbox,
-                    fromTemplate: true
-                } })
+                elements.push(new Element({
+                    type: ELEMENT_TYPES["TEXTBOX"],
+                    data: {
+                        defaultValues: textbox,
+                        fromTemplate: true
+                    },
+                    id: elementsRef.current.createId()
+                }))
             }
         }
+
+        newContextValue.elements = elements
+        context.set(newContextValue)
     }
 
     const handleGetBorder = () => {
