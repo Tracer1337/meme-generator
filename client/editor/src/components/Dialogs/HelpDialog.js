@@ -2,7 +2,6 @@ import React from "react"
 import { Dialog, ClickAwayListener, Tooltip } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 
-import data from "../../config/help-overlay-data.json"
 import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
 
 const useStyles = makeStyles(theme => ({
@@ -15,7 +14,11 @@ const useStyles = makeStyles(theme => ({
 const tooltipOffset = 20
 
 function OverlayChild({ data: { selector, content }, open }) {
-    const rect = document.querySelector(selector).getBoundingClientRect()
+    const rect = document.querySelector(selector)?.getBoundingClientRect()
+
+    if (!rect) {
+        return null
+    }
     
     return (
         <Tooltip
@@ -35,7 +38,7 @@ function OverlayChild({ data: { selector, content }, open }) {
     )
 }
 
-function HelpDialog({ open, onClose }) {
+function HelpDialog({ open, onClose, data }) {
     const classes = useStyles()
 
     return (

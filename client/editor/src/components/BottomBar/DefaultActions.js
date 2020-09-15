@@ -14,9 +14,9 @@ import Menu from "./Menu.js"
 import TemplatesDialog from "../Dialogs/TemplatesDialog.js"
 import HelpDialog from "../Dialogs/HelpDialog.js"
 import AuthDialog from "../Dialogs/AuthDialog.js"
-
 import { AppContext } from "../../App.js"
 import { LONG_PRESS_DURATION } from "../../config/constants.js"
+import helpOverlayData from "../../config/help-overlay-data.json"
 
 const useStyles = makeStyles(theme => ({
     mainAction: {
@@ -182,7 +182,7 @@ function DefaultActions() {
                 <Menu open={isMenuOpen} anchorEl={openMenuButton.current} onClose={handleMenuClose} />
 
                 <TemplatesDialog open={isTemplatesOpen} onClose={() => setIsTemplatesOpen(false)} />
-                <HelpDialog open={isHelpOpen} onClose={() => setIsHelpOpen(false)} />
+                <HelpDialog open={isHelpOpen} onClose={() => setIsHelpOpen(false)} data={helpOverlayData.default} />
                 <AuthDialog open={isAuthDialogOpen} onClose={() => setIsAuthDialogOpen(false)} />
 
                 <Snackbar
