@@ -44,17 +44,6 @@ function App() {
     }
 
     useEffect(() => {
-        // Handle image injection
-        const handleMessage = (message) => {
-            if (message.data.image) {
-                setContext({
-                    ...context,
-                    image: message.data.image,
-                    label: message.data.label
-                })
-            }
-        }
-
         // Detect ctrl + z
         const handleUndo = (event) => {
             if (event.ctrlKey && event.keyCode === 90) {
@@ -62,11 +51,9 @@ function App() {
             }
         }
 
-        window.addEventListener("message", handleMessage)
         window.addEventListener("keydown", handleUndo)
 
         return () => {
-            window.removeEventListener("message", handleMessage)
             window.removeEventListener("keydown", handleUndo)
         }
     })

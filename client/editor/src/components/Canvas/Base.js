@@ -52,6 +52,23 @@ function Base(props, ref) {
         ])
     })
 
+    useEffect(() => {
+        // Handle image injection from chrome extension
+        const handleMessage = (message) => {
+            if (message.data.image) {
+                setRootElement(new BaseElement({
+                    type: BASE_ELEMENT_TYPES["IMAGE"],
+                    image: message.data.image,
+                    label: message.data.label
+                }))
+            }
+        }
+
+        return createListeners(window, [
+            ["message", handleMessage]
+        ])
+    })
+
     const sharedProps = {
         ref,
         className: "base-element",
