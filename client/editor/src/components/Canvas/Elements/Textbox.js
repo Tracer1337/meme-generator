@@ -7,6 +7,7 @@ import useSnapshots from "../../../utils/useSnapshots.js"
 import makeElement from "./makeElement.js"
 import fitText from "../../../utils/fitText.js"
 import getTextboxStyles from "../../../utils/getTextboxStyles.js"
+import { createListeners } from "../../../utils"
 import { TEXTBOX_PLACEHOLDER, TEXTBOX_PADDING } from "../../../config/constants.js"
 
 const defaultSettings = {
@@ -151,11 +152,9 @@ function Textbox({ id, handle, onFocus, isFocused, toggleMovement, dimensions, d
     }, [isEditing])
 
     useEffect(() => {
-        textboxRef.current.addEventListener("dblclick", handleEditClicked)
-        
-        return () => {
-            textboxRef.current.removeEventListener("dblclick", handleEditClicked)
-        }
+        return createListeners(textboxRef.current, [
+            ["dblclick", handleEditClicked]
+        ])
     })
     
     return (

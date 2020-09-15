@@ -21,6 +21,7 @@ function App() {
         password: localStorage.getItem("password"),
         rootElement: null,
         elements: [],
+        focus: null,
         drawing: {
             enabled: false,
             color: settingsOptions.colors["Red"],

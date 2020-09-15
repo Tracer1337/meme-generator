@@ -94,6 +94,22 @@ function Elements({ base, grid, canvas }, ref) {
         context.set({ elements: [element, ...context.elements] })
     }
 
+    const handleFocus = (elementId) => {
+        const element = context.elements.find(({ id }) => id === elementId)
+        const controls = elementRefs.current[elementId].getControls()
+        
+        context.set({
+            focus: {
+                element,
+                controls
+            }
+        })
+    }
+
+    const handleBlur = () => {
+        context.set({ focus: null })
+    }
+
     const clearElements = () => {
         setElements([])
         elementRefs.current = {}
@@ -174,6 +190,9 @@ function Elements({ base, grid, canvas }, ref) {
                     onClone: handleCloneElement,
                     onToFront: handleToFront,
                     onToBack: handleToBack,
+                    onFocus: handleFocus,
+                    onBlur: handleBlur,
+                    isFocused: context.focus?.element.id === id,
                     handle: elementRefs.current[id]
                 }
 

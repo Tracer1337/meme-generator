@@ -1,17 +1,16 @@
-import React, { useState, useRef, useMemo, useEffect } from "react"
+import React, { useState, useRef, useMemo, useEffect, useContext } from "react"
 import { DraggableCore } from "react-draggable"
 import { IconButton } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import RotateLeftIcon from "@material-ui/icons/RotateLeft"
 import SettingsIcon from "@material-ui/icons/Settings"
-import CloseIcon from "@material-ui/icons/Close"
 import HeightIcon from "@material-ui/icons/Height"
 import EditIcon from "@material-ui/icons/Edit"
-import CloneIcon from "@material-ui/icons/LibraryAddOutlined"
-import FlipToBackIcon from "@material-ui/icons/FlipToBack"
-import FlipToFrontIcon from "@material-ui/icons/FlipToFront"
+import DeleteIcon from "@material-ui/icons/DeleteOutline"
 
+import { AppContext } from "../../../App.js"
 import useSnapshots from "../../../utils/useSnapshots.js"
+import { createListeners } from "../../../utils"
 import { TEXTBOX_PADDING } from "../../../config/constants.js"
 
 const useStyles = makeStyles(theme => {
@@ -98,7 +97,25 @@ function makeElement({
     defaultValues,
     Child
 }) {
-    return function Element({ onRemove, onTemporaryRemove, onUndoRemove, onClone, onToFront, onToBack, handle, grid, canvas, data, id, ...props }) {
+    return function Element({
+        onRemove,
+        onTemporaryRemove,
+        onUndoRemove,
+        onClone,
+        onToFront, 
+        onToBack,
+        onFocus,
+        onBlur,
+        handle,
+        grid,
+        canvas,
+        data,
+        id,
+        isFocused,
+        ...props
+    }) {
+        const context = useContext(AppContext)
+
         const lastRotation = useRef(data.defaultValues?.rotation || 0)
         const container = useRef()
         const childRef = useRef()
@@ -110,7 +127,6 @@ function makeElement({
         const [height, setHeight] = useState((data.defaultValues?.height && data.defaultValues.height - TEXTBOX_PADDING * 2) || defaultValues.height)
         const [width, setWidth] = useState((data.defaultValues?.width && data.defaultValues.width - TEXTBOX_PADDING * 2) || defaultValues.width)
         const [capture, setCapture] = useState(false)
-        const [isFocused, setIsFocused] = useState(false)
         const [shouldMove, setShouldMove] = useState(true)
 
         const classes = useStyles({ capture })
@@ -263,12 +279,14 @@ function makeElement({
         const handleTemporaryRemove = () => {
             addSnapshot()
             onTemporaryRemove(id)
+            onBlur()
         }
 
         // Expose methods to parent
         if (handle) {
             handle.beforeCapturing = () => setCapture(true)
             handle.afterCapturing = () => setCapture(false)
+            handle.getControls = () => controls
         }
 
         useEffect(() => {
@@ -292,20 +310,39 @@ function makeElement({
         }, [grid])
 
         useEffect(() => {
-            // Handle click-away event
-            const handleClick = (event) => {
-                if (isFocused && !container.current.contains(event.target)) {
-                    setIsFocused(false)
+            const pipe = (fn) => (event) => {
+                console.log(event)
+
+                if (event.detail.element.id === id) {
+                    fn(id)
                 }
             }
 
-            window.addEventListener("click", handleClick)
-            window.addEventListener("touchstart", handleClick)
-            
-            return () => {
-                window.removeEventListener("click", handleClick)
-                window.removeEventListener("touchstart", handleClick)
+            return createListeners(context.event, [
+                ["elementClone", pipe(onClone)],
+                ["elementToBack", pipe(onToBack)],
+                ["elementToFront", pipe(onToFront)],
+                ["elementBlur", pipe(onBlur)]
+            ])
+        })
+
+        useEffect(() => {
+            const bottomBar = document.getElementById("bottom-bar")
+
+            const handleClick = (event) => {
+                if (
+                    isFocused && 
+                    !container.current.contains(event.target) &&
+                    !bottomBar.contains(event.target)
+                ) {
+                    onBlur()
+                }
             }
+
+            return createListeners(window, [
+                ["click", handleClick],
+                ["touchstart", handleClick]
+            ])
         })
 
         useEffect(() => {
@@ -325,7 +362,7 @@ function makeElement({
 
             // eslint-disable-next-line
         }, [])
-
+        
         return (
             <DraggableCore onDrag={handleMovementDrag} onStop={handleMovementStop} grid={dragGrid} handle={`#element-${id}`} disabled={!shouldMove}>
                 <div
@@ -341,7 +378,7 @@ function makeElement({
                     <Child
                         id={id}
                         handle={handle}
-                        onFocus={() => setIsFocused(true)}
+                        onFocus={() => onFocus(id)}
                         isFocused={isFocused}
                         toggleMovement={(state = true) => setShouldMove(state)}
                         dimensions={{ width, height, ...position, rotation }}
@@ -387,38 +424,20 @@ function makeElement({
                                 )}
 
                                 {controls.includes("edit") && (
-                                    <IconButton className={classes.button} onClick={handle.onEditClicked}>
+                                    <IconButton className={classes.button} onClick={() => handle.onEditClicked()}>
                                         <EditIcon />
                                     </IconButton>
                                 )}
 
                                 {controls.includes("settings") && (
-                                    <IconButton className={classes.button} onClick={handle.onSettingsClicked}>
+                                    <IconButton className={classes.button} onClick={() => handle.onSettingsClicked()}>
                                         <SettingsIcon />
                                     </IconButton>
                                 )}
 
-                                {controls.includes("clone") && (
-                                    <IconButton className={classes.button} onClick={() => onClone(id)}>
-                                        <CloneIcon fontSize="small"/>
-                                    </IconButton>
-                                )}
-
-                                {controls.includes("layers") && (
-                                    <IconButton className={classes.button} onClick={() => onToBack(id)}>
-                                        <FlipToBackIcon fontSize="small"/>
-                                    </IconButton>
-                                )}
-
-                                {controls.includes("layers") && (
-                                    <IconButton className={classes.button} onClick={() => onToFront(id)}>
-                                        <FlipToFrontIcon fontSize="small"/>
-                                    </IconButton>
-                                )}
-
                                 {controls.includes("remove") && (
-                                    <IconButton className={classes.button} onClick={() => handleTemporaryRemove(id)}>
-                                        <CloseIcon />
+                                    <IconButton className={classes.button} onClick={handleTemporaryRemove}>
+                                        <DeleteIcon />
                                     </IconButton>
                                 )}
                             </div>
