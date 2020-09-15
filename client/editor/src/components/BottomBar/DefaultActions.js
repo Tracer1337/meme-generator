@@ -42,6 +42,12 @@ const useStyles = makeStyles(theme => ({
 
     fade: {
         transitionDuration: "0ms !important"
+    },
+
+    [theme.breakpoints.up("md")]: {
+        elementRight: {
+            right: theme.spacing(3)
+        }
     }
 }))
 
