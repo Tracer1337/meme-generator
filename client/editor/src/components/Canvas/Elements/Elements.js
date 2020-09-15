@@ -54,8 +54,6 @@ function Elements({ base, grid, canvas }, ref) {
     const handleRemoveElement = (elementId) => {
         const newElements = context.elements.filter(({ id }) => id !== elementId)
         setElements(newElements)
-
-        delete elementRefs.current[elementId]
     }
 
     const handleTemporaryRemoveElement = (elementId) => {
@@ -110,11 +108,6 @@ function Elements({ base, grid, canvas }, ref) {
         context.set({ focus: null })
     }
 
-    const clearElements = () => {
-        setElements([])
-        elementRefs.current = {}
-    }
-
     const createNewElement = (type, data = {}) => {
         const newElement = new Element({
             type,
@@ -165,7 +158,6 @@ function Elements({ base, grid, canvas }, ref) {
         window.getTextboxes = handleGetTextboxes
 
         return createListeners(context.event, [
-            ["resetCanvas", clearElements],
             ["importSticker", handleImportSticker],
             ["addTextbox", handleAddTextbox],
             ["addRectangle", handleAddRectangle],

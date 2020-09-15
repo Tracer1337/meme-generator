@@ -13,32 +13,37 @@ function Base(props, ref) {
 
     const [isDialogOpen, setIsDialogOpen] = useState(false)
 
+    const dispatchEvent = (name) => {
+        context.event.dispatchEvent(new CustomEvent(name))
+    }
+
+    const setRootElement = (baseElement) => {
+        context.set({
+            currentTemplate: null,
+            isEmptyState: false,
+            elements: [],
+            rootElement: baseElement
+        })
+    }
+
     const handleImportImage = async () => {
         const file = await importFile("image/*")
         const base64Image = await fileToImage(file)
 
-        context.event.dispatchEvent(new CustomEvent("resetCanvas"))
+        dispatchEvent("resetCanvas")
 
-        context.set({
-            currentTemplate: null,
-            isEmptyState: false,
-            rootElement: new BaseElement({
-                type: BASE_ELEMENT_TYPES["IMAGE"],
-                image: base64Image
-            })
-        })
+        setRootElement(new BaseElement({
+            type: BASE_ELEMENT_TYPES["IMAGE"],
+            image: base64Image
+        }))
     }
 
     const handleCreateBaseBlank = () => {
-        context.event.dispatchEvent(new CustomEvent("resetCanvas"))
-        
-        context.set({
-            currentTemplate: null,
-            isEmptyState: false,
-            rootElement: new BaseElement({
-                type: BASE_ELEMENT_TYPES["BLANK"]
-            })
-        })
+        dispatchEvent("resetCanvas")
+
+        setRootElement(new BaseElement({
+            type: BASE_ELEMENT_TYPES["BLANK"]
+        }))
     }
     
     useEffect(() => {
