@@ -75,7 +75,14 @@ function Elements({ base, grid, canvas }, ref) {
             defaultValues: elementRefs.current[element.id].getValues()
         })
 
-        addElement(newElement)
+        // addElement(newElement)
+        context.set({
+            elements: [...context.elements, newElement],
+            focus: {
+                ...context.focus,
+                element: newElement
+            }
+        })
     }
 
     const handleToFront = (elementId) => {

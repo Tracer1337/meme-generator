@@ -311,8 +311,6 @@ function makeElement({
 
         useEffect(() => {
             const pipe = (fn) => (event) => {
-                console.log(event)
-
                 if (event.detail.element.id === id) {
                     fn(id)
                 }
