@@ -6,7 +6,7 @@ import DrawingCanvas from "./DrawingCanvas.js"
 import BorderDialog from "../Dialogs/BorderDialog.js"
 import ImageDialog from "../Dialogs/ImageDialog.js"
 import GridDialog from "../Dialogs/GridDialog.js"
-import Base from "./Base.js"
+import Base from "./BaseElements/BaseElements.js"
 import Elements from "./Elements/Elements.js"
 
 import { AppContext } from "../../App.js"
@@ -245,7 +245,7 @@ function Canvas() {
     // Set base dimensions
     useEffect(() => {
         (async () => {
-            if (!baseRef.current || !container.current || !canvas.current) {
+            if (!baseRef.current?.getRatio || !container.current || !canvas.current) {
                 return
             }
             
@@ -253,12 +253,7 @@ function Canvas() {
             await awaitImageLoad()
 
             // Get base (image) ratio
-            let ratio = 1
-            if (context.rootElement.type === BASE_ELEMENT_TYPES["IMAGE"]) {
-                const imgWidth = baseRef.current.naturalWidth
-                const imgHeight = baseRef.current.naturalHeight
-                ratio = imgHeight / imgWidth
-            }
+            const ratio = baseRef.current.getRatio()
 
             // Get container size
             const { width: maxWidth, height: maxHeight } = getDimensionsWithoutPadding(container.current)
@@ -278,13 +273,15 @@ function Canvas() {
                 newHeight = newWidth * ratio
             }
 
-            newWidth = Math.floor(newWidth)
-            newHeight = Math.floor(newHeight)
+            const margin = 16
+
+            newWidth = Math.floor(newWidth) - margin * 2
+            newHeight = Math.floor(newHeight) - margin * 2
 
             // Apply sizing to base
-            baseRef.current.style.width = newWidth + "px"
-            baseRef.current.style.height = newHeight + "px"
-
+            baseRef.current.getElement().style.width = newWidth + "px"
+            baseRef.current.getElement().style.height = newHeight + "px"
+            
             // Apply sizing to canvas
             canvas.current.style.width = newWidth + "px"
             canvas.current.style.height = newHeight + "px"
