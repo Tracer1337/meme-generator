@@ -16,13 +16,13 @@ router.post("/auth/authorize", (req, res) => {
 router.get("/templates", TemplatesController.getAll)
 router.post("/templates", ProtectMiddleware, UploadMiddleware.single("image"), TemplatesController.create)
 router.put("/templates", ProtectMiddleware, TemplatesController.edit)
-router.post("/templates/delete/:id", ProtectMiddleware, TemplatesController.remove)
-router.post("/templates/register-use", TemplatesController.registerUse)
+router.delete("/templates/:id", ProtectMiddleware, TemplatesController.remove)
+router.post("/templates/register-use/:id", TemplatesController.registerUse)
 
 router.get("/stickers", StickersController.getAll)
 router.post("/stickers", ProtectMiddleware, UploadMiddleware.single("image"), StickersController.create)
-router.post("/stickers/delete/:id", ProtectMiddleware, StickersController.remove)
-router.post("/stickers/register-use", StickersController.registerUse)
+router.delete("/stickers/:id", ProtectMiddleware, StickersController.remove)
+router.post("/stickers/register-use/:id", StickersController.registerUse)
 
 router.get("/upload/random", UploadController.getRandom)
 router.get("/upload/all", UploadController.getAll)

@@ -22,12 +22,12 @@ export const authorize = (password) => axios.post(url("/auth/authorize"), { pass
 export const getTemplates = () => cachedRequest(url("/templates")).then(format(TEMPLATES))
 export const uploadTemplate = (formData) => axios.post(url("/templates"), formData)
 export const editTemplate = (body) => axios.put(url("/templates"), body)
-export const deleteTemplate = (id) => axios.post(url("/templates/delete/" + id))
-export const registerTemplateUse = (id) => axios.post(url("/templates/register-use"), { id })
+export const deleteTemplate = (id) => axios.delete(url("/templates/" + id))
+export const registerTemplateUse = (id) => axios.post(url("/templates/register-use/" + id))
 
 export const getStickers = () => cachedRequest(url("/stickers")).then(format(STICKERS))
 export const uploadSticker = (formData) => axios.post(url("/stickers"), formData)
-export const deleteSticker = (id) => axios.post(url("/stickers/delete/" + id))
-export const registerStickerUse = (id) => axios.post(url("/stickers/register-use"), { id })
+export const deleteSticker = (id) => axios.delete(url("/stickers/" + id))
+export const registerStickerUse = (id) => axios.post(url("/stickers/register-use/" + id))
 
 export const uploadFile = (formData) => axios.post(BASE_URL + "/upload", formData)

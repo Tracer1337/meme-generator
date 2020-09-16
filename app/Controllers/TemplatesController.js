@@ -77,7 +77,7 @@ async function remove(req, res) {
  * Increment amount_uses counter from template
  */
 async function registerUse(req, res) {
-    const template = await Template.findBy("id", req.body.id)
+    const template = await Template.findBy("id", req.params.id)
 
     if (!template) {
         return res.status(404).end()

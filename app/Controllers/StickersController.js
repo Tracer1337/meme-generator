@@ -57,7 +57,7 @@ async function remove(req, res) {
  * Increment amount_uses counter from sticker
  */
 async function registerUse(req, res) {
-    const sticker = await Sticker.findBy("id", req.body.id)
+    const sticker = await Sticker.findBy("id", req.params.id)
 
     if (!sticker) {
         return res.status(404).end()
