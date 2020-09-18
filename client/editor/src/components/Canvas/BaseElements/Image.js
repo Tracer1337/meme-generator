@@ -1,16 +1,19 @@
 import React, { useRef, useImperativeHandle } from "react"
 
-function Image({ baseElement, handle, ...props }) {
+function Image({ baseElement, ...props }, forwardedRef) {
+
     const ref = useRef()
 
     const handleGetRatio = () => {
         const { naturalWidth, naturalHeight } = ref.current
-        return naturalHeight / naturalWidth
+        return naturalWidth / naturalHeight
     }
 
-    useImperativeHandle(handle, () => ({
+    useImperativeHandle(forwardedRef, () => ({
         getRatio: handleGetRatio,
-        getElement: () => ref.current
+        get element() {
+            return ref.current
+        }    
     }))
 
     return (
@@ -23,4 +26,4 @@ function Image({ baseElement, handle, ...props }) {
     )
 }
 
-export default Image
+export default React.forwardRef(Image)

@@ -153,14 +153,6 @@ function Elements({ base, grid, canvas }, ref) {
         return formatted
     }
 
-    const beforeCapturing = () => {
-        Object.values(elementRefs.current).forEach(textbox => textbox.beforeCapturing())
-    }
-
-    const afterCapturing = () => {
-        Object.values(elementRefs.current).forEach(textbox => textbox.afterCapturing())
-    }
-
     useEffect(() => {
         window.getTextboxes = handleGetTextboxes
 
@@ -173,9 +165,7 @@ function Elements({ base, grid, canvas }, ref) {
     })
 
     useImperativeHandle(ref, () => ({
-        createId: () => idCounter.current++,
-        beforeCapturing,
-        afterCapturing
+        createId: () => idCounter.current++
     }))
 
     return (
