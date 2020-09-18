@@ -140,4 +140,4 @@ function TextboxSettingsDialog({ onClose, open, values, text }) {
     )
 }
 
-export default withBackButtonSupport(TextboxSettingsDialog, "settings")
+export default withBackButtonSupport(TextboxSettingsDialog, "textbox-settings")

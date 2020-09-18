@@ -7,6 +7,9 @@ import BlankIcon from "@material-ui/icons/CheckBoxOutlineBlank"
 
 import { AppContext } from "../../App.js"
 import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
+import { importFile, fileToImage } from "../../utils"
+import BaseElement from "../../Models/BaseElement.js"
+import { BASE_ELEMENT_TYPES } from "../../config/constants.js"
 
 const useStyles = makeStyles(theme => ({
     listItem: {
@@ -14,11 +17,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-<<<<<<< HEAD
-function BaseElementsDialog({ onClose, open, onImportImage, onCreateBaseBlank }) {
-=======
-function BaseElementsDialog({ onClose, open, onCreateBaseElement }) {
->>>>>>> parent of bbf0428... Remove templates from base elements dialog
+function BaseElementsDialog({ onClose, open, onCreateBaseElement, noTemplates }) {
     const context = useContext(AppContext)
 
     const classes = useStyles()
@@ -28,9 +27,20 @@ function BaseElementsDialog({ onClose, open, onCreateBaseElement }) {
         context.event.dispatchEvent(new CustomEvent(name))
     }
 
-    const call = (fn) => () => {
-        onClose()
-        fn()
+    const handleImportImage = async () => {
+        const file = await importFile("image/*")
+        const base64Image = await fileToImage(file)
+
+        onCreateBaseElement(new BaseElement({
+            type: BASE_ELEMENT_TYPES["IMAGE"],
+            image: base64Image
+        }))
+    }
+
+    const handleCreateBaseBlank = () => {
+        onCreateBaseElement(new BaseElement({
+            type: BASE_ELEMENT_TYPES["BLANK"]
+        }))
     }
 
     return (
@@ -39,15 +49,17 @@ function BaseElementsDialog({ onClose, open, onCreateBaseElement }) {
             onClose={onClose}
         >
             <List>
-                <ListItem button onClick={dispatchEvent("openTemplatesDialog")} className={classes.listItem}>
-                    <ListItemIcon>
-                        <CloudDownloadIcon/>
-                    </ListItemIcon>
-                    
-                    <ListItemText primary="Template"/>
-                </ListItem>
+                {!noTemplates && (
+                    <ListItem button onClick={dispatchEvent("openTemplatesDialog")} className={classes.listItem}>
+                        <ListItemIcon>
+                            <CloudDownloadIcon />
+                        </ListItemIcon>
 
-                <ListItem button onClick={call(onImportImage)} className={classes.listItem}>
+                        <ListItemText primary="Template" />
+                    </ListItem>
+                )}
+
+                <ListItem button onClick={handleImportImage} className={classes.listItem}>
                     <ListItemIcon>
                         <PhotoLibraryIcon/>
                     </ListItemIcon>
@@ -55,7 +67,7 @@ function BaseElementsDialog({ onClose, open, onCreateBaseElement }) {
                     <ListItemText primary="Import"/>
                 </ListItem>
 
-                <ListItem button onClick={call(onCreateBaseBlank)} className={classes.listItem}>
+                <ListItem button onClick={handleCreateBaseBlank} className={classes.listItem}>
                     <ListItemIcon>
                         <BlankIcon/>
                     </ListItemIcon>

@@ -17,8 +17,7 @@ const useStyles = makeStyles(theme => {
     const highlight = {
         backgroundColor: theme.palette.common.white,
         border: "1px solid black",
-        borderRadius: theme.shape.borderRadius,
-        display: props => props.capture && "none"
+        borderRadius: theme.shape.borderRadius
     }
 
     const handle = {
@@ -126,10 +125,9 @@ function makeElement({
         const [rotation, setRotation] = useState(data.defaultValues?.rotation || 0)
         const [height, setHeight] = useState((data.defaultValues?.height && data.defaultValues.height - TEXTBOX_PADDING * 2) || defaultValues.height)
         const [width, setWidth] = useState((data.defaultValues?.width && data.defaultValues.width - TEXTBOX_PADDING * 2) || defaultValues.width)
-        const [capture, setCapture] = useState(false)
         const [shouldMove, setShouldMove] = useState(true)
 
-        const classes = useStyles({ capture })
+        const classes = useStyles()
 
         // Set grid for movement drag
         const dragGrid = useMemo(() => {
@@ -284,8 +282,6 @@ function makeElement({
 
         // Expose methods to parent
         if (handle) {
-            handle.beforeCapturing = () => setCapture(true)
-            handle.afterCapturing = () => setCapture(false)
             handle.getControls = () => controls
         }
 
@@ -381,7 +377,6 @@ function makeElement({
                         toggleMovement={(state = true) => setShouldMove(state)}
                         dimensions={{ width, height, ...position, rotation }}
                         ref={childRef}
-                        capture={capture}
                         data={data}
                         {...props}
                     />
@@ -390,7 +385,7 @@ function makeElement({
                         // Render controls if the element is focused
                         <>
                             {controls.includes("resize") && (
-                                <div className={classes.resizeHandles}>
+                                <div className={classes.resizeHandles} data-hide-on-capture>
                                     <DraggableCore onDrag={handleVerticalDrag} onStart={addSnapshot} grid={dragGrid}>
                                         <div className={classes.vertical}>
                                             <HeightIcon />
@@ -411,7 +406,7 @@ function makeElement({
                                 </div>
                             )}
 
-                            <div className={classes.action}>
+                            <div className={classes.action} data-hide-on-capture>
                                 {controls.includes("rotate") && (
                                     <DraggableCore onStart={(...args) => {
                                         handleRotationStart(...args)

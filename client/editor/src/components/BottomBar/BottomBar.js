@@ -2,6 +2,7 @@ import React from "react"
 import { AppBar } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 
+import Settings from "./Settings.js"
 import DefaultActions from "./DefaultActions.js"
 import DrawingActions from "./DrawingActions.js"
 import ElementActions from "./ElementActions"
@@ -22,6 +23,7 @@ function BottomBar() {
 
     return (
         <>
+            <Settings/>
             <DrawingActions />
             
             <AppBar position="fixed" className={classes.appBar} id="bottom-bar">
