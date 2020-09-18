@@ -12,7 +12,7 @@ function getTextboxStyles({ theme, props }) {
         display: "flex",
         flexDirection: "column",
 
-        outline: props.isFocused ? "1px dashed gray" : "none",
+        outline: !props.capture && props.isFocused ? "1px dashed gray" : "none",
         userSelect: !props.isEditing && "none",
         cursor: !props.isEditing && "move",
 

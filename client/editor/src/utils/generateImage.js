@@ -2,7 +2,7 @@ import html2canvas from "html2canvas"
 
 import { TEXTBOX_PADDING } from "../config/constants.js"
 
-function beforeCapturing(clonedDocument) {
+function compensateError(clonedDocument) {
     /**
      * Compensate down shifting
      */
@@ -39,18 +39,12 @@ function beforeCapturing(clonedDocument) {
     const image = clonedDocument.querySelector(".base-element")
     image.style.minWidth = (image.clientWidth + 1) + "px"
     image.style.minHeight = (image.clientHeight + 1) + "px"
-
-    /**
-     * Hide tagged elements
-     */
-    const hiddenElements = Array.from(clonedDocument.querySelectorAll("[data-hide-on-capture]"))
-    hiddenElements.forEach(element => element.style.display = "hidden")
 }
 
 async function generateImage(container) {
     const canvas = await html2canvas(container, {
         useCORS: true,
-        onclone: beforeCapturing
+        onclone: compensateError
     })
 
     return canvas.toDataURL()

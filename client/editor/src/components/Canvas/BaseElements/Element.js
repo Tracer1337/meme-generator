@@ -248,7 +248,6 @@ function Element({ className, baseElement, handle }) {
                 open={isDialogOpen}
                 onClose={onDialogClose.current}
                 onCreateBaseElement={onReceiveBaseElement.current}
-                noTemplates
             />
         </div>
     )

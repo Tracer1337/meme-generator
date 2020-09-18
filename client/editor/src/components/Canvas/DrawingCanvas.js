@@ -39,10 +39,6 @@ function DrawingCanvas({ canvas, border }) {
     })
 
     const setDimensions = () => {
-        if (!canvas) {
-            return
-        }
-
         const canvasRect = canvas.getBoundingClientRect()
 
         drawingCanvasRef.current.width = canvasRect.width * PIXEL_RATIO
@@ -184,16 +180,13 @@ function DrawingCanvas({ canvas, border }) {
             ["mousemove", handleMouseMove]
         ]
 
-        const removeCanvasListeners = createListeners(drawingCanvas, events)
+        const removeListeners = createListeners(drawingCanvas, events)
 
-        const removeContextListeners = createListeners(context.event, [
-            ["resetCanvas", handleResetCanvas],
-            ["resetBaseDimensions", setDimensions]
-        ])
+        context.event.addEventListener("resetCanvas", handleResetCanvas)
         
         return () => {
-            removeCanvasListeners()
-            removeContextListeners()
+            removeListeners()
+            context.event.removeEventListener("resetCanvas", handleResetCanvas)
         }
     })
 
