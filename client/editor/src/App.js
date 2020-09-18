@@ -13,39 +13,24 @@ if (localStorage.getItem("password")) {
     setPasswordHeader(localStorage.getItem("password"))
 }
 
-const initialSettings = !!localStorage.getItem("settings") ? JSON.parse(localStorage.getItem("settings")) : {
-    isExperimental: false
-}
-
 function App() {
     const [context, setContext] = useState({
-        password: localStorage.getItem("password"),
         event: new EventTarget(),
-        
-        isEmptyState: true,
-        
         currentTemplate: null,
+        isEmptyState: true,
+        password: localStorage.getItem("password"),
         rootElement: null,
         elements: [],
         focus: null,
-        
         drawing: {
             enabled: false,
             color: settingsOptions.colors["Red"],
             lineWidth: settingsOptions.lineWidth[1]
-        },
-
-        settings: initialSettings
+        }
     })
 
     const setter = {
-        set: values => {
-            if ("settings" in values) {
-                localStorage.setItem("settings", JSON.stringify(values.settings))
-            }
-
-            setContext({ ...context, ...values })
-        },
+        set: values => setContext({ ...context, ...values }),
         setPassword: password => {
             // Store password in localstorage
             if (!password) {
