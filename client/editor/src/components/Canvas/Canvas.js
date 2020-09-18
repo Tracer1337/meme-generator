@@ -6,7 +6,7 @@ import DrawingCanvas from "./DrawingCanvas.js"
 import BorderDialog from "../Dialogs/BorderDialog.js"
 import ImageDialog from "../Dialogs/ImageDialog.js"
 import GridDialog from "../Dialogs/GridDialog.js"
-import Base from "./BaseElements/BaseElements.js"
+import Base from "./Base.js"
 import Elements from "./Elements/Elements.js"
 
 import { AppContext } from "../../App.js"
@@ -115,12 +115,16 @@ function Canvas() {
 
         const container = document.querySelector(`.${classes.canvas}`)
 
+        await elementsRef.current.beforeCapturing()
+
         // Wait until the dom changes have applied
         await waitFrames(3)
 
         const imageData = await generateImage(container)
 
         setGeneratedImage(imageData)
+        
+        elementsRef.current.afterCapturing()
     }
 
     const handleSetBorder = () => {
@@ -152,14 +156,14 @@ function Canvas() {
 
         // Wait until image is loaded into DOM and resized
         await waitFrames(1)
-        await awaitImagesLoad()
+        await awaitImageLoad()
         await waitFrames(1)
         
         // Check if value is given as percentage string and convert it if true
         const formatPercentage = (object, selector, useWidth = false) => {
             if (/\d+%/.test(object[selector])) {
                 const percentage = parseFloat(object[selector])
-                object[selector] = (useWidth ? baseRef.current.rootElement.clientWidth : baseRef.current.rootElement.clientHeight) * (percentage / 100)
+                object[selector] = (useWidth ? baseRef.current.clientWidth : baseRef.current.clientHeight) * (percentage / 100)
             }
         }
 
@@ -213,61 +217,13 @@ function Canvas() {
         return borderValues
     }
 
-    const awaitImagesLoad = () => new Promise(async resolve => {
-        const images = Array.from(document.querySelectorAll(".base-element")).filter(node => node.tagName === "IMG")
+    const awaitImageLoad = () => new Promise(resolve => {
+        if (context.rootElement?.type !== BASE_ELEMENT_TYPES["IMAGE"] || baseRef.current.complete) {
+            resolve()
+        }
 
-        await Promise.all(images.map(image => new Promise(resolve => {
-            if (image.complete) {
-                return resolve()
-            }
-
-            image.addEventListener("load", resolve, { once: true })
-        })))
-
-        resolve()
+        baseRef.current.addEventListener("load", resolve, { once: true })
     })
-
-    const setBaseDimensions = async () => {
-        if (!baseRef.current.ready || !container.current || !canvas.current) {
-            return
-        }
-        
-        // Wait until root element is loaded
-        await awaitImagesLoad()
-
-        // Get base ratio
-        const ratio = baseRef.current.getRatio()
-
-        // Get container size
-        const { width: maxWidth, height: maxHeight } = getDimensionsWithoutPadding(container.current)
-
-        let newWidth, newHeight
-
-        if (maxHeight * ratio > maxWidth) {
-            // Width is larger than max width => Constrain width
-            const borderSize = (borderValues.left || 0 + borderValues.right || 0) * borderValues.size
-            newWidth = maxWidth - borderSize
-            newHeight = newWidth * (1 / ratio)
-        } else {
-            // Height is larger than max height => Constrain height
-            const margin = 32
-            const borderSize = (borderValues.top || 0 + borderValues.bottom || 0) * borderValues.size
-            newHeight = maxHeight - margin - borderSize
-            newWidth = newHeight * ratio
-        }
-
-        const margin = 16
-
-        newWidth = Math.floor(newWidth) - margin * 2
-        newHeight = Math.floor(newHeight) - margin * 2
-
-        // Apply sizing to base
-        baseRef.current.setDimensions({ width: newWidth, height: newHeight })
-
-        // Apply sizing to canvas
-        canvas.current.style.width = newWidth + "px"
-        canvas.current.style.height = newHeight + "px"
-    }
 
     // Set event listeners
     useEffect(() => {
@@ -278,14 +234,64 @@ function Canvas() {
             ["setBorder", handleSetBorder],
             ["setGrid", handleSetGrid],
             ["loadTemplate", handleLoadTemplate],
-            ["generateImage", handleGenerateImage],
-            ["resetBaseDimensions", setBaseDimensions]
+            ["generateImage", handleGenerateImage]
         ]
 
         const removeListeners = createListeners(context.event, events)
 
         return removeListeners
     })
+
+    // Set base dimensions
+    useEffect(() => {
+        (async () => {
+            if (!baseRef.current || !container.current || !canvas.current) {
+                return
+            }
+            
+            // Wait until image is loaded
+            await awaitImageLoad()
+
+            // Get base (image) ratio
+            let ratio = 1
+            if (context.rootElement.type === BASE_ELEMENT_TYPES["IMAGE"]) {
+                const imgWidth = baseRef.current.naturalWidth
+                const imgHeight = baseRef.current.naturalHeight
+                ratio = imgHeight / imgWidth
+            }
+
+            // Get container size
+            const { width: maxWidth, height: maxHeight } = getDimensionsWithoutPadding(container.current)
+
+            let newWidth, newHeight
+
+            if (maxWidth * ratio > maxHeight) {
+                // Height is larger than max height => Constrain height
+                const margin = 32
+                const borderSize = (borderValues.top || 0 + borderValues.bottom || 0) * borderValues.size
+                newHeight = maxHeight - margin - borderSize
+                newWidth = newHeight * (1 / ratio)
+            } else {
+                // Width is larger than max width => Constrain width
+                const borderSize = (borderValues.left || 0 + borderValues.right || 0) * borderValues.size
+                newWidth = maxWidth - borderSize
+                newHeight = newWidth * ratio
+            }
+
+            newWidth = Math.floor(newWidth)
+            newHeight = Math.floor(newHeight)
+
+            // Apply sizing to base
+            baseRef.current.style.width = newWidth + "px"
+            baseRef.current.style.height = newHeight + "px"
+
+            // Apply sizing to canvas
+            canvas.current.style.width = newWidth + "px"
+            canvas.current.style.height = newHeight + "px"
+        })()
+
+        // eslint-disable-next-line
+    }, [context.rootElement, baseRef, container, canvas, borderValues])
 
     return (
         <div className={classes.canvasWrapper} ref={container}>
@@ -296,12 +302,12 @@ function Canvas() {
                     paddingBottom: borderValues.bottom && borderValues.size + "px",
                     paddingLeft: borderValues.left && borderValues.size + "px",
                     paddingRight: borderValues.right && borderValues.size + "px",
-                    backgroundColor: !context.isEmptyState && borderValues.size > 0 && borderValues.color,
+                    backgroundColor: !context.isEmptyState && borderValues.color,
                     width: context.isEmptyState && "unset"
                 }}
                 ref={canvas}
             >
-                <Base ref={baseRef} canvas={canvas.current}/>
+                <Base ref={baseRef}/>
 
                 <Elements ref={elementsRef} base={baseRef.current} grid={gridValues} canvas={canvas.current}/>
 
