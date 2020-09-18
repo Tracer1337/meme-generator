@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-function BaseElementsDialog({ onClose, open, onCreateBaseElement }) {
+function BaseElementsDialog({ onClose, open, onCreateBaseElement, noTemplates }) {
     const context = useContext(AppContext)
 
     const classes = useStyles()
@@ -49,13 +49,15 @@ function BaseElementsDialog({ onClose, open, onCreateBaseElement }) {
             onClose={onClose}
         >
             <List>
-                <ListItem button onClick={dispatchEvent("openTemplatesDialog")} className={classes.listItem}>
-                    <ListItemIcon>
-                        <CloudDownloadIcon/>
-                    </ListItemIcon>
-                    
-                    <ListItemText primary="Template"/>
-                </ListItem>
+                {!noTemplates && (
+                    <ListItem button onClick={dispatchEvent("openTemplatesDialog")} className={classes.listItem}>
+                        <ListItemIcon>
+                            <CloudDownloadIcon />
+                        </ListItemIcon>
+
+                        <ListItemText primary="Template" />
+                    </ListItem>
+                )}
 
                 <ListItem button onClick={handleImportImage} className={classes.listItem}>
                     <ListItemIcon>
