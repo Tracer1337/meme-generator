@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-function RectangleSettingsDialog({ onClose, open, values, text }) {
+function RectangleSettingsDialog({ onClose, open, values }) {
     const { getValues, handleSubmit, control, watch, reset, register, setValue } = useForm()
 
     const classes = useStyles({ settings: watch() })

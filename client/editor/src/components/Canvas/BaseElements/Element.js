@@ -205,31 +205,33 @@ function Element({ className, baseElement, handle }) {
                 baseElement
             }) }
 
-            <div className={classes.handles} data-hide-on-capture>
-                {!baseElement.hasConnection(0) && (
-                    <div className={classes.handleTop} onClick={() => handleCreateBaseElement(0)}>
-                        <AddIcon className={classes.handleIcon} />
-                    </div>
-                )}
+            {context.settings.isExperimental && (
+                <div className={classes.handles} data-hide-on-capture>
+                    {!baseElement.hasConnection(0) && (
+                        <div className={classes.handleTop} onClick={() => handleCreateBaseElement(0)}>
+                            <AddIcon className={classes.handleIcon} />
+                        </div>
+                    )}
 
-                {!baseElement.hasConnection(1) && (
-                    <div className={classes.handleRight} onClick={() => handleCreateBaseElement(1)}>
-                        <AddIcon className={classes.handleIcon} />
-                    </div>
-                )}
+                    {!baseElement.hasConnection(1) && (
+                        <div className={classes.handleRight} onClick={() => handleCreateBaseElement(1)}>
+                            <AddIcon className={classes.handleIcon} />
+                        </div>
+                    )}
 
-                {!baseElement.hasConnection(2) && (
-                    <div className={classes.handleBottom} onClick={() => handleCreateBaseElement(2)}>
-                        <AddIcon className={classes.handleIcon} />
-                    </div>
-                )}
+                    {!baseElement.hasConnection(2) && (
+                        <div className={classes.handleBottom} onClick={() => handleCreateBaseElement(2)}>
+                            <AddIcon className={classes.handleIcon} />
+                        </div>
+                    )}
 
-                {!baseElement.hasConnection(3) && (
-                    <div className={classes.handleLeft} onClick={() => handleCreateBaseElement(3)}>
-                        <AddIcon className={classes.handleIcon} />
-                    </div>
-                )}
-            </div>
+                    {!baseElement.hasConnection(3) && (
+                        <div className={classes.handleLeft} onClick={() => handleCreateBaseElement(3)}>
+                            <AddIcon className={classes.handleIcon} />
+                        </div>
+                    )}
+                </div>
+            )}
 
             <div>
                 { Object.entries(baseElement.childElements).map(([index, childElement]) => (
