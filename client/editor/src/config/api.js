@@ -2,7 +2,8 @@ import axios from "axios"
 
 import format, {
     TEMPLATES,
-    STICKERS
+    STICKERS,
+    USER
 } from "./formatAPI.js"
 import { BASE_URL, API_BASE_URL } from "./constants.js"
 import { cachedRequest } from "../utils/cache.js"
@@ -31,3 +32,6 @@ export const deleteSticker = (id) => axios.delete(url("/stickers/" + id))
 export const registerStickerUse = (id) => axios.post(url("/stickers/register-use/" + id))
 
 export const uploadFile = (formData) => axios.post(BASE_URL + "/upload", formData)
+
+export const register = (body) => axios.post(url("/auth/register"), body).then(format(USER))
+export const login = (body) => axios.post(url("/auth/login"), body).then(format(USER))

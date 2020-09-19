@@ -18,6 +18,7 @@
     "react-draggable": "^4.4.3",
     "react-ga": "^3.1.2",
     "react-hook-form": "^6.7.0",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.2",
     "react-swipeable-views": "^0.13.9",
     "textfit": "^2.4.0"

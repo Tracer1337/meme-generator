@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react"
 
-import Canvas from "./components/Canvas/Canvas.js"
-import BottomBar from "./components/BottomBar/BottomBar.js"
+import Router from "./Router/Router.js"
 import Analytics from "./utils/Analytics.js"
 import OfflineUseAlerts from "./utils/OfflineUseAlerts.js"
 import { setPasswordHeader } from "./config/api.js"
@@ -15,13 +14,20 @@ if (localStorage.getItem("password")) {
 
 function App() {
     const [context, setContext] = useState({
-        event: new EventTarget(),
-        currentTemplate: null,
-        isEmptyState: true,
         password: localStorage.getItem("password"),
+        event: new EventTarget(),
+
+        auth: {
+            user: null,
+            isLoggedIn: false,
+            token: null
+        },
+
+        isEmptyState: true,
+        currentTemplate: null,
+        focus: null,
         rootElement: null,
         elements: [],
-        focus: null,
         drawing: {
             enabled: false,
             color: settingsOptions.colors["Red"],
@@ -65,8 +71,7 @@ function App() {
             <Analytics />
             <OfflineUseAlerts />
 
-            <Canvas />
-            <BottomBar />
+            <Router/>
         </AppContext.Provider>
     )
 }
