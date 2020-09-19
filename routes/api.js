@@ -1,4 +1,6 @@
 const express = require("express")
+const Validator = require("../lib/Validator.js")
+const User = require("../app/Models/User.js")
 
 const ProtectMiddleware = require("../app/Middleware/ProtectMiddleware.js")
 const UploadMiddleware = require("../app/Middleware/UploadMiddleware.js")
@@ -6,6 +8,7 @@ const UploadMiddleware = require("../app/Middleware/UploadMiddleware.js")
 const TemplatesController = require("../app/Controllers/TemplatesController.js")
 const StickersController = require("../app/Controllers/StickersController.js")
 const UploadController = require("../app/Controllers/UploadController.js")
+const AuthController = require("../app/Controllers/AuthController.js")
 
 const router = express.Router()
 
@@ -26,5 +29,9 @@ router.post("/stickers/register-use/:id", StickersController.registerUse)
 
 router.get("/upload/random", UploadController.getRandom)
 router.get("/upload/all", UploadController.getAll)
+
+router.get("/auth/profile", ProtectMiddleware, AuthController.profile)
+router.post("/auth/register", new Validator().email("email", { uniqueIn: User }).username("username", { uniqueIn: User }).password("password"), AuthController.register)
+router.post("/auth/login", new Validator().email("email", { existsIn: User }).password("password"), AuthController.login)
 
 module.exports = router

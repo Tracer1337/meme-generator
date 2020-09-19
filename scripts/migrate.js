@@ -15,10 +15,12 @@ const runnable = makeRunnable(async () => {
     const Models = (await fs.promises.readdir(MODELS_DIR)).map(filename => require(path.join(MODELS_DIR, filename)))
 
     await run(async () => {
-        await Promise.all(Models.map(async (Model) => {
-            const models = await Model.where("id = id")
-            await models.mapAsync(async (model) => await model.delete())
-        }))
+        try {
+            await Promise.all(Models.map(async (Model) => {
+                const models = await Model.where("id = id")
+                await models.mapAsync(async (model) => await model.delete())
+            }))
+        } catch {}
     }, "Removing models")
 
     // Require migrations from migrations folder
