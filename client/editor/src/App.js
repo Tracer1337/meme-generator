@@ -1,10 +1,25 @@
 import React, { useState, useEffect } from "react"
+import { makeStyles } from "@material-ui/core/styles"
 
 import Router from "./Router/Router.js"
 import Analytics from "./utils/Analytics.js"
 import OfflineUseAlerts from "./utils/OfflineUseAlerts.js"
 import { setPasswordHeader } from "./config/api.js"
 import settingsOptions from "./config/settings-options.json"
+
+const useStyles = makeStyles(theme => ({
+    "@global": {
+        body: {
+            margin: 0
+        },
+
+        a: {
+            color: theme.palette.text.primary,
+            textDecoration: "none",
+            fontFamily: theme.typography.fontFamily
+        }
+    }
+}))
 
 const AppContext = React.createContext()
 
@@ -13,6 +28,8 @@ if (localStorage.getItem("password")) {
 }
 
 function App() {
+    useStyles()
+    
     const [context, setContext] = useState({
         password: localStorage.getItem("password"),
         event: new EventTarget(),

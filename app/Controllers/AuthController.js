@@ -19,7 +19,11 @@ async function login(req, res) {
     const user = await User.findBy("email", req.body.email)
 
     if (!await AuthServiceProvider.validatePassword(req.body.password, user.password)) {
-        return res.send(401)
+        return res.status(401).send({
+            password: {
+                message: "Wrong password"
+            }
+        })
     }
 
     const token = AuthServiceProvider.generateToken(user.id)

@@ -8,7 +8,8 @@ const useStyles = makeStyles(theme => ({
         padding: theme.spacing(1),
         boxSizing: "border-box",
         display: props.center && "flex",
-        justifyContent: props.center && "center"
+        flexDirection: "column",
+        alignItems: props.center && "center"
     })
 }))
 

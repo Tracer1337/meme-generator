@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core/styles"
 
 import { AppContext } from "../../App.js"
 import Input from "./components/Input.js"
-import { register as apiRegister } from "../../config/api.js"
+import { login } from "../../config/api.js"
 
 const useStyles = makeStyles(theme => ({
     submit: {
@@ -13,22 +13,16 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-function RegisterForm({ onRegister }) {
+function LoginForm({ onLogin }) {
     const context = useContext(AppContext)
 
     const formObject = useForm()
     const { handleSubmit, setError } = formObject
-    
+
     const classes = useStyles()
 
     const onSubmit = (values) => {
-        if (values.password !== values.password_confirmation) {
-            setError("password_confirmation", {
-                message: "The passwords do not match"
-            })
-        }
-
-        apiRegister(values)
+        login(values)
             .then(res => {
                 context.set({
                     auth: {
@@ -38,20 +32,17 @@ function RegisterForm({ onRegister }) {
                         isLoggedIn: true
                     }
                 })
-                
-                if (onRegister) {
-                    onRegister()
+
+                if (onLogin) {
+                    onLogin()
                 }
             })
             .catch(res => {
                 const errors = res.response.data
 
                 for (let name in errors) {
-                    const { message, constraints } = errors[name]
-                    const constructedMessage = message + (constraints ? ` (${constraints})` : "")
-
                     setError(name, {
-                        message: constructedMessage
+                        message: errors[name].message
                     })
                 }
             })
@@ -60,12 +51,6 @@ function RegisterForm({ onRegister }) {
     return (
         <FormProvider {...formObject}>
             <form onSubmit={handleSubmit(onSubmit)}>
-                {/* Username */}
-                <Input
-                    name="username"
-                    label="Username"
-                />
-
                 {/* Email */}
                 <Input
                     name="email"
@@ -79,21 +64,14 @@ function RegisterForm({ onRegister }) {
                     label="Password"
                 />
 
-                {/* Password Confirmation */}
-                <Input
-                    type="password"
-                    name="password_confirmation"
-                    label="Confirm Password"
-                />
-
                 <Button
                     type="submit"
                     fullWidth
                     className={classes.submit}
-                >Register</Button>
+                >Login</Button>
             </form>
         </FormProvider>
     )
 }
 
-export default RegisterForm
+export default LoginForm
