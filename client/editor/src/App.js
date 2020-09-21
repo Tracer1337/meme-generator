@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react"
+import { CircularProgress } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 
+import Layout from "./components/Layout/Layout.js"
 import Router from "./Router/Router.js"
 import Analytics from "./utils/Analytics.js"
 import OfflineUseAlerts from "./utils/OfflineUseAlerts.js"
@@ -60,6 +62,8 @@ function App() {
         }
     })
 
+    const [isLoading, setIsLoading] = useState(!!localStorage.getItem("token"))
+
     const setter = {
         set: values => {
             contextMiddleware(values)
@@ -89,6 +93,7 @@ function App() {
                         }
                     })
                 })
+                .finally(() => setIsLoading(false))
         }
     }, [])
 
@@ -99,7 +104,13 @@ function App() {
             <Analytics />
             <OfflineUseAlerts />
 
-            <Router/>
+            {isLoading ? (
+                <Layout>
+                    <CircularProgress/>
+                </Layout>
+            ) : (
+                <Router/>
+            )}
         </AppContext.Provider>
     )
 }

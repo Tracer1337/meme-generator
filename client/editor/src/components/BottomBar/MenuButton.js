@@ -18,7 +18,7 @@ function MenuButton() {
     const classes = useStyles()
     
     const handleClick = () => {
-        history.push("/register")
+        history.push("/profile")
     }
 
     return (
