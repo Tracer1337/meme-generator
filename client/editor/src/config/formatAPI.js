@@ -5,6 +5,7 @@ import { getCachedImage } from "../utils/cache.js"
 
 export const TEMPLATES = "TEMPLATES"
 export const STICKERS = "STICKERS"
+export const LOGIN = "LOGIN"
 export const USER = "USER"
 
 async function formatTemplate(template) {
@@ -36,8 +37,10 @@ export default function format(type) {
         fn = (data) => map(data.data, formatTemplate)
     } else if (type === STICKERS) {
         fn = (data) => map(data.data, formatSticker)
-    } else if (type === USER) {
+    } else if (type === LOGIN) {
         fn = (data) => formatUser(data.data.user)
+    } else if (type === USER) {
+        fn = (data) => formatUser(data.data)
     }
 
     return (data) => {

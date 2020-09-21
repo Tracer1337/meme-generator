@@ -32,7 +32,7 @@ async function login(req, res) {
 }
 
 async function profile(req, res) {
-
+    res.send(req.user)
 }
 
 module.exports = { register, login, profile }

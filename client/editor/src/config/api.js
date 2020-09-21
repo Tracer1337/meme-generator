@@ -3,6 +3,7 @@ import axios from "axios"
 import format, {
     TEMPLATES,
     STICKERS,
+    LOGIN,
     USER
 } from "./formatAPI.js"
 import { BASE_URL, API_BASE_URL } from "./constants.js"
@@ -11,6 +12,12 @@ import { cachedRequest } from "../utils/cache.js"
 export function setPasswordHeader(password) {
     axios.defaults.headers.common = {
         "Authorization": password
+    }
+}
+
+export function setTokenHeader(token) {
+    axios.defaults.headers.common = {
+        "Authorization": "Bearer " + token
     }
 }
 
@@ -33,5 +40,6 @@ export const registerStickerUse = (id) => axios.post(url("/stickers/register-use
 
 export const uploadFile = (formData) => axios.post(BASE_URL + "/upload", formData)
 
-export const register = (body) => axios.post(url("/auth/register"), body).then(format(USER))
-export const login = (body) => axios.post(url("/auth/login"), body).then(format(USER))
+export const register = (body) => axios.post(url("/auth/register"), body).then(format(LOGIN))
+export const login = (body) => axios.post(url("/auth/login"), body).then(format(LOGIN))
+export const getProfile = (body) => axios.get(url("/auth/profile")).then(format(USER))

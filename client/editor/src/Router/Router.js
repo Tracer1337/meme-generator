@@ -1,6 +1,7 @@
 import React from "react"
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom"
 
+import ProtectedRoute from "./ProtectedRoute.js"
 import EditorPage from "../Pages/EditorPage.js"
 import LoginPage from "../Pages/LoginPage.js"
 import RegisterPage from "../Pages/RegisterPage.js"
@@ -17,9 +18,9 @@ function Router() {
                     <RegisterPage/>
                 </Route>
 
-                <Route path="/profile">
+                <ProtectedRoute path="/profile">
                     <Redirect to="/"/>
-                </Route>
+                </ProtectedRoute>
 
                 <Route path="/">
                     <EditorPage/>

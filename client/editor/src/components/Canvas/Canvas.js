@@ -242,6 +242,19 @@ function Canvas() {
         return removeListeners
     })
 
+    useEffect(() => {
+        // Detect ctrl + z
+        const handleUndo = (event) => {
+            if (event.ctrlKey && event.keyCode === 90) {
+                context.event.dispatchEvent(new CustomEvent("undo"))
+            }
+        }
+
+        return createListeners(window, [
+            ["keydown", handleUndo]
+        ])
+    })
+
     // Set base dimensions
     useEffect(() => {
         (async () => {

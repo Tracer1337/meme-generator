@@ -4,8 +4,9 @@ import { makeStyles } from "@material-ui/core/styles"
 import Router from "./Router/Router.js"
 import Analytics from "./utils/Analytics.js"
 import OfflineUseAlerts from "./utils/OfflineUseAlerts.js"
-import { setPasswordHeader } from "./config/api.js"
+import { setTokenHeader } from "./config/api.js"
 import settingsOptions from "./config/settings-options.json"
+import { getProfile } from "./config/api.js"
 
 const useStyles = makeStyles(theme => ({
     "@global": {
@@ -23,8 +24,15 @@ const useStyles = makeStyles(theme => ({
 
 const AppContext = React.createContext()
 
-if (localStorage.getItem("password")) {
-    setPasswordHeader(localStorage.getItem("password"))
+function contextMiddleware(values) {
+    if ("auth" in values) {
+        if (values.auth.token) {
+            localStorage.setItem("token", values.auth.token)
+            setTokenHeader(values.auth.token)
+        } else {
+            localStorage.removeItem("token")
+        }
+    }
 }
 
 function App() {
@@ -37,7 +45,7 @@ function App() {
         auth: {
             user: null,
             isLoggedIn: false,
-            token: null
+            token: localStorage.getItem("token")
         },
 
         isEmptyState: true,
@@ -53,7 +61,10 @@ function App() {
     })
 
     const setter = {
-        set: values => setContext({ ...context, ...values }),
+        set: values => {
+            contextMiddleware(values)
+            setContext({ ...context, ...values })
+        },
         setPassword: password => {
             // Store password in localstorage
             if (!password) {
@@ -61,25 +72,25 @@ function App() {
             } else {
                 localStorage.setItem("password", password)
             }
-            setPasswordHeader(password)
             setContext({ ...context, password })
         }
     }
 
     useEffect(() => {
-        // Detect ctrl + z
-        const handleUndo = (event) => {
-            if (event.ctrlKey && event.keyCode === 90) {
-                context.event.dispatchEvent(new CustomEvent("undo"))
-            }
+        if (context.auth.token) {
+            setTokenHeader(context.auth.token)
+            getProfile()
+                .then(res => {
+                    setter.set({
+                        auth: {
+                            ...context.auth,
+                            user: res.data,
+                            isLoggedIn: true
+                        }
+                    })
+                })
         }
-
-        window.addEventListener("keydown", handleUndo)
-
-        return () => {
-            window.removeEventListener("keydown", handleUndo)
-        }
-    })
+    }, [])
 
     window.context = context
 

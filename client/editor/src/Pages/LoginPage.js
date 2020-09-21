@@ -1,7 +1,8 @@
-import React from "react"
-import { useHistory, Link } from "react-router-dom"
+import React, { useContext } from "react"
+import { useHistory, Link, Redirect } from "react-router-dom"
 import { makeStyles } from "@material-ui/core/styles"
 
+import { AppContext } from "../App.js"
 import Layout from "../components/Layout/Layout.js"
 import LoginForm from "../components/Forms/LoginForm.js"
 
@@ -17,12 +18,18 @@ const useStyles = makeStyles(theme => ({
 }))
 
 function LoginPage() {
+    const context = useContext(AppContext)
+
     const history = useHistory()
 
     const classes = useStyles()
 
     const handleOnLogin = () => {
         history.push("/profile")
+    }
+
+    if (context.auth.isLoggedIn) {
+        return <Redirect to="/profile"/>
     }
 
     return (
