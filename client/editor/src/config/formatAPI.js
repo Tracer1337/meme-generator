@@ -22,6 +22,10 @@ async function formatSticker(sticker) {
 
 function formatUser(user) {
     user.created_at = moment(user.created_at)
+
+    if (user.templates) {
+        user.templates.map(formatTemplate)
+    }
 }
 
 function map(elements, fn) {

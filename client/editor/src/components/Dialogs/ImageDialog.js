@@ -295,7 +295,7 @@ function ImageDialog({ open, onClose, imageData }) {
                                 </Button>
                         )}
 
-                        {context.password && !hasCreatedTemplate && context.rootElement.type === BASE_ELEMENT_TYPES["IMAGE"] && (
+                        {context.auth.isLoggedIn && !hasCreatedTemplate && context.rootElement.type === BASE_ELEMENT_TYPES["IMAGE"] && (
                             <>
                                 <TextField
                                     inputRef={register()}

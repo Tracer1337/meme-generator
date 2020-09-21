@@ -43,7 +43,7 @@ function getFileExtension(filename) {
  * Store buffer to temp file and return a custom file handle
  */
 async function createTempFile(buffer, extension) {
-    const filename = uuid() + "." + extension
+    const filename = randomFileName() + "." + extension
     const filePath = path.join(ROOT_DIR, "temp", filename)
 
     await fs.promises.writeFile(filePath, buffer)

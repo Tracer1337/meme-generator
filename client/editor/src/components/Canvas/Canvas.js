@@ -14,7 +14,7 @@ import { createListeners } from "../../utils"
 import generateImage from "../../utils/generateImage.js"
 import BaseElement from "../../Models/BaseElement.js"
 import Element from "../../Models/Element.js"
-import { BASE_ELEMENT_TYPES, ELEMENT_TYPES } from "../../config/constants.js"
+import { BASE_ELEMENT_TYPES } from "../../config/constants.js"
 
 function getDimensionsWithoutPadding(element) {
     const styles = getComputedStyle(element)
@@ -141,8 +141,6 @@ function Canvas() {
     }
 
     const handleLoadTemplate = async ({ detail: { template } }) => {
-        console.log(template)
-
         const newContextValue = {
             currentTemplate: template,
             isEmptyState: false,

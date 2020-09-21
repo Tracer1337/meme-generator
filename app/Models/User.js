@@ -1,6 +1,7 @@
 const { v4: uuid } = require("uuid")
 const moment = require("moment")
 const Model = require("../../lib/Model.js")
+const Template = require("./Template.js")
 
 class User extends Model {
     constructor(values) {
@@ -15,12 +16,17 @@ class User extends Model {
         })
     }
 
+    async init() {
+        this.templates = await Template.findAllBy("user_id", this.id)
+    }
+
     toJSON() {
         return {
             id: this.id,
             username: this.username,
             email: this.email,
-            created_at: this.created_at
+            created_at: this.created_at,
+            templates: this.templates
         }
     }
 }

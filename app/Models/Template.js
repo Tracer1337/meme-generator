@@ -11,7 +11,7 @@ class Template extends Model {
     constructor(values) {
         super({
             table: "templates",
-            columns: ["id", "label", "image_url", "model", "amount_uses"],
+            columns: ["id", "label", "image_url", "model", "amount_uses", "user_id"],
             ...values
         })
     }
@@ -31,7 +31,8 @@ class Template extends Model {
             label: this.label,
             image_url: this.image_url,
             model: this.model,
-            amount_uses: this.amount_uses
+            amount_uses: this.amount_uses,
+            user_id: this.user_id
         }
     }
 }

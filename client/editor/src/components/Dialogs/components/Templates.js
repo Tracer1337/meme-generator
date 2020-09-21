@@ -1,5 +1,5 @@
 import React, { useState, useContext, useRef, useImperativeHandle } from "react"
-import { IconButton, GridList, GridListTile, GridListTileBar, CircularProgress, InputBase, Paper, Typography } from "@material-ui/core"
+import { IconButton, GridList, GridListTile, GridListTileBar, CircularProgress, InputBase, Paper, Typography, Divider } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import DeleteIcon from "@material-ui/icons/Delete"
 import CloseIcon from "@material-ui/icons/Close"
@@ -34,7 +34,8 @@ const useStyles = makeStyles(theme => ({
     
     listWrapper: {
         display: "flex",
-        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "column",
         overflow: "hidden"
     },
 
@@ -56,6 +57,15 @@ const useStyles = makeStyles(theme => ({
         position: "absolute",
         top: 0,
         left: 0
+    },
+
+    title: {
+        marginBottom: theme.spacing(2)
+    },
+
+    divider: {
+        margin: `${theme.spacing(2)}px 0`,
+        width: `calc(100% - ${theme.spacing(1)}px)`
     }
 }))
 
@@ -65,6 +75,40 @@ const getSubtitle = (count) => {
     } else {
         return count + " Memes Created"
     }
+}
+
+function TemplatesGrid({ data, onClick, onDelete, search }) {
+    const context = useContext(AppContext)
+
+    const classes = useStyles()
+
+    const handleImageLoad = (template) => {
+        cacheImage(template.image_url)
+    }
+
+    // Filter by search string
+    const renderTemplates = data.filter(({ label }) => label.toLowerCase().includes(search.toLowerCase()))
+
+    // Sort by usage => Push most used memes to the top
+    renderTemplates.sort((a, b) => b.amount_uses - a.amount_uses)
+
+    return (
+        <GridList cellHeight={150} className={classes.list}>
+            {renderTemplates.map((template, i) => (
+                <GridListTile key={i} className={classes.tile} onClick={e => onClick(e, template)}>
+                    <img src={template.image_url} alt={template.label} loading="lazy" onLoad={() => handleImageLoad(template)} />
+
+                    <GridListTileBar title={template.label} subtitle={getSubtitle(template.amount_uses)} className={classes.tilebar} />
+
+                    {context.auth.isLoggedIn && template.user_id === context.auth.user.id && (
+                        <IconButton onClick={() => onDelete(template)} className={classes.deleteButton}>
+                            <DeleteIcon fontSize="small" />
+                        </IconButton>
+                    )}
+                </GridListTile>
+            ))}
+        </GridList>
+    )
 }
 
 function Templates({ onLoad }, ref) {
@@ -79,7 +123,7 @@ function Templates({ onLoad }, ref) {
 
     const { data, isLoading, reload } = useAPIData("getTemplates")
 
-    const handleDeleteClick = (template) => {
+    const handleDelete = (template) => {
         currentTemplate.current = template
         setIsConfirmDialogOpen(true)
     }
@@ -104,10 +148,6 @@ function Templates({ onLoad }, ref) {
         setSearch(event.target.value)
     }
 
-    const handleImageLoad = (template) => {
-        cacheImage(template.image_url)
-    }
-
     useImperativeHandle(ref, () => ({
         reload
     }))
@@ -119,12 +159,6 @@ function Templates({ onLoad }, ref) {
     if (!data) {
         return <Typography>Could not load data</Typography>
     }
-
-    // Filter by search string
-    const renderTemplates = data.filter(({ label }) => label.toLowerCase().includes(search.toLowerCase()))
-
-    // Sort by usage => Push most used memes to the top
-    renderTemplates.sort((a, b) => b.amount_uses - a.amount_uses)
 
     return (
         <>
@@ -139,21 +173,15 @@ function Templates({ onLoad }, ref) {
             </Paper>
             
             <div className={classes.listWrapper}>
-                <GridList cellHeight={150} className={classes.list}>
-                    {renderTemplates.map((template, i) => (
-                        <GridListTile key={i} className={classes.tile} onClick={e => handleClick(e, template)}>
-                            <img src={template.image_url} alt={template.label} loading="lazy" onLoad={() => handleImageLoad(template)}/>
+                { context.auth.isLoggedIn && (
+                    <>
+                        <Typography variant="h5" className={classes.title}>My Templates</Typography>
+                        <TemplatesGrid data={context.auth.user.templates} onClick={handleClick} onDelete={handleDelete} search={search}/>
+                        <Divider className={classes.divider}/>
+                    </>
+                ) }
 
-                            <GridListTileBar title={template.label} subtitle={getSubtitle(template.amount_uses)} className={classes.tilebar} />
-
-                            {context.password && (
-                                <IconButton onClick={() => handleDeleteClick(template)} className={classes.deleteButton}>
-                                    <DeleteIcon fontSize="small" />
-                                </IconButton>
-                            )}
-                        </GridListTile>
-                    ))}
-                </GridList>
+                <TemplatesGrid data={data} onClick={handleClick} onDelete={handleDelete} search={search}/>
 
                 <ConfirmDialog
                     open={isConfirmDialogOpen}

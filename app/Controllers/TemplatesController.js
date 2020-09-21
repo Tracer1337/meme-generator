@@ -1,5 +1,3 @@
-const fs = require("fs")
-
 const StorageFacade = require("../Facades/StorageFacade.js")
 const ImageServiceProvider = require("../Services/ImageServiceProvider.js")
 const Template = require("../Models/Template.js")
@@ -10,7 +8,7 @@ const config = require("../../config")
  * Get all templates
  */
 async function getAll(req, res) {
-    const templates = await Template.getAll()
+    const templates = await Template.where("user_id IS NULL")
 
     res.send(templates)
 }
@@ -23,7 +21,7 @@ async function create(req, res) {
 
     // Format image and create temp file from it
     const newImage = await ImageServiceProvider.formatBase64Image(rootElement.image)
-    const tempImage = await createTempFile(newImage, ".png")
+    const tempImage = await createTempFile(newImage, "png")
     delete rootElement.image
 
     // Store new image in local storage
@@ -35,7 +33,8 @@ async function create(req, res) {
     const template = new Template({
         label: rootElement.label,
         image_url: `/${config.paths.storage}/${newFilename}`,
-        model: req.body.model
+        model: req.body.model,
+        user_id: req.user.id
     })
     await template.store()
 

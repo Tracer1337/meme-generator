@@ -1,7 +1,7 @@
 import React from "react"
 import { useHistory } from "react-router-dom"
 import { IconButton } from "@material-ui/core"
-import AvatarIcon from "@material-ui/icons/AccountCircle"
+import SwitchIcon from "@material-ui/icons/Apps"
 import { makeStyles } from "@material-ui/core/styles"
 
 const useStyles = makeStyles(theme => ({
@@ -23,7 +23,7 @@ function MenuButton() {
 
     return (
         <IconButton className={classes.menuButton} onClick={handleClick}>
-            <AvatarIcon/>
+            <SwitchIcon/>
         </IconButton>
     )
 }

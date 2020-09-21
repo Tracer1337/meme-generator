@@ -32,6 +32,7 @@ async function login(req, res) {
 }
 
 async function profile(req, res) {
+    await req.user.init()
     res.send(req.user)
 }
 

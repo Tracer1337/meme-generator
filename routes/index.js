@@ -13,7 +13,7 @@ const rootRouter = express.Router()
  * Serve landing page
  */
 rootRouter.get("/", async (req, res) => {
-    const firstQuery = "SELECT COUNT(*) as amount_templates FROM templates WHERE id = id"
+    const firstQuery = "SELECT COUNT(*) as amount_templates FROM templates WHERE id = id and user_id IS NULL"
     const secondQuery = "SELECT SUM(amount_uses) as total_template_uses FROM templates WHERE id = id"
 
     try {

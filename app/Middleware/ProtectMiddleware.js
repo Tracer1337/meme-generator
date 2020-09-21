@@ -16,13 +16,13 @@ async function ProtectMiddleware(req, res, next) {
     try {
         userId = await AuthServiceProvider.verifyToken(token)
     } catch {
-        return res.status(400).send("Invalid token")
+        return res.status(401).send("Invalid token")
     }
 
     const user = await User.findBy("id", userId)
 
     if (!user) {
-        return res.status(400).send("Invalid token")
+        return res.status(401).send("Invalid token")
     }
 
     req.user = user
