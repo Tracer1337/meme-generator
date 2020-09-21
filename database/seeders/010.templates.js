@@ -19,14 +19,26 @@ module.exports = {
             const filename = randomFileName() + getFileExtension(template.image)
             await StorageFacade.uploadFileLocal(path.join(TEMPLATES_DIR, template.image), filename)
 
+            const model = {
+                rootElement: {
+                    type: "image",
+                    label: template.label
+                },
+                elements: template.meta_data.textboxes.map(textbox => ({
+                    type: "textbox",
+                    data: {
+                        ...textbox
+                    }
+                })),
+                border: template.border
+            }
+
             // Create database entry
-            const model = new Template({
+            await new Template({
                 label: template.label,
                 image_url: "/storage/" + filename,
-                meta_data: JSON.stringify(template.meta_data)
-            })
-
-            await model.store()
+                model: model
+            }).store()
         }))
     }
 }

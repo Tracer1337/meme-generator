@@ -21,7 +21,7 @@ function setupExpress(app) {
     }
 
     // Support json
-    app.use(express.json())
+    app.use(express.json({ limit: "5MB" }))
     
     // Support form data
     app.use(express.urlencoded({

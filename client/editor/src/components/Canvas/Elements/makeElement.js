@@ -282,6 +282,17 @@ function makeElement({
             onBlur()
         }
 
+        const handleCreateTemplate = () => {
+            const element = context.elements.find(element => element.id === id)
+            element.data = {
+                ...element.data,
+                ...position,
+                rotation,
+                width,
+                height
+            }
+        }
+
         // Expose methods to parent
         if (handle) {
             handle.beforeCapturing = () => setCapture(true)
@@ -320,7 +331,8 @@ function makeElement({
                 ["elementClone", pipe(onClone)],
                 ["elementToBack", pipe(onToBack)],
                 ["elementToFront", pipe(onToFront)],
-                ["elementBlur", pipe(onBlur)]
+                ["elementBlur", pipe(onBlur)],
+                ["createTemplate", handleCreateTemplate]
             ])
         })
 

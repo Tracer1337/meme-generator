@@ -12,9 +12,7 @@ async function formatTemplate(template) {
     template.image_url = BASE_URL + template.image_url
     template.image_url = await getCachedImage(template.image_url)
     
-    if (template.meta_data) {
-        template.meta_data = JSON.parse(template.meta_data)
-    }
+    template.model = JSON.parse(template.model)
 }
 
 async function formatSticker(sticker) {

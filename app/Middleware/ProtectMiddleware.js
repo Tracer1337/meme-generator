@@ -22,7 +22,7 @@ async function ProtectMiddleware(req, res, next) {
     const user = await User.findBy("id", userId)
 
     if (!user) {
-        res.status(400).send("Invalid token")
+        return res.status(400).send("Invalid token")
     }
 
     req.user = user

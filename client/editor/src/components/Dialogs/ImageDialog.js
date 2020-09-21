@@ -182,23 +182,23 @@ function ImageDialog({ open, onClose, imageData }) {
 
         setIsPublishing(true)
 
-        // Collect image data
-        const label = getValues("label")
-        const image = dataURLToFile(context.rootElement.image, "image.png")
-        const metaData = {
-            textboxes: window.getTextboxes(),
+        context.event.dispatchEvent(new CustomEvent("createTemplate"))
+
+        context.rootElement.label = getValues("label")
+
+        const model = {
+            rootElement: context.rootElement,
+            elements: context.elements,
             border: window.getBorder()
         }
 
-        // Create form data
-        const formData = new FormData()
-        formData.append("password", context.password)
-        formData.append("image", image)
-        formData.append("label", label)
-        formData.append("meta_data", JSON.stringify(metaData))
+        const body = {
+            model,
+            password: context.password
+        }
 
         // Upload data
-        uploadTemplate(formData).then(res => {
+        uploadTemplate(body).then(res => {
             if(res.status === 200) {
                 setHasCreatedTemplate(true)
                 setIsUploadSnackbarOpen(true)
@@ -295,7 +295,7 @@ function ImageDialog({ open, onClose, imageData }) {
                                 </Button>
                         )}
 
-                        {context.password && !hasCreatedTemplate && (
+                        {context.password && !hasCreatedTemplate && context.rootElement.type === BASE_ELEMENT_TYPES["IMAGE"] && (
                             <>
                                 <TextField
                                     inputRef={register()}

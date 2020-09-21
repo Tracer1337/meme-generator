@@ -95,6 +95,8 @@ function App() {
                 })
                 .finally(() => setIsLoading(false))
         }
+
+        // eslint-disable-next-line
     }, [])
 
     window.context = context

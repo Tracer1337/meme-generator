@@ -3,7 +3,7 @@ const fs = require("fs")
 const StorageFacade = require("../Facades/StorageFacade.js")
 const ImageServiceProvider = require("../Services/ImageServiceProvider.js")
 const Template = require("../Models/Template.js")
-const { changeExtension } = require("../utils")
+const { changeExtension, createTempFile } = require("../utils")
 const config = require("../../config")
 
 /**
@@ -19,29 +19,31 @@ async function getAll(req, res) {
  * Create new template
  */
 async function create(req, res) {
-    // Format image and override uploaded one
-    const newImage = await ImageServiceProvider.formatImage(req.file.path)
-    await fs.promises.writeFile(req.file.path, newImage)
+    const { rootElement } = req.body.model
+
+    // Format image and create temp file from it
+    const newImage = await ImageServiceProvider.formatBase64Image(rootElement.image)
+    const tempImage = await createTempFile(newImage, ".png")
+    delete rootElement.image
 
     // Store new image in local storage
-    const newFilename = changeExtension(req.file.filename, "jpeg")
-    await StorageFacade.uploadFileLocal(req.file.path, newFilename)
+    const newFilename = changeExtension(tempImage.filename, "jpeg")
+    await StorageFacade.uploadFileLocal(tempImage.path, newFilename)
+    await tempImage.delete()
 
     // Create new model
     const template = new Template({
-        label: req.body.label,
+        label: rootElement.label,
         image_url: `/${config.paths.storage}/${newFilename}`,
-        meta_data: req.body.meta_data
+        model: req.body.model
     })
     await template.store()
-
-    await fs.promises.unlink(req.file.path)
 
     res.send(template)
 }
 
 /**
- * Edit  template
+ * Edit template
  */
 async function edit(req, res) {
     const template = await Template.findBy("id", req.body.id)

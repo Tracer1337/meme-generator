@@ -44,14 +44,14 @@ function getFileExtension(filename) {
  */
 async function createTempFile(buffer, extension) {
     const filename = uuid() + "." + extension
-    const path = path.join(ROOT_DIR, "temp", filename)
+    const filePath = path.join(ROOT_DIR, "temp", filename)
 
-    await fs.promises.writeFile(path, buffer)
+    await fs.promises.writeFile(filePath, buffer)
 
     return {
         filename,
-        path,
-        delete: () => fs.promises.unlink(path)
+        path: filePath,
+        delete: () => fs.promises.unlink(filePath)
     }
 }
 

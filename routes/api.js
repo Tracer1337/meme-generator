@@ -17,7 +17,7 @@ router.post("/auth/authorize", (req, res) => {
 })
 
 router.get("/templates", TemplatesController.getAll)
-router.post("/templates", ProtectMiddleware, UploadMiddleware.single("image"), TemplatesController.create)
+router.post("/templates", ProtectMiddleware, TemplatesController.create)
 router.put("/templates", ProtectMiddleware, TemplatesController.edit)
 router.delete("/templates/:id", ProtectMiddleware, TemplatesController.remove)
 router.post("/templates/register-use/:id", TemplatesController.registerUse)

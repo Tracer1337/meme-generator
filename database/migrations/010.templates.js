@@ -5,7 +5,7 @@ module.exports = {
         "id int PRIMARY KEY AUTO_INCREMENT",
         "label varchar(255) NOT NULL UNIQUE",
         "image_url varchar(255) NOT NULL",
-        "meta_data text",
+        "model TEXT NOT NULL",
         "amount_uses int NOT NULL DEFAULT 0"
     ]
 }

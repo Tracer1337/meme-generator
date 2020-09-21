@@ -141,6 +141,8 @@ function Canvas() {
     }
 
     const handleLoadTemplate = async ({ detail: { template } }) => {
+        console.log(template)
+
         const newContextValue = {
             currentTemplate: template,
             isEmptyState: false,
@@ -167,13 +169,8 @@ function Canvas() {
             }
         }
 
-        // Stop if no metadata exists
-        if (!template.meta_data) {
-            return
-        }
-
-        const border = template.meta_data.border
-        const textboxes = template.meta_data.textboxes
+        const border = template.model.border
+        const elements = template.model.elements
 
         // Format border size
         if (border?.size) {
@@ -187,29 +184,23 @@ function Canvas() {
         // Set border
         setBorderValues(border || defaultBorderValues)
 
-        // Handle textboxes
-        const elements = []
-        if (textboxes) {
-            for (let textbox of textboxes) {
+        // Handle elements
+        if (elements) {
+            for (let element of elements) {
                 // Format values
-                formatPercentage(textbox, "width", true)
-                formatPercentage(textbox, "height")
-                formatPercentage(textbox, "x", true)
-                formatPercentage(textbox, "y")
+                formatPercentage(element.data, "width", true)
+                formatPercentage(element.data, "height")
+                formatPercentage(element.data, "x", true)
+                formatPercentage(element.data, "y")
 
-                // Add textbox
-                elements.push(new Element({
-                    type: ELEMENT_TYPES["TEXTBOX"],
-                    data: {
-                        defaultValues: textbox,
-                        fromTemplate: true
-                    },
+                // Add element to context
+                newContextValue.elements.push(Element.fromTemplate({
+                    ...element,
                     id: elementsRef.current.createId()
                 }))
             }
         }
 
-        newContextValue.elements = elements
         context.set(newContextValue)
     }
 
