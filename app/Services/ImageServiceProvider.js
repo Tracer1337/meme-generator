@@ -1,20 +1,21 @@
+const fs = require("fs")
 const sharp = require("sharp")
 
 const config = require("../../config")
 
 /**
- * Call formatImage with base64 string
- */
-function formatBase64Image(base64) {
-    const uri = base64.split(";base64,")[1]
-    const buffer = Buffer.from(uri, "base64")
-    return formatImage(buffer)
-}
-
-/**
  * Resize image and convert it to specified format
  */
-async function formatImage(data, format = config.defaultImageFormat) {
+async function formatImage({ path, base64 }, format = config.defaultImageFormat) {
+    let data
+
+    if (base64) {
+        const uri = base64.split(";base64,")[1]
+        data = Buffer.from(uri, "base64")
+    } else {
+        data = path
+    }
+
     const image = sharp(data)
     const newImage = await image
         .metadata()
@@ -25,7 +26,11 @@ async function formatImage(data, format = config.defaultImageFormat) {
             return resized[format]().toBuffer()
         })
 
+    if (path) {
+        await fs.promises.writeFile(path, newImage)
+    }
+
     return newImage
 }
 
-module.exports = { formatImage, formatBase64Image }
+module.exports = { formatImage }

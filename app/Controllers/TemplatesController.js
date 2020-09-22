@@ -20,7 +20,7 @@ async function create(req, res) {
     const { rootElement } = req.body.model
 
     // Format image and create temp file from it
-    const newImage = await ImageServiceProvider.formatBase64Image(rootElement.image)
+    const newImage = await ImageServiceProvider.formatImage({ base64: rootElement.image })
     const tempImage = await createTempFile(newImage, "png")
     delete rootElement.image
 

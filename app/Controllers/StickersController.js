@@ -20,8 +20,7 @@ async function getAll(req, res) {
  */
 async function create(req, res) {
     // Format image and override uploaded one
-    const newImage = await ImageServiceProvider.formatImage(req.file.path, "png")
-    await fs.promises.writeFile(req.file.path, newImage)
+    await ImageServiceProvider.formatImage({ path: req.file.path }, "png")
 
     // Store new image in local storage
     const newFilename = changeExtension(req.file.filename, "png")

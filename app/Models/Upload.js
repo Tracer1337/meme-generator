@@ -1,13 +1,9 @@
 const Model = require("../../lib/Model.js")
 const StorageFacade = require("../Facades/StorageFacade.js")
 const config = require("../../config")
+const { removeExtension } = require("../utils")
 
 class Upload extends Model {
-    static findBy = Model.findBy.bind({ model: Upload, table: "uploads" })
-    static findAllBy = Model.findAllBy.bind({ model: Upload, table: "uploads" })
-    static where = Model.where.bind({ model: Upload, table: "uploads" })
-    static getAll = Model.getAll.bind({ model: Upload, table: "uploads" })
-
     constructor(values) {
         super({
             table: "uploads",
@@ -34,9 +30,16 @@ class Upload extends Model {
         return {
             id: this.id,
             filename: this.filename,
-            is_hidden: this.is_hidden
+            is_hidden: this.is_hidden,
+
+            url: "/upload/" + this.filename,
+            embedUrl: "/upload/" + removeExtension(this.filename),
+            altUrl: "/nudes/" + this.filename,
+            altEmbedUrl: "/nudes/" + removeExtension(this.filename)
         }
     }
 }
+
+Model.passMethods(Upload, "uploads")
 
 module.exports = Upload

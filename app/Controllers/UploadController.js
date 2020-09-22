@@ -3,6 +3,7 @@ const fs = require("fs")
 const StorageFacade = require("../Facades/StorageFacade")
 const AuthServiceProvider = require("../Services/AuthServiceProvider")
 const ImageServiceProvider = require("../Services/ImageServiceProvider.js")
+const UploadServiceProvider = require("../Services/UploadServiceProvider.js")
 const Upload = require("../Models/Upload.js")
 const { changeExtension, removeExtension, hasExtension } = require("../utils")
 
@@ -70,27 +71,16 @@ async function getRandom(req, res) {
  */
 async function store(req, res) {
     // Format image and override uploaded one
-    const newImage = await ImageServiceProvider.formatImage(req.file.path)
-    await fs.promises.writeFile(req.file.path, newImage)
+    await ImageServiceProvider.formatImage({ path: req.file.path })
 
     const newFilename = changeExtension(req.file.filename, "jpg")
 
     try {
-        // Create new model and store it's image
-        await StorageFacade.uploadFile(req.file.path, process.env.AWS_BUCKET_PUBLIC_DIR + "/" + newFilename)
-
-        const requestIPAddress = req.header("x-forwarded-for") || req.connection.remoteAddress
-
-        const upload = new Upload({
-            filename: newFilename,
-            request_ip_address: requestIPAddress
-        })
+        const upload = await UploadServiceProvider.uploadFile(req, req.file.path, newFilename)
 
         await upload.store()
 
-        res.send({
-            path: "/nudes/" + removeExtension(newFilename)
-        })
+        res.send({ path: upload.toJSON().altEmbedUrl })
     } catch(error) {
         console.error(error)
         res.status(500).end()
