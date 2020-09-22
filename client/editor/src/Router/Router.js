@@ -6,6 +6,7 @@ import EditorPage from "../Pages/EditorPage.js"
 import LoginPage from "../Pages/LoginPage.js"
 import RegisterPage from "../Pages/RegisterPage.js"
 import ProfilePage from "../Pages/ProfilePage.js"
+import FeedPage from "../Pages/FeedPage.js"
 
 function Router() {
     return (
@@ -21,6 +22,10 @@ function Router() {
 
                 <ProtectedRoute path="/profile">
                     <ProfilePage/>
+                </ProtectedRoute>
+
+                <ProtectedRoute path="/feed">
+                    <FeedPage/>
                 </ProtectedRoute>
 
                 <Route path="/">

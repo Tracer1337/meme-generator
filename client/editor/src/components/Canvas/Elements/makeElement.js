@@ -133,7 +133,7 @@ function makeElement({
 
         // Set grid for movement drag
         const dragGrid = useMemo(() => {
-            if (grid.enabled) {
+            if (canvas && grid.enabled) {
                 if (grid.fixedSize) {
                     // Fixed size
                     return [grid.spacing, grid.spacing]
@@ -144,7 +144,7 @@ function makeElement({
                     return [cellWidth, cellHeight]
                 }
             }
-        }, [grid, canvas.clientWidth, canvas.clientHeight])
+        }, [grid, canvas])
 
         const addSnapshot = useSnapshots({
             createSnapshot: () => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from "react"
 import { useForm } from "react-hook-form"
-import { Dialog, Button, CircularProgress, Paper, Typography, IconButton, TextField, Snackbar } from "@material-ui/core"
+import { Dialog, Button, CircularProgress, Paper, Typography, IconButton, TextField, Snackbar, Divider } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import DownloadIcon from "@material-ui/icons/GetApp"
 import SaveIcon from "@material-ui/icons/Save"
@@ -87,7 +87,7 @@ function ImageDialog({ open, onClose, imageData }) {
 
     const classes = useStyles({ imageData })
     
-    const { register, getValues } = useForm()
+    const { register, getValues, watch } = useForm()
 
     // Increase the usage-counter only once
     const isRegistered = useRef(false)
@@ -297,6 +297,8 @@ function ImageDialog({ open, onClose, imageData }) {
 
                         {context.auth.isLoggedIn && !hasCreatedTemplate && context.rootElement.type === BASE_ELEMENT_TYPES["IMAGE"] && (
                             <>
+                                <Divider className={classes.spacing}/>
+
                                 <TextField
                                     inputRef={register()}
                                     name="label"
@@ -312,10 +314,10 @@ function ImageDialog({ open, onClose, imageData }) {
                                         color="primary"
                                         variant="outlined"
                                         onClick={!isEditingTemplate ? handlePublishTemplateClick : handleEditTemplateClick}
-                                        disabled={isPublishing}
+                                        disabled={isPublishing || !watch("label")}
                                         fullWidth
                                     >
-                                        { !isEditingTemplate ? "Publish" : "Update" } Template
+                                        { !isEditingTemplate ? "Create" : "Update" } Template
                                     </Button>
 
                                     {isPublishing && <CircularProgress size={24} className={classes.buttonLoader} />}

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react"
 import { CircularProgress } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 
-import Layout from "./components/Layout/Layout.js"
 import Router from "./Router/Router.js"
 import Analytics from "./utils/Analytics.js"
 import OfflineUseAlerts from "./utils/OfflineUseAlerts.js"
@@ -13,7 +12,8 @@ import { getProfile } from "./config/api.js"
 const useStyles = makeStyles(theme => ({
     "@global": {
         body: {
-            margin: 0
+            margin: 0,
+            backgroundColor: theme.palette.background.default
         },
 
         a: {
@@ -107,9 +107,7 @@ function App() {
             <OfflineUseAlerts />
 
             {isLoading ? (
-                <Layout>
-                    <CircularProgress/>
-                </Layout>
+                <CircularProgress/>
             ) : (
                 <Router/>
             )}

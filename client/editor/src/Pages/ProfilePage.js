@@ -1,4 +1,5 @@
 import React, { useContext } from "react"
+import { Typography } from "@material-ui/core"
 
 import { AppContext } from "../App.js"
 import Layout from "../components/Layout/Layout.js"
@@ -8,8 +9,7 @@ function ProfilePage() {
 
     return (
         <Layout>
-            { context.auth.user.username }
-            { context.auth.user.email }
+            <Typography>{ context.auth.user.username }</Typography>
         </Layout>
     )
 }
