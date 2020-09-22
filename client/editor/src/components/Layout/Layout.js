@@ -19,16 +19,16 @@ const useStyles = makeStyles(theme => ({
     })
 }))
 
-function Layout({ children, center }) {
+function Layout({ children, center, header = true, footer = true }) {
     const classes = useStyles({ center })
 
     return (
         <div className={classes.layout}>
-            <Header/>
+            { header && <Header/> }
 
             { children }
 
-            <Footer/>
+            { footer && <Footer/> }
         </div>
     )
 }

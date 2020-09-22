@@ -10,12 +10,6 @@ import format, {
 import { BASE_URL, API_BASE_URL } from "./constants.js"
 import { cachedRequest } from "../utils/cache.js"
 
-export function setPasswordHeader(password) {
-    axios.defaults.headers.common = {
-        "Authorization": password
-    }
-}
-
 export function setTokenHeader(token) {
     axios.defaults.headers.common = {
         "Authorization": "Bearer " + token

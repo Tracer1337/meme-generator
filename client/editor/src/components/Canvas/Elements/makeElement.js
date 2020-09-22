@@ -16,6 +16,7 @@ import { TEXTBOX_PADDING } from "../../../config/constants.js"
 const useStyles = makeStyles(theme => {
     const highlight = {
         backgroundColor: theme.palette.common.white,
+        color: theme.palette.common.black,
         border: "1px solid black",
         borderRadius: theme.shape.borderRadius,
         display: props => props.capture && "none"

@@ -1,18 +1,19 @@
 import React, { useContext } from "react"
 import { useHistory, useLocation } from "react-router-dom"
-import { AppBar, Toolbar, IconButton, Grid, Divider } from "@material-ui/core"
+import { AppBar, Toolbar, IconButton, Grid } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import HomeIconOutlined from "@material-ui/icons/HomeOutlined"
 import HomeIconFilled from "@material-ui/icons/Home"
-import AccountIconOutlined from "@material-ui/icons/AccountCircleOutlined"
-import AccountIconFilled from "@material-ui/icons/AccountCircle"
-import AddIcon from "@material-ui/icons/AddCircleOutline"
+import ExploreIconOutline from "@material-ui/icons/ExploreOutlined"
+import ExploreIconFilled from "@material-ui/icons/Explore"
+import AddIconOutlined from "@material-ui/icons/AddCircleOutline"
+import AddIconFilled from "@material-ui/icons/AddCircle"
 
 import { AppContext } from "../../App.js"
 
 const useStyles = makeStyles(theme => ({
     footer: {
-        backgroundColor: theme.palette.background.default,
+        backgroundColor: theme.palette.background.paper,
         position: "fixed",
         top: "auto",
         bottom: 0,
@@ -41,13 +42,11 @@ function Footer() {
 
     return (
         <AppBar className={classes.footer}>
-            <Divider/>
-
             <Toolbar>
                 <Grid container justify="space-around">
                     <FooterItem path="/feed" iconActive={<HomeIconFilled/>} iconInactive={<HomeIconOutlined/>}/>
-                    <FooterItem path="/editor" iconActive={<AddIcon/>} iconInactive={<AddIcon/>}/>
-                    <FooterItem path={context.auth.user.profile_url} iconActive={<AccountIconFilled/>} iconInactive={<AccountIconOutlined/>}/>
+                    <FooterItem path="/editor" iconActive={<AddIconFilled/>} iconInactive={<AddIconOutlined/>}/>
+                    <FooterItem path="/explore" iconActive={<ExploreIconFilled/>} iconInactive={<ExploreIconOutline/>}/>
                 </Grid>
             </Toolbar>
         </AppBar>

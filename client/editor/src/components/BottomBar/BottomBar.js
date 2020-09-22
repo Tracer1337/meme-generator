@@ -1,10 +1,10 @@
-import React from "react"
+import React, { useContext } from "react"
 import { AppBar } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 
-import MenuButton from "./MenuButton.js"
+import { AppContext } from "../../App.js"
+import HeaderActions from "./HeaderActions.js"
 import DefaultActions from "./DefaultActions.js"
-import DrawingActions from "./DrawingActions.js"
 import ElementActions from "./ElementActions"
 
 const useStyles = makeStyles(theme => ({
@@ -19,18 +19,19 @@ const useStyles = makeStyles(theme => ({
 }))
 
 function BottomBar() {
+    const context = useContext(AppContext)
+    
     const classes = useStyles()
 
     return (
-        <>
-            <MenuButton/>
-            <DrawingActions />
+        <div style={{ display: context.isEmptyState && "none" }}>
+            <HeaderActions />
             
             <AppBar position="fixed" className={classes.appBar} id="bottom-bar">
                 <DefaultActions/>
                 <ElementActions/>
             </AppBar>
-        </>
+        </div>
     )
 }
 

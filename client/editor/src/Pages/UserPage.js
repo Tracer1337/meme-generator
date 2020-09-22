@@ -42,8 +42,6 @@ function UserPage() {
         )
     }
 
-    console.log(data)
-
     return (
         <Layout>
             <Grid container direction="column" alignItems="center" className={classes.grid}>

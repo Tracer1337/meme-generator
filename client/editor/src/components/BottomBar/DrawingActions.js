@@ -8,20 +8,17 @@ import settingsOptions from "../../config/settings-options.json"
 
 const useStyles = makeStyles(theme => ({
     drawingActions: {
-        position: "absolute",
-        top: theme.spacing(2),
-        right: theme.spacing(2),
         pointerEvents: "none",
-        display: "flex"
-    },
-
-    speedDial: {
-        alignItems: "flex-end"
+        display: "flex",
+        position: "absolute",
+        top: theme.spacing(1),
+        right: theme.spacing(1)
     },
 
     fab: {
         transition: theme.transitions.create() + " !important",
-        marginLeft: theme.spacing(2)
+        width: 40,
+        height: 40
     },
 
     selected: {
@@ -54,7 +51,7 @@ function LineWidthIcon({ value, isOption }) {
 function DrawingActions() {
     const context = useContext(AppContext)
 
-    const classes = useStyles(context.drawing)
+    const classes = useStyles()
 
     const [isWidthDialOpen, setIsWidthDialOpen] = useState(false)
     const [isPaletteOpen, setIsPaletteOpen] = useState(false)
@@ -92,7 +89,7 @@ function DrawingActions() {
                 onOpen={() => setIsWidthDialOpen(true)}
                 onClose={() => setIsWidthDialOpen(false)}
                 direction="down"
-                classes={{ fab: classes.fab, root: classes.speedDial }}
+                classes={{ fab: classes.fab }}
             >
                 {settingsOptions.lineWidth.map((value, i) => (
                     <SpeedDialAction
@@ -114,7 +111,7 @@ function DrawingActions() {
                 onOpen={() => setIsPaletteOpen(true)}
                 onClose={() => setIsPaletteOpen(false)}
                 direction="down"
-                classes={{ fab: classes.fab, root: classes.speedDial }}
+                classes={{ fab: classes.fab }}
                 FabProps={{
                     style: { backgroundColor: context.drawing.color }
                 }}

@@ -37,30 +37,32 @@ function contextMiddleware(values) {
     }
 }
 
+const contextDefaultValue = {
+    password: localStorage.getItem("password"),
+    event: new EventTarget(),
+
+    auth: {
+        user: null,
+        isLoggedIn: false,
+        token: localStorage.getItem("token")
+    },
+
+    isEmptyState: true,
+    currentTemplate: null,
+    focus: null,
+    rootElement: null,
+    elements: [],
+    drawing: {
+        enabled: false,
+        color: settingsOptions.colors["Red"],
+        lineWidth: settingsOptions.lineWidth[1]
+    }
+}
+
 function App() {
     useStyles()
     
-    const [context, setContext] = useState({
-        password: localStorage.getItem("password"),
-        event: new EventTarget(),
-
-        auth: {
-            user: null,
-            isLoggedIn: false,
-            token: localStorage.getItem("token")
-        },
-
-        isEmptyState: true,
-        currentTemplate: null,
-        focus: null,
-        rootElement: null,
-        elements: [],
-        drawing: {
-            enabled: false,
-            color: settingsOptions.colors["Red"],
-            lineWidth: settingsOptions.lineWidth[1]
-        }
-    })
+    const [context, setContext] = useState(contextDefaultValue)
 
     const [isLoading, setIsLoading] = useState(!!localStorage.getItem("token"))
 
@@ -69,14 +71,16 @@ function App() {
             contextMiddleware(values)
             setContext({ ...context, ...values })
         },
-        setPassword: password => {
-            // Store password in localstorage
-            if (!password) {
-                localStorage.removeItem("password")
-            } else {
-                localStorage.setItem("password", password)
-            }
-            setContext({ ...context, password })
+        resetEditor: () => {
+            setContext({
+                ...context,
+                isEmptyState: contextDefaultValue.isEmptyState,
+                currentTemplate: contextDefaultValue.currentTemplates,
+                focus: contextDefaultValue.focus,
+                rootElement: contextDefaultValue.rootElement,
+                elements: contextDefaultValue.elements,
+                drawing: contextDefaultValue.drawing
+            })
         }
     }
 

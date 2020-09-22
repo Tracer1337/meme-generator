@@ -13,9 +13,7 @@ import CloseIcon from "@material-ui/icons/Close"
 import Menu from "./Menu.js"
 import TemplatesDialog from "../Dialogs/TemplatesDialog.js"
 import HelpDialog from "../Dialogs/HelpDialog.js"
-import AuthDialog from "../Dialogs/AuthDialog.js"
 import { AppContext } from "../../App.js"
-import { LONG_PRESS_DURATION } from "../../config/constants.js"
 import helpOverlayData from "../../config/help-overlay-data.json"
 
 const useStyles = makeStyles(theme => ({
@@ -74,12 +72,10 @@ function DefaultActions() {
     const context = useContext(AppContext)
 
     const openMenuButton = useRef()
-    const helpButtonTimer = useRef()
 
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [isTemplatesOpen, setIsTemplatesOpen] = useState(false)
     const [isHelpOpen, setIsHelpOpen] = useState(false)
-    const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false)
     const [isLoggedOutSnackbarOpen, setIsLoggedOutSnackbarOpen] = useState(false)
 
     const handleMoreClick = () => {
@@ -106,22 +102,6 @@ function DefaultActions() {
             }
         })
     }
-
-    const handleTouchStart = () => {
-        helpButtonTimer.current = setTimeout(() => {
-            if (!context.password) {
-                setIsAuthDialogOpen(true)
-            } else {
-                context.setPassword(null)
-                setIsLoggedOutSnackbarOpen(true)
-            }
-        }, LONG_PRESS_DURATION)
-    }
-
-    const handleTouchEnd = () => {
-        clearTimeout(helpButtonTimer.current)
-    }
-
     const dispatchEvent = (name) => () => {
         context.event.dispatchEvent(new CustomEvent(name))
     }
@@ -139,7 +119,7 @@ function DefaultActions() {
             <Toolbar>
                 {/* Left */}
 
-                <IconButton onClick={handleHelpClick} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onMouseDown={handleTouchStart} onMouseUp={handleTouchEnd}>
+                <IconButton onClick={handleHelpClick}>
                     <HelpIcon />
                 </IconButton>
 
@@ -189,7 +169,6 @@ function DefaultActions() {
 
                 <TemplatesDialog open={isTemplatesOpen} onClose={() => setIsTemplatesOpen(false)} />
                 <HelpDialog open={isHelpOpen} onClose={() => setIsHelpOpen(false)} data={helpOverlayData.default} />
-                <AuthDialog open={isAuthDialogOpen} onClose={() => setIsAuthDialogOpen(false)} />
 
                 <Snackbar
                     anchorOrigin={{

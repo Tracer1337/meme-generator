@@ -305,7 +305,8 @@ function Canvas() {
                     paddingLeft: borderValues.left && borderValues.size + "px",
                     paddingRight: borderValues.right && borderValues.size + "px",
                     backgroundColor: !context.isEmptyState && borderValues.color,
-                    width: context.isEmptyState && "unset"
+                    width: context.isEmptyState && "unset",
+                    height: context.isEmptyState && "unset"
                 }}
                 ref={canvas}
             >

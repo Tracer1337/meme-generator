@@ -193,8 +193,7 @@ function ImageDialog({ open, onClose, imageData }) {
         }
 
         const body = {
-            model,
-            password: context.password
+            model
         }
 
         // Upload data
