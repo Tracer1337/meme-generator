@@ -2,6 +2,7 @@ const { v4: uuid } = require("uuid")
 const moment = require("moment")
 const Model = require("../../lib/Model.js")
 const Upload = require("./Upload.js")
+const User = require("./User.js")
 
 class Post extends Model {
     constructor(values) {
@@ -18,12 +19,13 @@ class Post extends Model {
 
     async init() {
         this.upload = await Upload.findBy("id", this.upload_id)
+        this.user = await User.findBy("id", this.user_id)
     }
 
     toJSON() {
         return {
             id: this.id,
-            user_id: this.user_id,
+            user: this.user,
             upload: this.upload,
             created_at: this.created_at
         }

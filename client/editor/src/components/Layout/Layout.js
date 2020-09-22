@@ -8,8 +8,8 @@ const useStyles = makeStyles(theme => ({
     layout: props => ({
         backgroundColor: theme.palette.background.default,
         minHeight: "100vh",
-        padding: theme.spacing(1),
-        paddingTop: theme.mixins.toolbar.minHeight + theme.spacing(1),
+        paddingTop: theme.mixins.toolbar.minHeight,
+        paddingBottom: theme.mixins.toolbar.minHeight,
         boxSizing: "border-box",
         color: theme.palette.text.primary,
         fontFamily: theme.typography.fontFamily,

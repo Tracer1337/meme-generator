@@ -25,6 +25,8 @@ async function ProtectMiddleware(req, res, next) {
         return res.status(401).send("Invalid token")
     }
 
+    await user.init({ authorized: true })
+
     req.user = user
 
     next()

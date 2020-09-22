@@ -4,7 +4,8 @@ import format, {
     TEMPLATES,
     STICKERS,
     LOGIN,
-    USER
+    USER,
+    POSTS
 } from "./formatAPI.js"
 import { BASE_URL, API_BASE_URL } from "./constants.js"
 import { cachedRequest } from "../utils/cache.js"
@@ -42,4 +43,7 @@ export const uploadFile = (formData) => axios.post(BASE_URL + "/upload", formDat
 
 export const register = (body) => axios.post(url("/auth/register"), body).then(format(LOGIN))
 export const login = (body) => axios.post(url("/auth/login"), body).then(format(LOGIN))
-export const getProfile = (body) => axios.get(url("/auth/profile")).then(format(USER))
+export const getProfile = () => axios.get(url("/auth/profile")).then(format(USER))
+
+export const getAllPosts = () => axios.get(url("/posts")).then(format(POSTS))
+export const createPost = (formData) => axios.post(url("/posts"), formData)

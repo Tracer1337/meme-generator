@@ -7,16 +7,21 @@ export const TEMPLATES = "TEMPLATES"
 export const STICKERS = "STICKERS"
 export const LOGIN = "LOGIN"
 export const USER = "USER"
+export const POSTS = "POSTS"
+
+function formatRelativeURL(url) {
+    return BASE_URL + url
+}
 
 async function formatTemplate(template) {
-    template.image_url = BASE_URL + template.image_url
+    template.image_url = formatRelativeURL(template.image_url)
     template.image_url = await getCachedImage(template.image_url)
     
     template.model = JSON.parse(template.model)
 }
 
 async function formatSticker(sticker) {
-    sticker.image_url = BASE_URL + sticker.image_url
+    sticker.image_url = formatRelativeURL(sticker.image_url)
     sticker.image_url = await getCachedImage(sticker.image_url)
 }
 
@@ -26,6 +31,19 @@ function formatUser(user) {
     if (user.templates) {
         user.templates.map(formatTemplate)
     }
+}
+
+function formatUpload(upload) {
+    upload.url = formatRelativeURL(upload.url)
+    upload.embedUrl = formatRelativeURL(upload.embedUrl)
+    upload.altUrl = formatRelativeURL(upload.altUrl)
+    upload.altEmbedUrl = formatRelativeURL(upload.altEmbedUrl)
+}
+
+function formatPost(post) {
+    console.log(post)
+    formatUser(post.user)
+    formatUpload(post.upload)
 }
 
 function map(elements, fn) {
@@ -43,6 +61,8 @@ export default function format(type) {
         fn = (data) => formatUser(data.data.user)
     } else if (type === USER) {
         fn = (data) => formatUser(data.data)
+    } else if (type === POSTS) {
+        fn = (data) => map(data.data, formatPost)
     }
 
     return (data) => {

@@ -16,8 +16,10 @@ class User extends Model {
         })
     }
 
-    async init() {
-        this.templates = await Template.findAllBy("user_id", this.id)
+    async init({ authorized = false } = {}) {
+        if (authorized) {
+            this.templates = await Template.findAllBy("user_id", this.id)
+        }
     }
 
     toJSON() {
