@@ -27,6 +27,7 @@ async function formatSticker(sticker) {
 
 function formatUser(user) {
     user.created_at = moment(user.created_at)
+    user.profile_url = "/user/" + user.username
 
     if (user.templates) {
         user.templates.map(formatTemplate)
@@ -41,7 +42,6 @@ function formatUpload(upload) {
 }
 
 function formatPost(post) {
-    console.log(post)
     formatUser(post.user)
     formatUpload(post.upload)
 }

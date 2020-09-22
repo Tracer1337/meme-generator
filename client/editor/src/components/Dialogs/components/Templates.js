@@ -111,7 +111,7 @@ function TemplatesGrid({ data, onClick, onDelete, search }) {
     )
 }
 
-function Templates({ onLoad }, ref) {
+function Templates({ onLoad, onReload, templates, renderUserTemplates = true }, ref) {
     const context = useContext(AppContext)
 
     const classes = useStyles()
@@ -121,7 +121,10 @@ function Templates({ onLoad }, ref) {
     const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false)
     const [search, setSearch] = useState("")
 
-    const { data, isLoading, reload } = useAPIData("getTemplates")
+    const { data, isLoading, reload } = useAPIData({
+        method: "getTemplates",
+        defaultValue: templates
+    })
 
     const handleDelete = (template) => {
         currentTemplate.current = template
@@ -133,7 +136,7 @@ function Templates({ onLoad }, ref) {
 
         if (shouldDelete) {
             deleteTemplate(currentTemplate.current.id)
-                .then(reload)
+                .then(onReload || reload)
         }
     }
 
@@ -173,7 +176,7 @@ function Templates({ onLoad }, ref) {
             </Paper>
             
             <div className={classes.listWrapper}>
-                { context.auth.isLoggedIn && (
+                { context.auth.isLoggedIn && renderUserTemplates && (
                     <>
                         <Typography variant="h5" className={classes.title}>My Templates</Typography>
                         <TemplatesGrid data={context.auth.user.templates} onClick={handleClick} onDelete={handleDelete} search={search}/>

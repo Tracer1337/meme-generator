@@ -25,12 +25,12 @@ function RegisterPage() {
     const classes = useStyles()
 
     const handleOnRegister = () => {
-        history.push("/profile")
+        history.push(context.auth.user.profile_url)
     }
 
     if (context.auth.isLoggedIn) {
         return (
-            <Redirect to="/profile"/>
+            <Redirect to={context.auth.user.profile_url}/>
         )
     }
 

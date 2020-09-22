@@ -1,6 +1,9 @@
 import React from "react"
-import { Grid, Avatar, Typography } from "@material-ui/core"
+import { Link } from "react-router-dom"
+import { Grid, Typography } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
+
+import Avatar from "../User/Avatar.js"
 
 const useStyles = makeStyles(theme => ({
     header: {
@@ -20,11 +23,15 @@ function Header({ data }) {
     return (
         <Grid container className={classes.header}>
             <Grid item>
-                <Avatar className={classes.avatar}>{ data.user.username[0] }</Avatar>
+                <Link to={data.user.profile_url}>
+                    <Avatar className={classes.avatar} user={data.user}/>
+                </Link>
             </Grid>
 
             <Grid item>
-                <Typography>{ data.user.username }</Typography>
+                <Link to={data.user.profile_url}>
+                    <Typography>{ data.user.username }</Typography>
+                </Link>
             </Grid>
         </Grid>
     )

@@ -45,5 +45,7 @@ export const register = (body) => axios.post(url("/auth/register"), body).then(f
 export const login = (body) => axios.post(url("/auth/login"), body).then(format(LOGIN))
 export const getProfile = () => axios.get(url("/auth/profile")).then(format(USER))
 
+export const getUserByUsername = (username) => axios.get(url("/user/" + username))
+
 export const getAllPosts = () => axios.get(url("/posts")).then(format(POSTS))
 export const createPost = (formData) => axios.post(url("/posts"), formData)

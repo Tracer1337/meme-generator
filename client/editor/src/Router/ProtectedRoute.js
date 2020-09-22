@@ -1,18 +1,18 @@
 import React, { useContext } from "react"
-import { Redirect } from "react-router-dom"
+import { Redirect, Route } from "react-router-dom"
 
 import { AppContext } from "../App.js"
 
-function ProtectedRoute({ children }) {
+function ProtectedRoute({ path, children }) {
     const context = useContext(AppContext)
 
-    if (!context.auth.isLoggedIn) {
-        return (
-            <Redirect to="/login"/>
-        )
-    }
-
-    return children
+    return (
+        <Route path={path}>
+            { !context.auth.isLoggedIn ? (
+                <Redirect to="/login"/>
+            ) : children }
+        </Route>
+    )
 }
 
 export default ProtectedRoute

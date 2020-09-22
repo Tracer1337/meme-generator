@@ -27,8 +27,8 @@ function useAPIData(props) {
         ...(typeof props === "object" ? props : {})
     }
 
-    if (!props.method) {
-        throw new Error("API Method not found")
+    if (!(props.method in API)) {
+        throw new Error(`API method '${props.method}' not found`)
     }
 
     const method = API[props.method].bind(null, props.data)

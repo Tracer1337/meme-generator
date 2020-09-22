@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext } from "react"
 import { useHistory, useLocation } from "react-router-dom"
 import { AppBar, Toolbar, IconButton, Grid, Divider } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
@@ -7,6 +7,8 @@ import HomeIconFilled from "@material-ui/icons/Home"
 import AccountIconOutlined from "@material-ui/icons/AccountCircleOutlined"
 import AccountIconFilled from "@material-ui/icons/AccountCircle"
 import AddIcon from "@material-ui/icons/AddCircleOutline"
+
+import { AppContext } from "../../App.js"
 
 const useStyles = makeStyles(theme => ({
     footer: {
@@ -33,6 +35,8 @@ function FooterItem({ path, iconActive, iconInactive }) {
 }
 
 function Footer() {
+    const context = useContext(AppContext)
+
     const classes = useStyles()
 
     return (
@@ -42,8 +46,8 @@ function Footer() {
             <Toolbar>
                 <Grid container justify="space-around">
                     <FooterItem path="/feed" iconActive={<HomeIconFilled/>} iconInactive={<HomeIconOutlined/>}/>
-                    <FooterItem path="/editor" iconActive={<AddIcon />} iconInactive={<AddIcon/>}/>
-                    <FooterItem path="/profile" iconActive={<AccountIconFilled/>} iconInactive={<AccountIconOutlined/>}/>
+                    <FooterItem path="/editor" iconActive={<AddIcon/>} iconInactive={<AddIcon/>}/>
+                    <FooterItem path={context.auth.user.profile_url} iconActive={<AccountIconFilled/>} iconInactive={<AccountIconOutlined/>}/>
                 </Grid>
             </Toolbar>
         </AppBar>

@@ -2,7 +2,7 @@ import React from "react"
 import { CircularProgress } from "@material-ui/core"
 
 import Layout from "../components/Layout/Layout.js"
-import Post from "../components/Posts/Post.js"
+import Post from "../components/Post/Post.js"
 import useAPIData from "../utils/useAPIData.js"
 
 function FeedPage() {
