@@ -28,7 +28,7 @@ function SearchBar({ onChange, value, className }) {
             <InputBase value={value} onChange={event => onChange(event.target.value)} placeholder="Search" className={classes.input} />
 
             <IconButton onClick={() => onChange("")} className={classes.clear}>
-                <CloseIcon />
+                <CloseIcon fontSize="small"/>
             </IconButton>
         </Paper>
     )

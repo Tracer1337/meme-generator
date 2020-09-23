@@ -22,6 +22,7 @@ class User extends Model {
         
         if (authorized) {
             this.friends = await this.getFriends()
+            await this.friends.mapAsync(user => user.init())
         }
     }
 

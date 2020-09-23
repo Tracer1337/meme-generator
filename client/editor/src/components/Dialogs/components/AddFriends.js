@@ -15,7 +15,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-function Users({ search }, ref) {
+function AddFriends({ search }, ref) {
     const context = useContext(AppContext)
 
     const classes = useStyles()
@@ -38,11 +38,6 @@ function Users({ search }, ref) {
     if (!data) {
         return null
     }
-
-    const renderUsers = data.filter(user => (
-        user.id !== context.auth.user.id &&
-        !context.auth.user.friends.some(({ id }) => user.id === id)
-    ))
     
     const handleAddClick = (user) => {
         addFriend(user.id)
@@ -51,6 +46,11 @@ function Users({ search }, ref) {
             })
             .catch(console.error)
     }
+
+    const renderUsers = data.filter(user => (
+        user.id !== context.auth.user.id &&
+        !context.auth.user.friends.some(({ id }) => user.id === id)
+    ))
 
     return (
         <div>
@@ -71,4 +71,4 @@ function Users({ search }, ref) {
     )
 }
 
-export default React.forwardRef(Users)
+export default React.forwardRef(AddFriends)

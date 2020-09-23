@@ -25,11 +25,11 @@ function LoginPage() {
     const classes = useStyles()
 
     const handleOnLogin = () => {
-        history.push(context.auth.user.profile_url)
+        history.push("/")
     }
 
     if (context.auth.isLoggedIn) {
-        return <Redirect to={context.auth.user.profile_url}/>
+        return <Redirect to="/"/>
     }
 
     return (

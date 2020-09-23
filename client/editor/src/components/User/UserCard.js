@@ -1,13 +1,14 @@
-import React from "react"
+import React, { useState } from "react"
 import clsx from "clsx"
 import { Paper, Grid, Typography } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 
 import Avatar from "./Avatar.js"
+import ProfileDialog from "../Dialogs/ProfileDialog.js"
 
 const useStyles = makeStyles(theme => ({
     userCard: {
-        padding: "2px 4px"
+        padding: "2px 0 2px 4px"
     },
 
     avatar: {
@@ -21,10 +22,12 @@ const useStyles = makeStyles(theme => ({
 function UserCard({ user, className, RightElement }) {
     const classes = useStyles()
 
+    const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false)
+
     return (
         <Paper className={clsx(classes.userCard, className)} variant="outlined">
             <Grid container justify="space-between" wrap="nowrap">
-                <Grid item container alignItems="center">
+                <Grid item container alignItems="center" onClick={() => setIsProfileDialogOpen(true)}>
                     <Avatar user={user} className={classes.avatar}/>
 
                     <Typography variant="subtitle2">{ user.username }</Typography>
@@ -34,6 +37,13 @@ function UserCard({ user, className, RightElement }) {
                     { RightElement || null }
                 </Grid>
             </Grid>
+
+            <ProfileDialog
+                open={isProfileDialogOpen}
+                onClose={() => setIsProfileDialogOpen(false)}
+                user={user}
+                onReload={() => {}}
+            />
         </Paper>
     )
 }

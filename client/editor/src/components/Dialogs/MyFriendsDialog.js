@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useRef } from "react"
+import React, { useState } from "react"
 import { Dialog, Slide, AppBar, Toolbar, IconButton, Typography } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import CloseIcon from "@material-ui/icons/ExpandMore"
 
 import SearchBar from "./components/SearchBar.js"
-import Users from "./components/Users.js"
+import MyFriends from "./components/MyFriends.js"
 import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
 
 const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props}/>
+    return <Slide direction="up" ref={ref} {...props} />
 })
 
 const useStyles = makeStyles(theme => ({
@@ -22,22 +22,10 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-function FriendsDialog({ open, onClose }) {
+function MyFriendsDialog({ open, onClose }) {
     const classes = useStyles()
 
-    const usersRef = useRef()
-
     const [search, setSearch] = useState("")
-
-    useEffect(() => {
-        if (usersRef.current) {
-            if (search) {
-                usersRef.current.reload()
-            } else {
-                usersRef.current.reset()
-            }
-        }
-    }, [search])
 
     return (
         <Dialog
@@ -49,20 +37,20 @@ function FriendsDialog({ open, onClose }) {
             <AppBar>
                 <Toolbar>
                     <IconButton edge="start" onClick={onClose} color="inherit">
-                        <CloseIcon/>
+                        <CloseIcon />
                     </IconButton>
 
-                    <Typography variant="subtitle1">Add Friends</Typography>
+                    <Typography variant="subtitle1">My Friends</Typography>
                 </Toolbar>
             </AppBar>
 
             <div className={classes.body}>
-                <SearchBar value={search} onChange={setSearch} className={classes.searchBar}/>
+                <SearchBar value={search} onChange={setSearch} className={classes.searchBar} />
 
-                <Users search={search} ref={usersRef}/>
+                <MyFriends search={search} />
             </div>
         </Dialog>
     )
 }
 
-export default withBackButtonSupport(FriendsDialog, "friends")
+export default withBackButtonSupport(MyFriendsDialog, "my-friends")
