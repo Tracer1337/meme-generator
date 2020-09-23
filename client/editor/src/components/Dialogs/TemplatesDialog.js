@@ -2,7 +2,7 @@ import React, { useState, useContext, useRef } from "react"
 import { Dialog, AppBar, Toolbar, IconButton, Slide, Tabs, Tab } from "@material-ui/core"
 import SwipeableViews from "react-swipeable-views"
 import { makeStyles } from "@material-ui/core/styles"
-import CloseIcon from "@material-ui/icons/Close"
+import CloseIcon from "@material-ui/icons/ExpandMore"
 import ReloadIcon from "@material-ui/icons/Cached"
 
 import Templates from "./components/Templates.js"
@@ -84,7 +84,7 @@ function TemplatesDialog({ onClose, open }) {
                 <Toolbar className={classes.toolbar}>
                     <div className={classes.toolbarItem}>
                         <IconButton edge="start" color="inherit" onClick={handleClose}>
-                            <CloseIcon fontSize="small"/>
+                            <CloseIcon/>
                         </IconButton>
 
                         <Tabs value={currentTab} onChange={handleTabChange}>

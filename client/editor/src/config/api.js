@@ -39,7 +39,11 @@ export const register = (body) => axios.post(url("/auth/register"), body).then(f
 export const login = (body) => axios.post(url("/auth/login"), body).then(format(LOGIN))
 export const getProfile = () => axios.get(url("/auth/profile")).then(format(USER))
 
-export const getUserByUsername = (username) => axios.get(url("/user/" + username))
+export const getUserByUsername = (username) => axios.get(url("/users/get/" + username))
+export const getUsersByQueryString = (query) => axios.get(url("/users/find?q=" + encodeURI(query)))
+
+export const addFriend = (id) => axios.post(url("/friends/" + id))
+export const removeFriend = (id) => axios.delete(url("/friends/" + id))
 
 export const getAllPosts = () => axios.get(url("/posts")).then(format(POSTS))
 export const createPost = (formData) => axios.post(url("/posts"), formData)

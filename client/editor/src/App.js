@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useReducer } from "react"
 import { CircularProgress } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 
@@ -63,14 +63,15 @@ function App() {
     useStyles()
     
     const [context, setContext] = useState(contextDefaultValue)
-
     const [isLoading, setIsLoading] = useState(!!localStorage.getItem("token"))
+    const [updateKey, forceUpdate] = useReducer(key => key + 1, 0)
 
-    const setter = {
+    const contextMethods = {
         set: values => {
             contextMiddleware(values)
             setContext({ ...context, ...values })
         },
+
         resetEditor: () => {
             setContext({
                 ...context,
@@ -81,7 +82,9 @@ function App() {
                 elements: contextDefaultValue.elements,
                 drawing: contextDefaultValue.drawing
             })
-        }
+        },
+
+        reloadProfile: forceUpdate
     }
 
     useEffect(() => {
@@ -89,7 +92,7 @@ function App() {
             setTokenHeader(context.auth.token)
             getProfile()
                 .then(res => {
-                    setter.set({
+                    contextMethods.set({
                         auth: {
                             ...context.auth,
                             user: res.data,
@@ -101,12 +104,12 @@ function App() {
         }
 
         // eslint-disable-next-line
-    }, [])
+    }, [updateKey])
 
     window.context = context
 
     return (
-        <AppContext.Provider value={{ ...context, ...setter }}>
+        <AppContext.Provider value={{ ...context, ...contextMethods }}>
             <Analytics />
             <OfflineUseAlerts />
 

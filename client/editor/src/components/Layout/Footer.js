@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React from "react"
 import { useHistory, useLocation } from "react-router-dom"
 import { AppBar, Toolbar, IconButton, Grid } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
@@ -8,8 +8,6 @@ import ExploreIconOutline from "@material-ui/icons/ExploreOutlined"
 import ExploreIconFilled from "@material-ui/icons/Explore"
 import AddIconOutlined from "@material-ui/icons/AddCircleOutline"
 import AddIconFilled from "@material-ui/icons/AddCircle"
-
-import { AppContext } from "../../App.js"
 
 const useStyles = makeStyles(theme => ({
     footer: {
@@ -36,8 +34,6 @@ function FooterItem({ path, iconActive, iconInactive }) {
 }
 
 function Footer() {
-    const context = useContext(AppContext)
-
     const classes = useStyles()
 
     return (

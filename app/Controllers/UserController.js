@@ -10,4 +10,10 @@ async function getByUsername(req, res) {
     res.send(user)
 }
 
-module.exports = { getByUsername }
+async function getByQueryString(req, res) {
+    const query = db.escape(`${req.query.q}%`)
+    const users = await User.where(`username LIKE ${query}`)
+    res.send(users)
+}
+
+module.exports = { getByUsername, getByQueryString }

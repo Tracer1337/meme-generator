@@ -11,6 +11,7 @@ const UploadController = require("../app/Controllers/UploadController.js")
 const AuthController = require("../app/Controllers/AuthController.js")
 const PostsController = require("../app/Controllers/PostsController.js")
 const UserController = require("../app/Controllers/UserController.js")
+const FriendsController = require("../app/Controllers/FriendsController.js")
 
 const router = express.Router()
 
@@ -39,6 +40,10 @@ router.post("/auth/login", new Validator().email("email", { existsIn: User }).pa
 router.get("/posts", PostsController.getAll)
 router.post("/posts", ProtectMiddleware, UploadMiddleware.single("image"), PostsController.create)
 
-router.get("/user/:username", ProtectMiddleware, UserController.getByUsername)
+router.get("/users/get/:username", ProtectMiddleware, UserController.getByUsername)
+router.get("/users/find", ProtectMiddleware, UserController.getByQueryString)
+
+router.post("/friends/:id", ProtectMiddleware, FriendsController.add)
+router.delete("/friends/:id", ProtectMiddleware, FriendsController.remove)
 
 module.exports = router

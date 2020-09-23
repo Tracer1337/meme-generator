@@ -10,13 +10,13 @@ import useAPIData from "../utils/useAPIData.js"
 
 const useStyles = makeStyles(theme => ({
     grid: {
-        marginTop: theme.spacing(4)
+        marginTop: theme.spacing(2)
     },
 
     avatar: {
-        width: 128,
-        height: 128,
-        marginBottom: theme.spacing(3)
+        width: 64,
+        height: 64,
+        marginBottom: theme.spacing(2)
     },
 
     username: {

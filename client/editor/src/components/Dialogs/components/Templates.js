@@ -1,12 +1,12 @@
 import React, { useState, useContext, useRef, useImperativeHandle } from "react"
-import { IconButton, GridList, GridListTile, GridListTileBar, CircularProgress, InputBase, Paper, Typography, Divider } from "@material-ui/core"
+import { IconButton, GridList, GridListTile, GridListTileBar, CircularProgress, Typography, Divider } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import DeleteIcon from "@material-ui/icons/Delete"
-import CloseIcon from "@material-ui/icons/Close"
 
-import ConfirmDialog from "../ConfirmDialog.js"
 
 import { AppContext } from "../../../App.js"
+import ConfirmDialog from "../ConfirmDialog.js"
+import SearchBar from "./SearchBar.js"
 import { deleteTemplate } from "../../../config/api.js"
 import { cacheImage } from "../../../utils/cache.js"
 import useAPIData from "../../../utils/useAPIData.js"
@@ -14,22 +14,6 @@ import useAPIData from "../../../utils/useAPIData.js"
 const useStyles = makeStyles(theme => ({
     spacer: {
         height: theme.spacing(2)
-    },
-
-    searchWrapper: {
-        margin: `${theme.spacing(2)}px ${theme.spacing(1)}px`,
-        marginTop: 0,
-        padding: "2px 4px",
-        display: "flex"
-    },
-
-    search: {
-        marginLeft: theme.spacing(1),
-        flex: 1
-    },
-
-    searchClear: {
-        padding: theme.spacing(1)
     },
     
     listWrapper: {
@@ -50,6 +34,11 @@ const useStyles = makeStyles(theme => ({
 
     tilebar: {
         height: 56
+    },
+
+    searchBar: {
+        margin: `${theme.spacing(2)}px ${theme.spacing(1)}px`,
+        marginTop: 0
     },
 
     deleteButton: {
@@ -147,10 +136,6 @@ function Templates({ onLoad, onReload, templates, renderUserTemplates = true }, 
         }
     }
 
-    const handleSearchChange = event => {
-        setSearch(event.target.value)
-    }
-
     useImperativeHandle(ref, () => ({
         reload
     }))
@@ -167,13 +152,7 @@ function Templates({ onLoad, onReload, templates, renderUserTemplates = true }, 
         <>
             <div className={classes.spacer}/>
 
-            <Paper variant="outlined" className={classes.searchWrapper}>
-                <InputBase value={search} onChange={handleSearchChange} placeholder="Search" className={classes.search} />
-
-                <IconButton onClick={() => setSearch("")} className={classes.searchClear}>
-                    <CloseIcon />
-                </IconButton>
-            </Paper>
+            <SearchBar onChange={setSearch} value={search} className={classes.searchBar}/>
             
             <div className={classes.listWrapper}>
                 { context.auth.isLoggedIn && renderUserTemplates && (
