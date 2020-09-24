@@ -10,7 +10,7 @@ const useStyles = makeStyles(theme => ({
     },
 
     row: {
-        flexGrow: 1,
+        width: "calc(100% / 3)",
         padding: `0 ${theme.spacing(.25)}px`
     }
 }))

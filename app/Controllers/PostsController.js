@@ -8,6 +8,7 @@ const { changeExtension } = require("../utils")
 
 async function getAll(req, res) {
     const posts = await Post.where("id = id")
+    posts.sort((a, b) => b.created_at - a.created_at)
     res.send(posts)
 }
 

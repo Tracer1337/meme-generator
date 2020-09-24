@@ -23,6 +23,13 @@ class Post extends Model {
     async init() {
         this.upload = await Upload.findBy("id", this.upload_id)
         this.user = await User.findBy("id", this.user_id)
+        this.created_at = moment(this.created_at)
+    }
+    
+    getColumns() {
+        const values = super.getColumns()
+        values.created_at = values.created_at.format()
+        return values
     }
 
     toJSON() {

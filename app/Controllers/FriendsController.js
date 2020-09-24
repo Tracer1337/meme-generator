@@ -30,7 +30,11 @@ async function remove(req, res) {
 
 async function getPosts(req, res) {
     let posts = await req.user.friends.mapAsync(user => user.getPosts())
+    posts.push(await req.user.getPosts())
+
     posts = posts.map(collection => collection.models).flat()
+    posts.sort((a, b) => b.created_at - a.created_at)
+    
     res.send(posts)
 }
 

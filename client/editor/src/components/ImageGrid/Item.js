@@ -16,7 +16,7 @@ function Item({ src }) {
     const classes = useStyles()
 
     return (
-        <div item className={classes.item}>
+        <div className={classes.item}>
             <img src={src} alt="" className={classes.image}/>
         </div>
     )

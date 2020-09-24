@@ -7,7 +7,6 @@ import Footer from "./Footer.js"
 
 const useStyles = makeStyles(theme => ({
     post: {
-        marginBottom: theme.spacing(3)
     }
 }))
 

@@ -20,6 +20,7 @@ class User extends Model {
 
     async init({ authorized = false } = {}) {
         this.templates = await Template.findAllBy("user_id", this.id)
+        this.created_at = moment(this.created_at)
         
         if (authorized) {
             this.friends = (await this.getFriends()) || []
@@ -57,6 +58,12 @@ class User extends Model {
         await queryAsync(query)
 
         return true
+    }
+
+    getColumns() {
+        const values = super.getColumns()
+        values.created_at = values.created_at.format()
+        return values
     }
 
     toJSON() {

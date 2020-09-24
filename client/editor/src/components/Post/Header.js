@@ -26,12 +26,12 @@ function Header({ data }) {
 
     return (
         <Grid container className={classes.header}>
-            <Grid item>
-                <Avatar className={classes.avatar} user={data.user} onClick={openProfileDialog}/>
+            <Grid item onClick={openProfileDialog}>
+                <Avatar className={classes.avatar} user={data.user}/>
             </Grid>
 
-            <Grid item>
-                <Typography onClick={openProfileDialog}>{ data.user.username }</Typography>
+            <Grid item onClick={openProfileDialog}>
+                <Typography>{ data.user.username }</Typography>
             </Grid>
 
             <ProfileDialog

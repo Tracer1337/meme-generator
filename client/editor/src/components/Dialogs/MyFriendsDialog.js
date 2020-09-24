@@ -27,16 +27,21 @@ function MyFriendsDialog({ open, onClose }) {
 
     const [search, setSearch] = useState("")
 
+    const handleClose = () => {
+        onClose()
+        setSearch("")
+    }
+
     return (
         <Dialog
             open={open}
-            onClose={onClose}
+            onClose={handleClose}
             fullScreen
             TransitionComponent={Transition}
         >
             <AppBar>
                 <Toolbar>
-                    <IconButton edge="start" onClick={onClose} color="inherit">
+                    <IconButton edge="start" onClick={handleClose} color="inherit">
                         <CloseIcon />
                     </IconButton>
 

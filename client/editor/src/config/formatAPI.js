@@ -45,6 +45,8 @@ function formatUpload(upload) {
 }
 
 function formatPost(post) {
+    post.created_at = moment(post.created_at)
+
     formatUser(post.user)
     formatUpload(post.upload)
 }
