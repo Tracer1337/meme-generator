@@ -28,4 +28,10 @@ async function remove(req, res) {
     res.sendStatus(200)
 }
 
-module.exports = { add, remove }
+async function getPosts(req, res) {
+    let posts = await req.user.friends.mapAsync(user => user.getPosts())
+    posts = posts.map(collection => collection.models).flat()
+    res.send(posts)
+}
+
+module.exports = { add, remove, getPosts }

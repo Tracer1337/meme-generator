@@ -5,7 +5,6 @@ import ProtectedRoute from "./ProtectedRoute.js"
 import EditorPage from "../Pages/EditorPage.js"
 import LoginPage from "../Pages/LoginPage.js"
 import RegisterPage from "../Pages/RegisterPage.js"
-import UserPage from "../Pages/UserPage.js"
 import FeedPage from "../Pages/FeedPage.js"
 import ExplorePage from "../Pages/ExplorePage.js"
 
@@ -27,10 +26,6 @@ function Router() {
 
                 <ProtectedRoute path="/explore">
                     <ExplorePage/>
-                </ProtectedRoute>
-
-                <ProtectedRoute path="/user/:username">
-                    <UserPage/>
                 </ProtectedRoute>
 
                 <Route path="/editor">

@@ -45,5 +45,6 @@ router.get("/users/find", ProtectMiddleware, UserController.getByQueryString)
 
 router.post("/friends/:id", ProtectMiddleware, FriendsController.add)
 router.delete("/friends/:id", ProtectMiddleware, FriendsController.remove)
+router.get("/friends/posts", ProtectMiddleware, FriendsController.getPosts)
 
 module.exports = router

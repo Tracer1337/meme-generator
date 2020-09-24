@@ -2,7 +2,8 @@ const { v4: uuid } = require("uuid")
 const moment = require("moment")
 const Model = require("../../lib/Model.js")
 const Upload = require("./Upload.js")
-const User = require("./User.js")
+
+let User
 
 class Post extends Model {
     constructor(values) {
@@ -15,6 +16,8 @@ class Post extends Model {
             },
             ...values
         })
+
+        User = require("./User.js")
     }
 
     async init() {

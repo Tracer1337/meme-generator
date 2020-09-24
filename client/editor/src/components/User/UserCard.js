@@ -42,7 +42,6 @@ function UserCard({ user, className, RightElement }) {
                 open={isProfileDialogOpen}
                 onClose={() => setIsProfileDialogOpen(false)}
                 user={user}
-                onReload={() => {}}
             />
         </Paper>
     )

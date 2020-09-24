@@ -1,8 +1,8 @@
-import React from "react"
-import { Link } from "react-router-dom"
+import React, { useState } from "react"
 import { Grid, Typography } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 
+import ProfileDialog from "../Dialogs/ProfileDialog.js"
 import Avatar from "../User/Avatar.js"
 
 const useStyles = makeStyles(theme => ({
@@ -20,19 +20,25 @@ const useStyles = makeStyles(theme => ({
 function Header({ data }) {
     const classes = useStyles()
 
+    const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false)
+
+    const openProfileDialog = () => setIsProfileDialogOpen(true)
+
     return (
         <Grid container className={classes.header}>
             <Grid item>
-                <Link to={data.user.profile_url}>
-                    <Avatar className={classes.avatar} user={data.user}/>
-                </Link>
+                <Avatar className={classes.avatar} user={data.user} onClick={openProfileDialog}/>
             </Grid>
 
             <Grid item>
-                <Link to={data.user.profile_url}>
-                    <Typography>{ data.user.username }</Typography>
-                </Link>
+                <Typography onClick={openProfileDialog}>{ data.user.username }</Typography>
             </Grid>
+
+            <ProfileDialog
+                open={isProfileDialogOpen}
+                onClose={() => setIsProfileDialogOpen(false)}
+                user={data.user}
+            />
         </Grid>
     )
 }

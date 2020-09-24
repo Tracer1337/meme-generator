@@ -63,7 +63,7 @@ function Button({ children, ...props }) {
     )
 }
 
-function ProfileDialog({ open, onClose, user, onReload }) {
+function ProfileDialog({ open, onClose, user, onReload = () => {} }) {
     const context = useContext(AppContext)
 
     const classes = useStyles()

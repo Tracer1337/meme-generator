@@ -2,6 +2,7 @@ const { v4: uuid } = require("uuid")
 const moment = require("moment")
 const Model = require("../../lib/Model.js")
 const Template = require("./Template.js")
+const Post = require("./Post.js")
 const { queryAsync } = require("../utils/index.js")
 
 class User extends Model {
@@ -30,6 +31,10 @@ class User extends Model {
         const query = `SELECT * FROM friends INNER JOIN users ON friends.to_user_id = users.id WHERE friends.from_user_id = '${this.id}'`
         const rows = await queryAsync(query)
         return User.fromRows(rows)
+    }
+
+    async getPosts() {
+        return await Post.findAllBy("user_id", this.id)
     }
 
     async addFriend(user) {
