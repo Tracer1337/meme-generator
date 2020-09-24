@@ -73,6 +73,8 @@ function App() {
         },
 
         resetEditor: () => {
+            context.event.dispatchEvent(new CustomEvent("resetCanvas"))
+
             setContext({
                 ...context,
                 isEmptyState: contextDefaultValue.isEmptyState,

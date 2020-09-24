@@ -1,23 +1,21 @@
 import React, { useState, useEffect, useContext } from "react"
-
-import EmptyState from "./EmptyState.js"
-import BaseElementsDialog from "../Dialogs/BaseElementsDialog.js"
+import { Paper } from "@material-ui/core"
 
 import { AppContext } from "../../App.js"
+import BaseElements from "../Dialogs/components/BaseElements.js"
+import BaseElementsDialog from "../Dialogs/BaseElementsDialog.js"
 import BaseElement from "../../Models/BaseElement.js"
 import { BASE_ELEMENT_TYPES } from "../../config/constants.js"
-import { createListeners, importFile, fileToImage } from "../../utils"
+import { createListeners } from "../../utils"
 
 function Base(props, ref) {
     const context = useContext(AppContext)
 
     const [isDialogOpen, setIsDialogOpen] = useState(false)
 
-    const dispatchEvent = (name) => {
-        context.event.dispatchEvent(new CustomEvent(name))
-    }
+    const handleBaseElementCreate = (baseElement) => {
+        context.event.dispatchEvent(new CustomEvent("resetCanvas"))
 
-    const setRootElement = (baseElement) => {
         context.set({
             currentTemplate: null,
             isEmptyState: false,
@@ -26,26 +24,6 @@ function Base(props, ref) {
         })
     }
 
-    const handleImportImage = async () => {
-        const file = await importFile("image/*")
-        const base64Image = await fileToImage(file)
-
-        dispatchEvent("resetCanvas")
-
-        setRootElement(new BaseElement({
-            type: BASE_ELEMENT_TYPES["IMAGE"],
-            image: base64Image
-        }))
-    }
-
-    const handleCreateBaseBlank = () => {
-        dispatchEvent("resetCanvas")
-
-        setRootElement(new BaseElement({
-            type: BASE_ELEMENT_TYPES["BLANK"]
-        }))
-    }
-    
     useEffect(() => {
         return createListeners(context.event, [
             ["openBaseSelection", () => setIsDialogOpen(true)]
@@ -56,7 +34,7 @@ function Base(props, ref) {
         // Handle image injection from chrome extension
         const handleMessage = (message) => {
             if (message.data.image) {
-                setRootElement(new BaseElement({
+                handleBaseElementCreate(new BaseElement({
                     type: BASE_ELEMENT_TYPES["IMAGE"],
                     image: message.data.image,
                     label: message.data.label
@@ -92,7 +70,11 @@ function Base(props, ref) {
             />
         )
     } else {
-        baseElement = <EmptyState/>
+        baseElement = (
+            <Paper>
+                <BaseElements onBaseElementCreate={handleBaseElementCreate} />
+            </Paper>
+        )
     }
 
     return (
@@ -102,8 +84,7 @@ function Base(props, ref) {
             <BaseElementsDialog
                 open={isDialogOpen}
                 onClose={() => setIsDialogOpen(false)}
-                onImportImage={handleImportImage}
-                onCreateBaseBlank={handleCreateBaseBlank}
+                onBaseElementCreate={handleBaseElementCreate}
             />
         </>
     )
