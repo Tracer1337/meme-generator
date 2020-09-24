@@ -10,8 +10,9 @@ const useStyles = makeStyles(theme => ({
     headerActions: {
         display: "flex",
         justifyContent: "space-between",
-        backgroundColor: theme.palette.background.default,
-        boxShadow: "none"
+        backgroundColor: "transparent",
+        boxShadow: "none",
+        zIndex: 0
     }
 }))
 

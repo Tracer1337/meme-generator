@@ -141,6 +141,8 @@ function Canvas() {
     }
 
     const handleLoadTemplate = async ({ detail: { template } }) => {
+        console.log("[Canvas] Load Template", { template })
+        
         const newContextValue = {
             currentTemplate: template,
             isEmptyState: false,

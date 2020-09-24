@@ -24,11 +24,11 @@ function Layout({ children, center, header = true, footer = true }) {
 
     return (
         <div className={classes.layout}>
-            { header && <Header/> }
+            <Header isHidden={!header}/>
 
             { children }
 
-            { footer && <Footer/> }
+            <Footer isHidden={!footer}/>
         </div>
     )
 }

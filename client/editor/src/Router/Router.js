@@ -1,5 +1,5 @@
 import React from "react"
-import { BrowserRouter, Switch, Route } from "react-router-dom"
+import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom"
 
 import ProtectedRoute from "./ProtectedRoute.js"
 import EditorPage from "../Pages/EditorPage.js"
@@ -33,8 +33,12 @@ function Router() {
                     <UserPage/>
                 </ProtectedRoute>
 
-                <Route path="/">
+                <Route path="/editor">
                     <EditorPage/>
+                </Route>
+
+                <Route path="/">
+                    <Redirect to="/editor"/>
                 </Route>
             </Switch>
         </BrowserRouter>

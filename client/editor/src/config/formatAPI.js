@@ -31,6 +31,10 @@ function formatUser(user) {
     if (user.templates) {
         user.templates.map(formatTemplate)
     }
+
+    if (user.friends) {
+        user.friends.map(formatUser)
+    }
 }
 
 function formatUpload(upload) {

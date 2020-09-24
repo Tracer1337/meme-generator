@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React, { useEffect, useContext } from "react"
 import { Dialog, AppBar, Toolbar, Typography, Slide, IconButton, Grid, Button as MuiButton } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import CloseIcon from "@material-ui/icons/ExpandMore"
@@ -6,6 +6,7 @@ import CloseIcon from "@material-ui/icons/ExpandMore"
 import { AppContext } from "../../App.js"
 import Avatar from "../User/Avatar.js" 
 import Templates from "./components/Templates.js"
+import { createListeners } from "../../utils"
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />
@@ -71,6 +72,12 @@ function ProfileDialog({ open, onClose, user, onReload }) {
 
     const isOwnProfile = user.id === context.auth.user.id
 
+    useEffect(() => {
+        return createListeners(context.event, [
+            ["loadTemplate", onClose]
+        ])
+    })
+
     return (
         <Dialog open={open} onClose={onClose} fullScreen TransitionComponent={Transition}>
             <AppBar className={classes.header}>
@@ -108,7 +115,6 @@ function ProfileDialog({ open, onClose, user, onReload }) {
                     <Templates
                         templates={user.templates}
                         renderUserTemplates={false}
-                        onLoad={console.log}
                         onReload={onReload}
                     />
                 </div>

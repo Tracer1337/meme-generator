@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from "react"
+import React, { useState, useContext, useEffect, useRef } from "react"
 import { Dialog, AppBar, Toolbar, IconButton, Slide, Tabs, Tab } from "@material-ui/core"
 import SwipeableViews from "react-swipeable-views"
 import { makeStyles } from "@material-ui/core/styles"
@@ -11,6 +11,7 @@ import Stickers from "./components/Stickers.js"
 import { AppContext } from "../../App.js"
 import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
 import { IS_OFFLINE } from "../../config/constants.js"
+import { createListeners } from "../../utils"
 
 const useStyles = makeStyles(theme => ({
     toolbar: {
@@ -44,24 +45,14 @@ function TemplatesDialog({ onClose, open }) {
 
     const [currentTab, setCurrentTab] = useState(0)
 
-    const handleClose = () => {
-        onClose()
-    }
-
     const handleReload = () => {
         templatesRef.current.reload()
         stickersRef.current.reload()
     }
 
-    const handleTemplateLoad = (template) => {
-        context.event.dispatchEvent(new CustomEvent("resetCanvas"))
-        context.event.dispatchEvent(new CustomEvent("loadTemplate", { detail: { template } }))
-        handleClose()
-    }
-
     const handleStickerLoad = (sticker) => {
         context.event.dispatchEvent(new CustomEvent("loadSticker", { detail: { sticker } }))
-        handleClose()
+        onClose()
     }
 
     const scrollToTop = () => {
@@ -78,12 +69,18 @@ function TemplatesDialog({ onClose, open }) {
         scrollToTop()
     }
 
+    useEffect(() => {
+        return createListeners(context.event, [
+            ["loadTemplate", onClose]
+        ])
+    })
+
     return (
-        <Dialog fullScreen onClose={handleClose} open={open} TransitionComponent={Transition}>
+        <Dialog fullScreen onClose={onClose} open={open} TransitionComponent={Transition}>
             <AppBar>
                 <Toolbar className={classes.toolbar}>
                     <div className={classes.toolbarItem}>
-                        <IconButton edge="start" color="inherit" onClick={handleClose}>
+                        <IconButton edge="start" color="inherit" onClick={onClose}>
                             <CloseIcon/>
                         </IconButton>
 
@@ -105,7 +102,7 @@ function TemplatesDialog({ onClose, open }) {
 
             <SwipeableViews index={currentTab} onChangeIndex={handleChangeIndex} axis="x" id="templates-dialog-inner-container" disableLazyLoading>
                 <div className={classes.body}>
-                    <Templates onLoad={handleTemplateLoad} active={currentTab === 0} ref={templatesRef}/>
+                    <Templates active={currentTab === 0} ref={templatesRef}/>
                 </div>
 
                 <div className={classes.body}>

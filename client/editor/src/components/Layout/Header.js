@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from "react"
+import { useHistory } from "react-router-dom"
 import { AppBar, Toolbar, IconButton } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import AccountIcon from "@material-ui/icons/AccountCircle"
@@ -27,14 +28,24 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-function Header() {
+function Header({ isHidden }) {
     const context = useContext(AppContext)
+    
+    const history = useHistory()
     
     const classes = useStyles()
 
     const [isAddFriendsDialogOpen, setIsAddFriendsDialogOpen] = useState(false)
     const [isMyFriendsDialogOpen, setIsMyFriendsDialogOpen] = useState(false)
     const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false)
+
+    const handleAvatarClick = () => {
+        if (!context.auth.isLoggedIn) {
+            history.push("/login")
+        } else {
+            setIsProfileDialogOpen(true)
+        }
+    }
 
     useEffect(() => {
         return createListeners(context.event, [
@@ -44,10 +55,10 @@ function Header() {
     })
 
     return (
-        <AppBar className={classes.header}>
+        <AppBar className={classes.header} style={{ display: isHidden && "none" }}>
             <Toolbar>
                 <div className={classes.accountButton}>
-                    <IconButton size="small" onClick={() => setIsProfileDialogOpen(true)}>
+                    <IconButton size="small" onClick={handleAvatarClick}>
                         {context.auth.isLoggedIn ? (
                             <Avatar user={context.auth.user} className={classes.avatar} />
                         ) : (

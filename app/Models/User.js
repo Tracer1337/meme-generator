@@ -21,7 +21,7 @@ class User extends Model {
         this.templates = await Template.findAllBy("user_id", this.id)
         
         if (authorized) {
-            this.friends = await this.getFriends()
+            this.friends = (await this.getFriends()) || []
             await this.friends.mapAsync(user => user.init())
         }
     }

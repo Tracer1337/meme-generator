@@ -1,8 +1,8 @@
 import React, { useState, useContext, useRef, useImperativeHandle } from "react"
+import { useLocation, useHistory } from "react-router-dom"
 import { IconButton, GridList, GridListTile, GridListTileBar, CircularProgress, Typography, Divider } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import DeleteIcon from "@material-ui/icons/Delete"
-
 
 import { AppContext } from "../../../App.js"
 import ConfirmDialog from "../ConfirmDialog.js"
@@ -100,8 +100,12 @@ function TemplatesGrid({ data, onClick, onDelete, search }) {
     )
 }
 
-function Templates({ onLoad, onReload, templates, renderUserTemplates = true }, ref) {
+function Templates({ onReload, templates, renderUserTemplates = true }, ref) {
     const context = useContext(AppContext)
+    
+    const location = useLocation()
+
+    const history = useHistory()
 
     const classes = useStyles()
 
@@ -120,6 +124,15 @@ function Templates({ onLoad, onReload, templates, renderUserTemplates = true }, 
         setIsConfirmDialogOpen(true)
     }
 
+    const handleLoad = async (template) => {
+        if (!location.pathname.startsWith("/editor")) {
+            history.push("/editor")
+            await new Promise(requestAnimationFrame)
+        }
+        context.event.dispatchEvent(new CustomEvent("resetCanvas"))
+        context.event.dispatchEvent(new CustomEvent("loadTemplate", { detail: { template } }))
+    }
+
     const handleConfirmDialogClose = (shouldDelete) => {
         setIsConfirmDialogOpen(false)
 
@@ -132,7 +145,7 @@ function Templates({ onLoad, onReload, templates, renderUserTemplates = true }, 
     const handleClick = (event, template) => {
         // Prevent loading when delete icon got clicked
         if (event.target.tagName === "DIV" || event.target.tagName === "IMG") {
-            onLoad(template)
+            handleLoad(template)
         }
     }
 

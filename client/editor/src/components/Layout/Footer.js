@@ -33,11 +33,11 @@ function FooterItem({ path, iconActive, iconInactive }) {
     )
 }
 
-function Footer() {
+function Footer({ isHidden }) {
     const classes = useStyles()
 
     return (
-        <AppBar className={classes.footer}>
+        <AppBar className={classes.footer} style={{ display: isHidden && "none" }}>
             <Toolbar>
                 <Grid container justify="space-around">
                     <FooterItem path="/feed" iconActive={<HomeIconFilled/>} iconInactive={<HomeIconOutlined/>}/>
