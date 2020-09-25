@@ -4,6 +4,10 @@ import * as API from "../config/api.js"
 
 const cache = new Map()
 
+function createKey(props) {
+    return props.method + (props.data ? JSON.stringify(props.data) : "")
+}
+
 /**
  * Fetch data from given endpoint
  * 
@@ -30,19 +34,21 @@ function useAPIData(props) {
         ...(typeof props === "object" ? props : {})
     }
 
+    const key = createKey(props)
+
     if (!(props.method in API)) {
         throw new Error(`API method '${props.method}' not found`)
     }
 
     const method = API[props.method].bind(null, props.data)
 
-    const [isLoading, setIsLoading] = useState(!(props.defaultValue || cache.get(props.method) || !props.initialRequests))
+    const [isLoading, setIsLoading] = useState(!(props.defaultValue || cache.get(key) || !props.initialRequests))
     const [error, setError] = useState()
 
     const [data, setData] = useReducer((state, newValue) => {
-        cache.set(props.method, newValue)
+        cache.set(key, newValue)
         return newValue
-    }, props.defaultValue || (props.useCache && cache.get(props.method)))
+    }, props.defaultValue || (props.useCache && cache.get(key)))
 
     const [version, reload] = useReducer((key) => key + 1, 0)
 

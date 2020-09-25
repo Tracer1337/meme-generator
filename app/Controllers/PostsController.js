@@ -2,6 +2,7 @@ const fs = require("fs")
 
 const Post = require("../Models/Post.js")
 const Upload = require("../Models/Upload.js")
+const User = require("../Models/User.js")
 const ImageServiceProvider = require("../Services/ImageServiceProvider.js")
 const UploadServiceProvider = require("../Services/UploadServiceProvider.js")
 const { changeExtension } = require("../utils")
@@ -42,4 +43,12 @@ async function create(req, res) {
     }
 }
 
-module.exports = { getAll, create }
+async function getByUser(req, res) {
+    const posts = await Post.findAllBy("user_id", req.params.id, {
+        initArgs: { initUser: false }
+    })
+
+    res.send(posts)
+}
+
+module.exports = { getAll, create, getByUser }

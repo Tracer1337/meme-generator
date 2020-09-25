@@ -20,10 +20,13 @@ class Post extends Model {
         User = require("./User.js")
     }
 
-    async init() {
+    async init({ initUser = true } = {}) {
         this.upload = await Upload.findBy("id", this.upload_id)
-        this.user = await User.findBy("id", this.user_id)
         this.created_at = moment(this.created_at)
+
+        if (initUser) {
+            this.user = await User.findBy("id", this.user_id)
+        }
     }
     
     getColumns() {

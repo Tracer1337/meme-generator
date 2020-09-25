@@ -20,7 +20,7 @@
     "react-hook-form": "^6.7.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.2",
-    "react-swipeable-views": "^0.13.9",
+    "react-swipeable-views": "0.12.4",
     "textfit": "^2.4.0"
   },
   "scripts": {
