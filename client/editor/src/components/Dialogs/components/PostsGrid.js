@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React from "react"
 import { CircularProgress } from "@material-ui/core"
 
 import ImageGrid from "../../../components/ImageGrid/ImageGrid.js"
@@ -9,10 +9,6 @@ function PostsGrid({ user }) {
         method: "getPostsByUser",
         data: user.id
     })
-
-    useEffect(() => {
-        console.log(user.id)
-    }, [])
 
     if (isLoading) {
         return <CircularProgress/>

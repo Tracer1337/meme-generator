@@ -28,6 +28,10 @@ async function formatSticker(sticker) {
 function formatUser(user) {
     user.created_at = moment(user.created_at)
 
+    if (user.avatar_url) {
+        user.avatar_url = formatRelativeURL(user.avatar_url)
+    }
+
     if (user.templates) {
         user.templates.map(formatTemplate)
     }

@@ -6,6 +6,7 @@ module.exports = {
         "username varchar(255) NOT NULL UNIQUE",
         "email varchar(255) NOT NULL UNIQUE",
         "password varchar(255) NOT NULL",
+        "avatar_filename varchar(255)",
         "created_at varchar(255) NOT NULL"
     ]
 }

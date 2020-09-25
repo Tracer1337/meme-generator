@@ -37,7 +37,6 @@ export const uploadFile = (formData) => axios.post(BASE_URL + "/upload", formDat
 
 export const register = (body) => axios.post(url("/auth/register"), body).then(format(LOGIN))
 export const login = (body) => axios.post(url("/auth/login"), body).then(format(LOGIN))
-export const getProfile = () => axios.get(url("/auth/profile")).then(format(USER))
 
 export const getUserByUsername = (username) => axios.get(url("/users/get/" + username))
 export const getUsersByQueryString = (query) => axios.get(url("/users/find?q=" + encodeURI(query)))
@@ -49,3 +48,6 @@ export const getFriendsPosts = () => axios.get(url("/friends/posts")).then(forma
 export const getAllPosts = () => axios.get(url("/posts")).then(format(POSTS))
 export const getPostsByUser = (id) => axios.get(url("/posts/user/" + id)).then(format(POSTS))
 export const createPost = (formData) => axios.post(url("/posts"), formData)
+
+export const getProfile = () => axios.get(url("/profile")).then(format(USER))
+export const editAvatar = (formData) => axios.post(url("/profile/avatar"), formData).then(format(USER))

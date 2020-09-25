@@ -12,6 +12,7 @@ const AuthController = require("../app/Controllers/AuthController.js")
 const PostsController = require("../app/Controllers/PostsController.js")
 const UserController = require("../app/Controllers/UserController.js")
 const FriendsController = require("../app/Controllers/FriendsController.js")
+const ProfileController = require("../app/Controllers/ProfileController.js")
 
 const router = express.Router()
 
@@ -33,9 +34,11 @@ router.post("/stickers/register-use/:id", StickersController.registerUse)
 router.get("/upload/random", UploadController.getRandom)
 router.get("/upload/all", UploadController.getAll)
 
-router.get("/auth/profile", ProtectMiddleware, AuthController.profile)
 router.post("/auth/register", new Validator().email("email", { uniqueIn: User }).username("username", { uniqueIn: User }).password("password"), AuthController.register)
 router.post("/auth/login", new Validator().email("email", { existsIn: User }).password("password"), AuthController.login)
+
+router.get("/profile", ProtectMiddleware, ProfileController.getProfile)
+router.post("/profile/avatar", ProtectMiddleware, UploadMiddleware.single("image"), ProfileController.uploadAvatar)
 
 router.get("/posts", ProtectMiddleware, PostsController.getAll)
 router.get("/posts/user/:id", ProtectMiddleware, PostsController.getByUser)

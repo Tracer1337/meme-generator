@@ -3,13 +3,14 @@ const moment = require("moment")
 const Model = require("../../lib/Model.js")
 const Template = require("./Template.js")
 const Post = require("./Post.js")
+const StorageFacade = require("../Facades/StorageFacade.js")
 const { queryAsync } = require("../utils/index.js")
 
 class User extends Model {
     constructor(values) {
         super({
             table: "users",
-            columns: ["id", "username", "email", "password", "created_at"],
+            columns: ["id", "username", "email", "password", "avatar_filename", "created_at"],
             defaultValues: {
                 id: () => uuid(),
                 created_at: () => moment()
@@ -26,6 +27,12 @@ class User extends Model {
             this.friends = (await this.getFriends()) || []
             await this.friends.mapAsync(user => user.init())
         }
+    }
+
+    async delete() {
+        await StorageFacade.deleteFile(process.env.AWS_BUCKET_PUBLIC_DIR + "/" + this.avatar_filename)
+        
+        return super.delete()
     }
 
     async getFriends() {
@@ -72,7 +79,8 @@ class User extends Model {
             username: this.username,
             created_at: this.created_at,
             templates: this.templates,
-            friends: this.friends
+            friends: this.friends,
+            avatar_url: this.avatar_filename ? "/upload/" + this.avatar_filename : null
         }
     }
 }

@@ -2,7 +2,6 @@ const fs = require("fs")
 
 const Post = require("../Models/Post.js")
 const Upload = require("../Models/Upload.js")
-const User = require("../Models/User.js")
 const ImageServiceProvider = require("../Services/ImageServiceProvider.js")
 const UploadServiceProvider = require("../Services/UploadServiceProvider.js")
 const { changeExtension } = require("../utils")

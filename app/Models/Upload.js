@@ -19,10 +19,8 @@ class Upload extends Model {
 
     async delete() {
         // Delete image from storage
-        try {
-            await StorageFacade.deleteFileLocal(this.image_url.replace(`/${config.paths.storage}/`, ""))
-        } catch { }
-
+        await StorageFacade.deleteFile(process.env.AWS_BUCKET_PUBLIC_DIR + "/" + this.filename)
+        
         return super.delete()
     }
 

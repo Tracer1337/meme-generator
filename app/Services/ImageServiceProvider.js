@@ -6,7 +6,14 @@ const config = require("../../config")
 /**
  * Resize image and convert it to specified format
  */
-async function formatImage({ path, base64 }, format = config.defaultImageFormat) {
+async function formatImage({ path, base64 }, options = {}) {
+    options = {
+        format: config.defaultImageFormat,
+        maxWidth: config.maxImageWidth,
+        aspectRatio: null,
+        ...options
+    }
+
     let data
 
     if (base64) {
@@ -20,10 +27,13 @@ async function formatImage({ path, base64 }, format = config.defaultImageFormat)
     const newImage = await image
         .metadata()
         .then(async (metadata) => {
-            const resized = await image
-                .resize(metadata.width <= config.maxImageWidth ? metadata.width : config.maxImageWidth)
+            const newWidth = metadata.width <= options.maxWidth ? metadata.width : options.maxWidth
+            const newHeight = options.aspectRatio ? newWidth * options.aspectRatio : null
 
-            return resized[format]().toBuffer()
+            const resized = await image
+                .resize(newWidth, newHeight)
+
+            return resized[options.format]().toBuffer()
         })
 
     if (path) {

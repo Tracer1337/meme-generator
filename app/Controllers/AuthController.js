@@ -31,8 +31,4 @@ async function login(req, res) {
     res.send({ token, user })
 }
 
-async function profile(req, res) {
-    res.send(req.user)
-}
-
-module.exports = { register, login, profile }
+module.exports = { register, login }

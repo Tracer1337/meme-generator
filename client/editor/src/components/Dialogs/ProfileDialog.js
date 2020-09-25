@@ -40,6 +40,8 @@ function ProfileDialog({ open, onClose, user, onReload = () => {} }) {
 
     const classes = useStyles()
 
+    const isMyProfile = user.id === context.auth.user.id
+
     useEffect(() => {
         return createListeners(context.event, [
             ["loadTemplate", onClose]
@@ -58,7 +60,7 @@ function ProfileDialog({ open, onClose, user, onReload = () => {} }) {
 
             <Grid container direction="column" alignItems="center" className={classes.grid}>
                 <Grid item>
-                    <Avatar user={user} className={classes.avatar}/>
+                    <Avatar user={user} className={classes.avatar} hasUploadButton={isMyProfile}/>
                 </Grid>
 
                 <Grid item>
@@ -66,7 +68,7 @@ function ProfileDialog({ open, onClose, user, onReload = () => {} }) {
                 </Grid>
             </Grid>
 
-            { user.id === context.auth.user.id && <MyProfileElements/> }
+            { isMyProfile && <MyProfileElements/> }
 
             <ProfileContent user={user} onReload={onReload}/>
         </Dialog>
