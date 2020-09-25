@@ -11,6 +11,13 @@ const LOCAL_STORAGE_DIR = path.join(ROOT_DIR, "storage")
 
 const cache = new Map()
 
+async function clearFolder(folder) {
+    const files = await fs.promises.readdir(folder)
+    await Promise.all(files.map(async filename => {
+        await fs.promises.unlink(path.join(folder, filename))
+    }))
+}
+
 const StorageFacade = {
     createBucket(bucketName = process.env.APP_NAME + "-" + uuid()) {
         if (process.env.NODE_ENV === "development") {
@@ -120,6 +127,8 @@ const StorageFacade = {
         })
     },
 
+    clearStorage: clearFolder.bind(null, DEV_BUCKET_DIR),
+
 
     uploadFileLocal(inputPath, filename) {
         return fs.promises.copyFile(inputPath, path.join(LOCAL_STORAGE_DIR, filename))
@@ -127,7 +136,9 @@ const StorageFacade = {
 
     deleteFileLocal(filename) {
         return fs.promises.unlink(path.join(LOCAL_STORAGE_DIR, filename))
-    }
+    },
+
+    clearLocalStorage: clearFolder.bind(null, LOCAL_STORAGE_DIR),
 }
 
 module.exports = StorageFacade

@@ -6,23 +6,12 @@ require("dotenv").config({ path: path.join(__dirname, "..", ".env") })
 
 const { queryAsync } = require("../app/utils")
 const createConnection = require("../database")
+const StorageFacade = require("../app/Facades/StorageFacade.js")
 
 const ROOT_DIR = path.join(__dirname, "..")
 const MIGRATIONS_DIR = path.join(ROOT_DIR, "database", "migrations")
-const MODELS_DIR = path.join(ROOT_DIR, "app", "Models")
 
 const runnable = makeRunnable(async () => {
-    const Models = (await fs.promises.readdir(MODELS_DIR)).map(filename => require(path.join(MODELS_DIR, filename)))
-
-    await run(async () => {
-        try {
-            await Promise.all(Models.map(async (Model) => {
-                const models = await Model.where("id = id")
-                await models.mapAsync(async (model) => await model.delete())
-            }))
-        } catch {}
-    }, "Removing models")
-
     // Require migrations from migrations folder
     const migrations = (await fs.promises.readdir(MIGRATIONS_DIR)).map(filename => require(path.join(MIGRATIONS_DIR, filename)))
 
@@ -31,6 +20,13 @@ const runnable = makeRunnable(async () => {
         const query = `DROP TABLE IF EXISTS ${reversedMigrations.map(migration => migration.table).filter(e => e).join(",")}`
         await queryAsync(query)
     }, "Removing tables")
+
+    await run(async () => {
+        await Promise.all([
+            StorageFacade.clearStorage(),
+            StorageFacade.clearLocalStorage()
+        ])
+    }, "Removing files")
 
     for (let migration of migrations) {
         if (!migration.columns) {
