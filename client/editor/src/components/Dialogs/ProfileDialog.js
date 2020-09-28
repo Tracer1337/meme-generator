@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import { Dialog, AppBar, Toolbar, Typography, Slide, IconButton, Grid } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import CloseIcon from "@material-ui/icons/ExpandMore"
@@ -7,7 +7,9 @@ import { AppContext } from "../../App.js"
 import Avatar from "../User/Avatar.js" 
 import MyProfileElements from "./components/MyProfileElements.js"
 import ProfileContent from "./components/ProfileContent.js"
+import ConfirmDialog from "./ConfirmDialog.js"
 import { createListeners } from "../../utils"
+import { deletePost } from "../../config/api.js"
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />
@@ -40,7 +42,25 @@ function ProfileDialog({ open, onClose, user, onReload = () => {} }) {
 
     const classes = useStyles()
 
+    const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] = useState(false)
+    const [currentPost, setCurrentPost] = useState(null)
+
     const isMyProfile = user.id === context.auth.user.id
+
+    const handlePostDelete = (post) => {
+        setCurrentPost(post)
+        setIsDeleteConfirmDialogOpen(true)
+    }
+
+    const handleConfirmDialogClose = (shouldDelete) => {
+        setIsDeleteConfirmDialogOpen(false)
+
+        if (shouldDelete) {
+            deletePost(currentPost.id)
+                .then(() => context.event.dispatchEvent(new CustomEvent("reloadPosts")))
+                .finally(() => setCurrentPost(null))
+        }
+    }
 
     useEffect(() => {
         return createListeners(context.event, [
@@ -70,7 +90,13 @@ function ProfileDialog({ open, onClose, user, onReload = () => {} }) {
 
             { isMyProfile && <MyProfileElements/> }
 
-            <ProfileContent user={user} onReload={onReload}/>
+            <ProfileContent user={user} onReload={onReload} onPostDelete={isMyProfile && handlePostDelete}/>
+
+            <ConfirmDialog
+                open={isDeleteConfirmDialogOpen}
+                onClose={handleConfirmDialogClose}
+                content="The post will be deleted"
+            />
         </Dialog>
     )
 }

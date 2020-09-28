@@ -290,17 +290,19 @@ function ImageDialog({ open, onClose, imageData }) {
                     <>
                         <img alt="" src={imageData} className={classes.image}/>
 
-                        <LoadingButton
-                            startIcon={<SendIcon/>}
-                            color="primary"
-                            variant="contained"
-                            onClick={handlePostClick}
-                            disabled={hasPostedImage}
-                            fullWidth
-                            isLoading={isPosting}
-                        >
-                            Post
-                        </LoadingButton>
+                        { !hasPostedImage && (
+                            <LoadingButton
+                                startIcon={<SendIcon />}
+                                color="primary"
+                                variant="contained"
+                                onClick={handlePostClick}
+                                disabled={isPosting}
+                                fullWidth
+                                isLoading={isPosting}
+                            >
+                                Post
+                            </LoadingButton>
+                        ) }
 
                         <Paper variant="outlined" className={classes.linkWrapper} style={{ display: !link && "none" }}>
                             <Typography variant="body1" className={classes.link}>

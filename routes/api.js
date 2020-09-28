@@ -43,6 +43,7 @@ router.post("/profile/avatar", ProtectMiddleware, UploadMiddleware.single("image
 router.get("/posts", ProtectMiddleware, PostsController.getAll)
 router.get("/posts/user/:id", ProtectMiddleware, PostsController.getByUser)
 router.post("/posts", ProtectMiddleware, UploadMiddleware.single("image"), PostsController.create)
+router.delete("/posts/:id", ProtectMiddleware, PostsController.delete)
 
 router.get("/users/get/:username", ProtectMiddleware, UserController.getByUsername)
 router.get("/users/find", ProtectMiddleware, UserController.getByQueryString)

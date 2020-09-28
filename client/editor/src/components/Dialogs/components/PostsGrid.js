@@ -1,13 +1,23 @@
-import React from "react"
+import React, { useContext, useEffect } from "react"
 import { CircularProgress } from "@material-ui/core"
 
+import { AppContext } from "../../../App.js"
 import ImageGrid from "../../../components/ImageGrid/ImageGrid.js"
 import useAPIData from "../../../utils/useAPIData.js"
+import { createListeners } from "../../../utils"
 
-function PostsGrid({ user }) {
-    const { isLoading, data } = useAPIData({
+function PostsGrid({ user, onPostDelete }) {
+    const context = useContext(AppContext)
+
+    const { isLoading, data, reload } = useAPIData({
         method: "getPostsByUser",
         data: user.id
+    })
+
+    useEffect(() => {
+        return createListeners(context.event, [
+            ["reloadPosts", reload]
+        ])
     })
 
     if (isLoading) {
@@ -16,8 +26,13 @@ function PostsGrid({ user }) {
 
     const images = data.map(post => post.upload.url)
 
+    const onDelete = (src) => {
+        const post = data.find(post => post.upload.url === src)
+        onPostDelete(post)
+    }
+
     return (
-        <ImageGrid images={images}/>
+        <ImageGrid images={images} ItemProps={{ onDelete }}/>
     )
 }
 

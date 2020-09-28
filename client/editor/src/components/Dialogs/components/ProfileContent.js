@@ -18,11 +18,11 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-function ProfileContent({ user, onReload }) {
+function ProfileContent({ user, onReload, onPostDelete }) {
     const classes = useStyles()
 
     const [currentTab, setCurrentTab] = useState(0)
-    
+
     return (
         <div className={classes.profileContent}>
 
@@ -53,7 +53,7 @@ function ProfileContent({ user, onReload }) {
                     onReload={onReload}
                 />
 
-                <PostsGrid user={user}/>
+                <PostsGrid user={user} onPostDelete={onPostDelete}/>
             </SwipeableViews>
         </div>
     )

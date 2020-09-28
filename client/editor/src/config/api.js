@@ -48,6 +48,7 @@ export const getFriendsPosts = () => axios.get(url("/friends/posts")).then(forma
 export const getAllPosts = () => axios.get(url("/posts")).then(format(POSTS))
 export const getPostsByUser = (id) => axios.get(url("/posts/user/" + id)).then(format(POSTS))
 export const createPost = (formData) => axios.post(url("/posts"), formData)
+export const deletePost = (id) => axios.delete(url("/posts/" + id))
 
 export const getProfile = () => axios.get(url("/profile")).then(format(USER))
 export const editAvatar = (formData) => axios.post(url("/profile/avatar"), formData).then(format(USER))

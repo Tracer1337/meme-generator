@@ -50,4 +50,17 @@ async function getByUser(req, res) {
     res.send(posts)
 }
 
-module.exports = { getAll, create, getByUser }
+
+async function deletePost(req, res) {
+    const post = await Post.findBy("id", req.params.id)
+
+    if (!post) {
+        return res.sendStatus(404)
+    }
+
+    await post.delete()
+
+    return res.sendStatus(200)
+}
+
+module.exports = { getAll, create, getByUser, delete: deletePost }

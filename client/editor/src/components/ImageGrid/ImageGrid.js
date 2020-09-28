@@ -15,7 +15,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-function ImageGrid({ images }) {
+function ImageGrid({ images, ItemProps }) {
     const classes = useStyles()
 
     const firstThird = Math.ceil(images.length / 3)
@@ -31,7 +31,7 @@ function ImageGrid({ images }) {
         <div className={classes.imageGrid}>
             { rows.map((images, i) => (
                 <div className={classes.row} key={i}>
-                    { images.map(src => <Item src={src} key={src}/>)}
+                    { images.map(src => <Item src={src} key={src} {...ItemProps}/>)}
                 </div>
             )) }
         </div>
