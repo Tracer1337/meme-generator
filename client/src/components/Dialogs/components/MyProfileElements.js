@@ -1,6 +1,8 @@
 import React, { useContext } from "react"
-import { Typography, Button as MuiButton } from "@material-ui/core"
+import { Typography, Button as MuiButton, Grid, IconButton } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
+import PersonAddIcon from "@material-ui/icons/PersonAdd"
+import PeopleIcon from "@material-ui/icons/People"
 
 import { AppContext } from "../../../App.js"
 
@@ -11,27 +13,38 @@ const useStyles = makeStyles(theme => ({
     },
 
     title: {
+        marginBottom: theme.spacing(2)
+    },
+
+    buttonWrapper: {
         marginBottom: theme.spacing(1)
     },
 
-    button: {
-        marginBottom: theme.spacing(1)
+    iconButton: {
+        padding: 0,
+        marginRight: theme.spacing(2)
     }
 }))
 
-function Button({ children, ...props }) {
+function Button({ Icon, onClick, children, ...props }) {
     const classes = useStyles()
 
     return (
-        <MuiButton
-            variant="outlined"
-            color="primary"
-            fullWidth
-            className={classes.button}
-            {...props}
-        >
-            { children}
-        </MuiButton>
+        <Grid wrap="nowrap" container className={classes.buttonWrapper}>
+            <IconButton onClick={onClick} className={classes.iconButton}>
+                <Icon/>
+            </IconButton>
+
+            <MuiButton
+                variant="outlined"
+                color="primary"
+                fullWidth
+                onClick={onClick}
+                {...props}
+            >
+                { children}
+            </MuiButton>
+        </Grid>
     )
 }
 
@@ -44,11 +57,11 @@ function MyProfileElements() {
 
     return (
         <div className={classes.myProfileElements}>
-            <Typography variant="h6" className={classes.title}>Friends</Typography>
+            <Typography variant="h6" className={classes.title}>Meme-Bros</Typography>
 
-            <Button onClick={dispatch("openAddFriendsDialog")}>Add Friends</Button>
+            <Button onClick={dispatch("openAddFriendsDialog")} Icon={PersonAddIcon}>Add Meme-Bros</Button>
 
-            <Button onClick={dispatch("openMyFriendsDialog")}>My Friends</Button>
+            <Button onClick={dispatch("openMyFriendsDialog")} Icon={PeopleIcon}>My Meme-Bros</Button>
         </div>
     )
 }

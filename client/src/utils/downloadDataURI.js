@@ -43,7 +43,7 @@ function downloadDataURI(src) {
     } else {
         // This should be adjusted when publishing to iOS
         const storageLocation = window.cordova.file.externalRootDirectory
-        const filename = `EasyMeme-${getDateString()}-${makeId(7)}.png`
+        const filename = `MemeBros-${getDateString()}-${makeId(7)}.png`
 
         const blob = toBlob(src)
 

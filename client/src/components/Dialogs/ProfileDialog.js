@@ -84,9 +84,11 @@ function ProfileDialog({ open, onClose, user, onReload = () => {} }) {
                         <CloseIcon/>
                     </IconButton>
 
-                    <IconButton edge="end" onClick={() => setIsSettingsDialogOpen(true)}>
-                        <SettingsIcon/>
-                    </IconButton>
+                    { isMyProfile && (
+                        <IconButton edge="end" onClick={() => setIsSettingsDialogOpen(true)}>
+                            <SettingsIcon />
+                        </IconButton>
+                    ) }
                 </Toolbar>
             </AppBar>
 

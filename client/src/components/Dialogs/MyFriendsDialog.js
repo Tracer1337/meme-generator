@@ -45,7 +45,7 @@ function MyFriendsDialog({ open, onClose }) {
                         <CloseIcon />
                     </IconButton>
 
-                    <Typography variant="subtitle1">My Friends</Typography>
+                    <Typography variant="subtitle1">My Meme-Bros</Typography>
                 </Toolbar>
             </AppBar>
 
@@ -58,4 +58,4 @@ function MyFriendsDialog({ open, onClose }) {
     )
 }
 
-export default withBackButtonSupport(MyFriendsDialog, "my-friends")
+export default withBackButtonSupport(MyFriendsDialog, "my-bros")

@@ -8,15 +8,16 @@ import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
 
 const useStyles = makeStyles(theme => ({
     spacer: {
-        marginTop: theme.mixins.toolbar.minHeight + theme.spacing(1)
+        marginTop: theme.mixins.toolbar.minHeight + theme.spacing(2)
     },
 
     section: {
-        margin: `0 ${theme.spacing(2)}px ${theme.spacing(1)}px`
+        margin: theme.spacing(2),
+        marginTop: 0
     },
 
     title: {
-        marginBottom: theme.spacing(1)
+        marginBottom: theme.spacing(2)
     }
 }))
 

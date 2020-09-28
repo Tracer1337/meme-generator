@@ -57,7 +57,7 @@ function AddFriendsDialog({ open, onClose }) {
                         <CloseIcon/>
                     </IconButton>
 
-                    <Typography variant="subtitle1">Add Friends</Typography>
+                    <Typography variant="subtitle1">Add Meme-Bros</Typography>
                 </Toolbar>
             </AppBar>
 
@@ -70,4 +70,4 @@ function AddFriendsDialog({ open, onClose }) {
     )
 }
 
-export default withBackButtonSupport(AddFriendsDialog, "add-friends")
+export default withBackButtonSupport(AddFriendsDialog, "add-bros")
