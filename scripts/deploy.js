@@ -43,7 +43,6 @@ makeRunnable(async () => {
 
 async function createBuild() {
     await exec("cd client/editor && npm run build")
-    await exec("cd client/archive && npm run build")
 }
 
 async function moveBuild() {

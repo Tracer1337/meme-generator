@@ -1,5 +1,5 @@
 import React from "react"
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, Typography } from "@material-ui/core"
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 
 const useStyles = makeStyles(theme => ({
