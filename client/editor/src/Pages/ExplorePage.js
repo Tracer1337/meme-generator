@@ -1,14 +1,46 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
 import { CircularProgress } from "@material-ui/core"
+import { makeStyles } from "@material-ui/core/styles"
 
 import Layout from "../components/Layout/Layout.js"
 import ImageGrid from "../components/ImageGrid/ImageGrid.js"
-import useAPIData from "../utils/useAPIData.js"
+import { createListeners } from "../utils"
+import { getAllPosts } from "../config/api.js"
+
+const useStyles = makeStyles(theme => ({
+    spacer: {
+        height: 40
+    }
+}))
 
 function ExplorePage() {
-    const { isLoading, data } = useAPIData("getAllPosts")
+    const classes = useStyles()
 
-    if (isLoading) {
+    const [data, setData] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
+    const [page, setPage] = useState(0)
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY + window.innerHeight >= document.body.offsetHeight - 100) {
+                setPage(page + 1)
+            }
+        }
+
+        return createListeners(window, [
+            ["scroll", handleScroll]
+        ])
+    })
+
+    useEffect(() => {
+        setIsLoading(true)
+
+        getAllPosts(page)
+            .then(res => setData([...data, ...res.data]))
+            .finally(() => setIsLoading(false))
+    }, [page])
+
+    if (isLoading && page === 0) {
         return (
             <Layout>
                 <CircularProgress />
@@ -20,7 +52,9 @@ function ExplorePage() {
 
     return (
         <Layout>
-            <ImageGrid images={images}/>
+            <ImageGrid images={images} />
+
+            { isLoading && page > 0 ? <CircularProgress/> : <div className={classes.spacer}/> }
         </Layout>
     )
 }

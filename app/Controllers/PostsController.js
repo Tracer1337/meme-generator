@@ -4,12 +4,17 @@ const Post = require("../Models/Post.js")
 const Upload = require("../Models/Upload.js")
 const ImageServiceProvider = require("../Services/ImageServiceProvider.js")
 const UploadServiceProvider = require("../Services/UploadServiceProvider.js")
-const { changeExtension } = require("../utils")
+const { changeExtension, paginate } = require("../utils")
+const config = require("../../config")
 
 async function getAll(req, res) {
+    const page = req.query.page || 0
+
     const posts = await Post.where("id = id")
+
     posts.sort((a, b) => b.created_at - a.created_at)
-    res.send(posts)
+
+    res.send(paginate(posts, page, config.pagination.explore))
 }
 
 async function create(req, res) {

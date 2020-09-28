@@ -4,5 +4,10 @@ module.exports = {
 
     paths: {
         storage: "storage"
+    },
+
+    pagination: {
+        feed: 15,
+        explore: 50
     }
 }

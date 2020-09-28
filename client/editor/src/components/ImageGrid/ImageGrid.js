@@ -18,14 +18,17 @@ const useStyles = makeStyles(theme => ({
 function ImageGrid({ images, ItemProps }) {
     const classes = useStyles()
 
-    const firstThird = Math.ceil(images.length / 3)
-    const secondThird = Math.ceil(images.length / 3 * 2)
+    const rows = []
 
-    const rows = [
-        images.slice(0, firstThird),
-        images.slice(firstThird, secondThird),
-        images.slice(secondThird, images.length)
-    ]
+    for (let i = 0; i < images.length; i++) {
+        const row = i % 3
+
+        if (!rows[row]) {
+            rows[row] = []
+        }
+
+        rows[row].push(images[i])
+    }
 
     return (
         <div className={classes.imageGrid}>

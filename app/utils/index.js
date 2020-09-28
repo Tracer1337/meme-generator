@@ -76,6 +76,15 @@ function hasExtension(filename) {
     return /[^.]*\..*/.test(filename)
 }
 
+/**
+ * Extract chunk out of array
+ */
+function paginate(array, pageNr, itemsPerPage) {
+    const start = itemsPerPage * pageNr
+    const end = start + itemsPerPage
+    return array.slice(start, end)
+}
+
 module.exports = {
     queryAsync,
     quotedList,
@@ -84,5 +93,6 @@ module.exports = {
     createTempFile,
     changeExtension,
     removeExtension,
-    hasExtension
+    hasExtension,
+    paginate
 }

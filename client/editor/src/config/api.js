@@ -43,7 +43,7 @@ export const getUsersByQueryString = (query) => axios.get(url("/users/find?q=" +
 
 export const addFriend = (id) => axios.post(url("/friends/" + id))
 export const removeFriend = (id) => axios.delete(url("/friends/" + id))
-export const getFriendsPosts = () => axios.get(url("/friends/posts")).then(format(POSTS))
+export const getFriendsPosts = (page) => axios.get(url("/friends/posts?page=" + page)).then(format(POSTS))
 
 export const getAllPosts = () => axios.get(url("/posts")).then(format(POSTS))
 export const getPostsByUser = (id) => axios.get(url("/posts/user/" + id)).then(format(POSTS))
