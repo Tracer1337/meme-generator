@@ -34,7 +34,7 @@ function ImageGrid({ images, ItemProps }) {
         <div className={classes.imageGrid}>
             { rows.map((images, i) => (
                 <div className={classes.row} key={i}>
-                    { images.map(src => <Item src={src} key={src} {...ItemProps}/>)}
+                    { images.map((src) => <Item src={src} key={src} {...ItemProps}/>)}
                 </div>
             )) }
         </div>

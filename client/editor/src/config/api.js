@@ -45,7 +45,7 @@ export const addFriend = (id) => axios.post(url("/friends/" + id))
 export const removeFriend = (id) => axios.delete(url("/friends/" + id))
 export const getFriendsPosts = (page) => axios.get(url("/friends/posts?page=" + page)).then(format(POSTS))
 
-export const getAllPosts = () => axios.get(url("/posts")).then(format(POSTS))
+export const getAllPosts = (page) => axios.get(url("/posts?page=" + page)).then(format(POSTS))
 export const getPostsByUser = (id) => axios.get(url("/posts/user/" + id)).then(format(POSTS))
 export const createPost = (formData) => axios.post(url("/posts"), formData)
 export const deletePost = (id) => axios.delete(url("/posts/" + id))

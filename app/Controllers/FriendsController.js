@@ -38,7 +38,7 @@ async function getPosts(req, res) {
 
     posts = posts.map(collection => collection.models).flat()
     posts.sort((a, b) => b.created_at - a.created_at)
-    
+
     posts = paginate(posts, page, config.pagination.feed)
     
     res.send(posts)

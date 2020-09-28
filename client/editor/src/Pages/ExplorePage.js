@@ -19,10 +19,11 @@ function ExplorePage() {
     const [data, setData] = useState([])
     const [isLoading, setIsLoading] = useState(true)
     const [page, setPage] = useState(0)
+    const [isDone, setIsDone] = useState(false)
 
     useEffect(() => {
         const handleScroll = () => {
-            if (window.scrollY + window.innerHeight >= document.body.offsetHeight - 100) {
+            if (!isDone && window.scrollY + window.innerHeight >= document.body.offsetHeight - 100) {
                 setPage(page + 1)
             }
         }
@@ -36,7 +37,13 @@ function ExplorePage() {
         setIsLoading(true)
 
         getAllPosts(page)
-            .then(res => setData([...data, ...res.data]))
+            .then(res => {
+                setData(data => [...data, ...res.data])
+
+                if (!res.data.length) {
+                    setIsDone(true)
+                }
+            })
             .finally(() => setIsLoading(false))
     }, [page])
 
