@@ -1,8 +1,6 @@
-import React, { useContext } from "react"
+import React from "react"
 import { SwipeableDrawer, IconButton, DialogTitle } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
-
-import { AppContext } from "../../App.js"
 
 import WhatsAppIcon from "../../assets/images/icons/WhatsApp.svg"
 import TwitterIcon from "../../assets/images/icons/Twitter.png"
@@ -37,13 +35,10 @@ const useStyles = makeStyles(theme => ({
 
 function ShareDialog({ open, link, onClose, onOpen }) {
     link = encodeURIComponent(link)
-
-    const context = useContext(AppContext)
     
     const classes = useStyles()
 
     const openLink = (href, label) => () => {
-        context.event.dispatchEvent(new CustomEvent("share", { detail: { label } }))
         window.open(href.replace(/{}/g, link))
     }
 

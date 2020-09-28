@@ -3,12 +3,13 @@ const ImageServiceProvider = require("../Services/ImageServiceProvider.js")
 const Template = require("../Models/Template.js")
 const { changeExtension, createTempFile } = require("../utils")
 const config = require("../../config")
+const { VISIBILITY } = require("../../config/constants.js")
 
 /**
  * Get all templates
  */
 async function getAll(req, res) {
-    const templates = await Template.where("user_id IS NULL")
+    const templates = await Template.where(`visibility = ${VISIBILITY["GLOBAL"]}`)
 
     res.send(templates)
 }
@@ -17,6 +18,10 @@ async function getAll(req, res) {
  * Create new template
  */
 async function create(req, res) {
+    if (req.body.visibility === VISIBILITY["GLOBAL"] && !req.user.is_admin) {
+        return res.sendStatus(403)
+    }
+    
     const { rootElement } = req.body.model
 
     // Format image and create temp file from it
@@ -34,7 +39,8 @@ async function create(req, res) {
         label: rootElement.label,
         image_url: `/${config.paths.storage}/${newFilename}`,
         model: req.body.model,
-        user_id: req.user.id
+        user_id: req.user.id,
+        visibility: req.body.visibility
     })
     await template.store()
 

@@ -30,3 +30,8 @@ export const ELEMENT_TYPES = {
     "STICKER": "sticker",
     "RECTANGLE": "rectangle"
 }
+
+export const VISIBILITY = {
+    "PUBLIC": 0,
+    "GLOBAL": 1
+}

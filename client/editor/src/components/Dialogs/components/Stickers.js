@@ -88,7 +88,7 @@ function InnerTile({ sticker, onDelete }) {
         <>
             <img src={sticker.image_url} alt="Sticker" loading="lazy" ref={image} onLoad={handleImageLoad}/>
 
-            {context.password && (
+            {context.auth.user?.is_admin && (
                 <IconButton onClick={() => onDelete(sticker)} className={classes.deleteButton}>
                     <DeleteIcon fontSize="small" />
                 </IconButton>
@@ -175,7 +175,7 @@ function Stickers({ onLoad, active }, ref) {
                 content={`Sticker ${currentSticker.current.id} will be deleted`}
             />
             
-            {context.password && actionContainer && ReactDOM.createPortal((
+            {context.auth.user?.is_admin && actionContainer && ReactDOM.createPortal((
                 <Zoom in={active} unmountOnExit>
                     <Fab color="secondary" className={classes.addButton} onClick={handleAddSticker}>
                         <AddIcon />

@@ -3,11 +3,6 @@ const StorageFacade = require("../Facades/StorageFacade.js")
 const config = require("../../config")
 
 class Sticker extends Model {
-    static findBy = Model.findBy.bind({ model: Sticker, table: "stickers" })
-    static findAllBy = Model.findAllBy.bind({ model: Sticker, table: "stickers" })
-    static where = Model.where.bind({ model: Sticker, table: "stickers" })
-    static getAll = Model.getAll.bind({ model: Sticker, table: "stickers" })
-
     constructor(values) {
         super({
             table: "stickers",
@@ -33,5 +28,7 @@ class Sticker extends Model {
         }
     }
 }
+
+Model.passMethods(Sticker, "stickers")
 
 module.exports = Sticker

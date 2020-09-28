@@ -34,10 +34,14 @@ function formatUser(user) {
 
     if (user.templates) {
         user.templates.map(formatTemplate)
+    } else {
+        user.templates = []
     }
 
     if (user.friends) {
         user.friends.map(formatUser)
+    } else {
+        user.friends = []
     }
 }
 

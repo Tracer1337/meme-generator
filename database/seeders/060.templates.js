@@ -3,7 +3,9 @@ const fs = require("fs")
 
 const StorageFacade = require("../../app/Facades/StorageFacade.js")
 const Template = require("../../app/Models/Template.js")
+const User = require("../../app/Models/User.js")
 const { randomFileName, getFileExtension } = require("../../app/utils")
+const { VISIBILITY } = require("../../config/constants.js")
 
 const TEMPLATES_DIR = path.join(__dirname, "templates")
 
@@ -13,6 +15,8 @@ module.exports = {
     run: async () => {
         // Get templates from templates/templates.json
         const templates = JSON.parse(fs.readFileSync(path.join(TEMPLATES_DIR, "templates.json"), "utf8"))
+
+        const user = await User.findBy("username", "first_user")
 
         await Promise.all(templates.map(async (template) => {
             // Store image in local storage
@@ -37,7 +41,9 @@ module.exports = {
             await new Template({
                 label: template.label,
                 image_url: "/storage/" + filename,
-                model: model
+                user_id: user.id,
+                model: model,
+                visibility: VISIBILITY["GLOBAL"]
             }).store()
         }))
     }

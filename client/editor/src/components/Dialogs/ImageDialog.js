@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from "react"
-import { useForm } from "react-hook-form"
-import { Dialog, Button, CircularProgress, Paper, Typography, IconButton, TextField, Snackbar, Divider } from "@material-ui/core"
+import { useForm, Controller } from "react-hook-form"
+import { Dialog, Button, CircularProgress, Paper, Typography, IconButton, TextField, Snackbar, Divider, RadioGroup, FormControlLabel, Radio } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import DownloadIcon from "@material-ui/icons/GetApp"
 import SaveIcon from "@material-ui/icons/Save"
@@ -19,7 +19,7 @@ import downloadDataURI from "../../utils/downloadDataURI.js"
 import uploadImage from "../../utils/uploadImage.js"
 import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
 import { uploadTemplate, editTemplate, registerTemplateUse, registerStickerUse, createPost } from "../../config/api.js"
-import { IS_CORDOVA, BASE_ELEMENT_TYPES } from "../../config/constants.js"
+import { IS_CORDOVA, BASE_ELEMENT_TYPES, VISIBILITY } from "../../config/constants.js"
 
 const useStyles = makeStyles(theme => {
     const spacing = {
@@ -102,7 +102,11 @@ function ImageDialog({ open, onClose, imageData }) {
 
     const classes = useStyles({ imageData })
     
-    const { register, getValues, watch } = useForm()
+    const { register, getValues, watch, control } = useForm({
+        defaultValues: {
+            visibility: VISIBILITY["GLOBAL"].toString()
+        }
+    })
 
     // Increase the usage-counter only once
     const isRegistered = useRef(false)
@@ -158,7 +162,6 @@ function ImageDialog({ open, onClose, imageData }) {
         }
         
         registerUsage()
-        dispatchEvent("downloadImage")
     }
 
     const handlePostClick = () => {
@@ -197,7 +200,6 @@ function ImageDialog({ open, onClose, imageData }) {
             setIsUploading(false)
             setLink(link)
             registerUsage()
-            dispatchEvent("uploadImage", { link })
         })
 
         .catch(() => {
@@ -207,7 +209,6 @@ function ImageDialog({ open, onClose, imageData }) {
 
     const handleShareClick = () => {
         setIsShareDialogOpen(true)
-        dispatchEvent("openShareModal")
     }
 
     const handlePublishTemplateClick = async () => {
@@ -217,7 +218,7 @@ function ImageDialog({ open, onClose, imageData }) {
 
         setIsPublishing(true)
 
-        context.event.dispatchEvent(new CustomEvent("createTemplate"))
+        dispatchEvent("createTemplate")
 
         context.rootElement.label = getValues("label")
 
@@ -228,7 +229,8 @@ function ImageDialog({ open, onClose, imageData }) {
         }
 
         const body = {
-            model
+            model,
+            visibility: context.auth.user.is_admin ? +getValues("visibility") : VISIBILITY["PUBLIC"]
         }
 
         // Upload data
@@ -290,7 +292,7 @@ function ImageDialog({ open, onClose, imageData }) {
                     <>
                         <img alt="" src={imageData} className={classes.image}/>
 
-                        { !hasPostedImage && (
+                        { context.auth.isLoggedIn && !hasPostedImage && (
                             <LoadingButton
                                 startIcon={<SendIcon />}
                                 color="primary"
@@ -352,6 +354,19 @@ function ImageDialog({ open, onClose, imageData }) {
                                     variant="outlined"
                                     defaultValue={context.rootElement.label}
                                 />
+
+                                { context.auth.user.is_admin && !isEditingTemplate && (
+                                    <Controller
+                                        control={control}
+                                        name="visibility"
+                                        as={
+                                            <RadioGroup className={classes.spacing}>
+                                                <FormControlLabel value={VISIBILITY["PUBLIC"].toString()} label="Public" control={<Radio />} />
+                                                <FormControlLabel value={VISIBILITY["GLOBAL"].toString()} label="Global" control={<Radio />} />
+                                            </RadioGroup>
+                                        }
+                                    />
+                                ) }
 
                                 <LoadingButton
                                     startIcon={<PublishIcon />}

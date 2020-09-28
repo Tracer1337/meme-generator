@@ -14,6 +14,8 @@ const UserController = require("../app/Controllers/UserController.js")
 const FriendsController = require("../app/Controllers/FriendsController.js")
 const ProfileController = require("../app/Controllers/ProfileController.js")
 
+const { VISIBILITY } = require("../config/constants.js")
+
 const router = express.Router()
 
 router.post("/auth/authorize", (req, res) => {
@@ -21,14 +23,14 @@ router.post("/auth/authorize", (req, res) => {
 })
 
 router.get("/templates", TemplatesController.getAll)
-router.post("/templates", ProtectMiddleware, TemplatesController.create)
+router.post("/templates", new Validator().oneOf("visibility", { values: Object.values(VISIBILITY) }), ProtectMiddleware, TemplatesController.create)
 router.put("/templates", ProtectMiddleware, TemplatesController.edit)
 router.delete("/templates/:id", ProtectMiddleware, TemplatesController.remove)
 router.post("/templates/register-use/:id", TemplatesController.registerUse)
 
 router.get("/stickers", StickersController.getAll)
-router.post("/stickers", ProtectMiddleware, UploadMiddleware.single("image"), StickersController.create)
-router.delete("/stickers/:id", ProtectMiddleware, StickersController.remove)
+router.post("/stickers", ProtectMiddleware.Admin, UploadMiddleware.single("image"), StickersController.create)
+router.delete("/stickers/:id", ProtectMiddleware.Admin, StickersController.remove)
 router.post("/stickers/register-use/:id", StickersController.registerUse)
 
 router.get("/upload/random", UploadController.getRandom)

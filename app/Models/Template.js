@@ -1,12 +1,16 @@
 const Model = require("../../lib/Model.js")
 const StorageFacade = require("../Facades/StorageFacade.js")
 const config = require("../../config")
+const { VISIBILITY } = require("../../config/constants.js")
 
 class Template extends Model {
     constructor(values) {
         super({
             table: "templates",
-            columns: ["id", "label", "image_url", "model", "amount_uses", "user_id"],
+            columns: ["id", "label", "image_url", "model", "amount_uses", "user_id", "visibility"],
+            defaultValues: {
+                visibility: () => VISIBILITY["PUBLIC"]
+            },
             ...values
         })
     }
@@ -27,7 +31,8 @@ class Template extends Model {
             image_url: this.image_url,
             model: this.model,
             amount_uses: this.amount_uses,
-            user_id: this.user_id
+            user_id: this.user_id,
+            visibility: this.visibility
         }
     }
 }

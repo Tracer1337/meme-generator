@@ -28,16 +28,6 @@ module.exports = {
         for (let [username, email, password] of data) {
             const user = new User({ created_at: randomTimestamp(), username, email, password })
             await user.store()
-
-            for (let i = 0; i < 5; i++) {
-                const templates = await Templates.where("user_id IS NULL")
-
-                if (templates.length > 0) {
-                    const randomTemplate = templates.random()
-                    randomTemplate.user_id = user.id
-                    await randomTemplate.update()
-                }
-            }
         }
     }
 }

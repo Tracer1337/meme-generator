@@ -32,4 +32,16 @@ async function ProtectMiddleware(req, res, next) {
     next()
 }
 
+function Admin(req, res, next) {
+    ProtectMiddleware(req, res, () => {
+        if (!req.user.is_admin) {
+            return res.sendStatus(403)
+        }
+
+        next()
+    })
+}
+
+Object.assign(ProtectMiddleware, { Admin })
+
 module.exports = ProtectMiddleware 

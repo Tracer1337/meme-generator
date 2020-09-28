@@ -18,11 +18,11 @@ async function getAll(req, res) {
 }
 
 async function create(req, res) {
-    await ImageServiceProvider.formatImage({ path: req.file.path })
-
-    const newFilename = changeExtension(req.file.filename, "jpg")
-
     try {
+        await ImageServiceProvider.formatImage({ path: req.file.path })
+
+        const newFilename = changeExtension(req.file.filename, "jpg")
+
         let upload = await UploadServiceProvider.uploadFile(req, req.file.path, newFilename)
 
         await upload.store()

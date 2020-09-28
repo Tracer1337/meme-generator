@@ -5,12 +5,13 @@ const Template = require("./Template.js")
 const Post = require("./Post.js")
 const StorageFacade = require("../Facades/StorageFacade.js")
 const { queryAsync } = require("../utils/index.js")
+const { VISIBILITY } = require("../../config/constants.js")
 
 class User extends Model {
     constructor(values) {
         super({
             table: "users",
-            columns: ["id", "username", "email", "password", "avatar_filename", "created_at"],
+            columns: ["id", "username", "email", "password", "avatar_filename", "created_at", "is_admin"],
             defaultValues: {
                 id: () => uuid(),
                 created_at: () => moment()
@@ -22,6 +23,10 @@ class User extends Model {
     async init({ authorized = false } = {}) {
         this.templates = await Template.findAllBy("user_id", this.id)
         this.created_at = moment(this.created_at)
+        
+        if (Buffer.isBuffer(this.is_admin)) {
+            this.is_admin = !!this.is_admin[0]
+        }
         
         if (authorized) {
             this.friends = (await this.getFriends()) || []
@@ -35,14 +40,14 @@ class User extends Model {
         return super.delete()
     }
 
+    async getPosts() {
+        return await Post.findAllBy("user_id", this.id)
+    }
+
     async getFriends() {
         const query = `SELECT * FROM friends INNER JOIN users ON friends.to_user_id = users.id WHERE friends.from_user_id = '${this.id}'`
         const rows = await queryAsync(query)
         return User.fromRows(rows)
-    }
-
-    async getPosts() {
-        return await Post.findAllBy("user_id", this.id)
     }
 
     async addFriend(user) {
@@ -78,9 +83,10 @@ class User extends Model {
             id: this.id,
             username: this.username,
             created_at: this.created_at,
-            templates: this.templates,
+            templates: (this.templates || []).filter(({ visibility }) => visibility !== VISIBILITY["GLOBAL"]),
             friends: this.friends,
-            avatar_url: this.avatar_filename ? "/upload/" + this.avatar_filename : null
+            avatar_url: this.avatar_filename ? "/upload/" + this.avatar_filename : null,
+            is_admin: this.is_admin
         }
     }
 }
