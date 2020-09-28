@@ -3,7 +3,6 @@ import { CircularProgress } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 
 import Router from "./Router/Router.js"
-import Analytics from "./utils/Analytics.js"
 import OfflineUseAlerts from "./utils/OfflineUseAlerts.js"
 import { setTokenHeader } from "./config/api.js"
 import settingsOptions from "./config/settings-options.json"
@@ -112,7 +111,6 @@ function App() {
 
     return (
         <AppContext.Provider value={{ ...context, ...contextMethods }}>
-            <Analytics />
             <OfflineUseAlerts />
 
             {isLoading ? (

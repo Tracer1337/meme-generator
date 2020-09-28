@@ -3,11 +3,6 @@ const StorageFacade = require("../Facades/StorageFacade.js")
 const config = require("../../config")
 
 class Template extends Model {
-    static findBy = Model.findBy.bind({ model: Template, table: "templates" })
-    static findAllBy = Model.findAllBy.bind({ model: Template, table: "templates" })
-    static where = Model.where.bind({ model: Template, table: "templates" })
-    static getAll = Model.getAll.bind({ model: Template, table: "templates" })
-
     constructor(values) {
         super({
             table: "templates",
@@ -36,5 +31,7 @@ class Template extends Model {
         }
     }
 }
+
+Model.passMethods(Template, "templates")
 
 module.exports = Template
