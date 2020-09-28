@@ -1,61 +1,67 @@
-import React, { useEffect, useContext } from "react"
-import { Dialog, DialogTitle, Button } from "@material-ui/core"
+import React, { useContext } from "react"
+import { Dialog, AppBar, Toolbar, Slide, IconButton, Typography, Button } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
-import { useForm, FormProvider } from "react-hook-form"
+import CloseIcon from "@material-ui/icons/ChevronLeft"
 
-import Switch from "./components/Switch.js"
-import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
 import { AppContext } from "../../App.js"
+import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
 
 const useStyles = makeStyles(theme => ({
-    form: {
-        padding: theme.spacing(2),
-        paddingTop: 0
+    spacer: {
+        marginTop: theme.mixins.toolbar.minHeight + theme.spacing(1)
     },
 
-    applyButton: {
-        marginTop: theme.spacing(2)
+    section: {
+        margin: `0 ${theme.spacing(2)}px ${theme.spacing(1)}px`
     },
 
-    input: {
-        marginTop: theme.spacing(1),
-        marginLeft: 0
+    title: {
+        marginBottom: theme.spacing(1)
     }
 }))
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="left" ref={ref} {...props} />
+})
 
 function SettingsDialog({ onClose, open }) {
     const context = useContext(AppContext)
 
-    const { getValues, handleSubmit, control, watch, reset, register, setValue } = useForm()
-
-    const classes = useStyles({ settings: watch() })
-
-    const handleClose = () => {
+    const classes = useStyles()
+    
+    const handleLogout = () => {
         context.set({
-            settings: {
-                ...context.settings,
-                ...getValues()
+            auth: {
+                ...context.auth,
+                user: null,
+                isLoggedIn: false,
+                token: null
             }
         })
         onClose()
     }
 
-    useEffect(() => {
-        reset(context.settings)
-    }, [context.settings, reset])
-
     return (
-        <Dialog onClose={handleClose} open={open}>
-            <DialogTitle>Settings</DialogTitle>
+        <Dialog fullScreen onClose={onClose} open={open} TransitionComponent={Transition}>
+            <AppBar position="fixed">
+                <Toolbar>
+                    <IconButton edge="start" onClick={onClose} color="inherit">
+                        <CloseIcon/>
+                    </IconButton>
 
-            <FormProvider {...{ control, watch, register, setValue }}>
-                <form onSubmit={handleSubmit(handleClose)} className={classes.form}>
-                    {/* Experimental */}
-                    <Switch name="isExperimental" label="Experimental" className={classes.input} />
+                    <Typography variant="subtitle1">
+                        Settings
+                    </Typography>
+                </Toolbar>
+            </AppBar>
 
-                    <Button fullWidth className={classes.applyButton} type="submit">Apply</Button>
-                </form>
-            </FormProvider>
+            <div className={classes.spacer}/>
+
+            <div className={classes.section}>
+                <Typography variant="h6" className={classes.title}>My Account</Typography>
+
+                <Button variant="outlined" color="primary" fullWidth onClick={handleLogout}>Logout</Button>
+            </div>
         </Dialog>
     )
 }

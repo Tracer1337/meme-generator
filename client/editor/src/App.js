@@ -32,6 +32,7 @@ function contextMiddleware(values) {
             setTokenHeader(values.auth.token)
         } else {
             localStorage.removeItem("token")
+            setTokenHeader(null)
         }
     }
 }

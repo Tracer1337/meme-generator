@@ -1,25 +1,41 @@
-import React, { useContext } from "react"
+import React, { useState, useContext } from "react"
 import { useForm, FormProvider } from "react-hook-form"
-import { Button } from "@material-ui/core"
+import { Button, Typography } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 
 import { AppContext } from "../../App.js"
 import Input from "./components/Input.js"
+import TermsDialog from "../Dialogs/TermsDialog.js"
+import PrivacyDialog from "../Dialogs/PrivacyDialog.js"
 import { register as apiRegister } from "../../config/api.js"
 
 const useStyles = makeStyles(theme => ({
+    link: {
+        fontWeight: "bold",
+        cursor: "pointer"
+    },
+
+    legal: {
+        marginTop: theme.spacing(2),
+        display: "block",
+        opacity: .6
+    },
+
     submit: {
-        marginTop: theme.spacing(2)
+        marginTop: theme.spacing(1)
     }
 }))
 
 function RegisterForm({ onRegister }) {
     const context = useContext(AppContext)
 
+    const classes = useStyles()
+    
     const formObject = useForm()
     const { handleSubmit, setError } = formObject
-    
-    const classes = useStyles()
+
+    const [isTermsDialogOpen, setIsTermsDialogOpen] = useState(false)
+    const [isPrivacyDialogOpen, setIsPrivacyDialogOpen] = useState(false)
 
     const onSubmit = (values) => {
         if (values.password !== values.password_confirmation) {
@@ -86,12 +102,26 @@ function RegisterForm({ onRegister }) {
                     label="Confirm Password"
                 />
 
+                <Typography variant="caption" className={classes.legal}>
+                    By clicking on "Sign Up", you aggree to both our <span className={classes.link} onClick={() => setIsTermsDialogOpen(true)}>Terms and Conditions</span> and <span className={classes.link} onClick={() => setIsPrivacyDialogOpen(true)}>Privacy Policy</span>.
+                </Typography>
+
                 <Button
                     type="submit"
                     fullWidth
                     className={classes.submit}
-                >Register</Button>
+                >Sign Up</Button>
             </form>
+
+            <TermsDialog
+                open={isTermsDialogOpen}
+                onClose={() => setIsTermsDialogOpen(false)}
+            />
+
+            <PrivacyDialog
+                open={isPrivacyDialogOpen}
+                onClose={() => setIsPrivacyDialogOpen(false)}
+            />
         </FormProvider>
     )
 }

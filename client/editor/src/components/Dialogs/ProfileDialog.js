@@ -2,12 +2,14 @@ import React, { useState, useEffect, useContext } from "react"
 import { Dialog, AppBar, Toolbar, Typography, Slide, IconButton, Grid } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import CloseIcon from "@material-ui/icons/ExpandMore"
+import SettingsIcon from "@material-ui/icons/Settings"
 
 import { AppContext } from "../../App.js"
 import Avatar from "../User/Avatar.js" 
 import MyProfileElements from "./components/MyProfileElements.js"
 import ProfileContent from "./components/ProfileContent.js"
 import ConfirmDialog from "./ConfirmDialog.js"
+import SettingsDialog from "./SettingsDialog.js"
 import { createListeners } from "../../utils"
 import { deletePost } from "../../config/api.js"
 
@@ -24,6 +26,11 @@ const useStyles = makeStyles(theme => ({
     header: {
         backgroundColor: theme.palette.background.paper,
         boxShadow: "none"
+    },
+
+    toolbar: {
+        display: "flex",
+        justifyContent: "space-between"
     },
 
     grid: {
@@ -43,6 +50,7 @@ function ProfileDialog({ open, onClose, user, onReload = () => {} }) {
     const classes = useStyles()
 
     const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] = useState(false)
+    const [isSettingsDialogOpen, setIsSettingsDialogOpen] = useState(false)
     const [currentPost, setCurrentPost] = useState(null)
 
     const isMyProfile = user.id === context.auth.user.id
@@ -71,9 +79,13 @@ function ProfileDialog({ open, onClose, user, onReload = () => {} }) {
     return (
         <Dialog open={open} onClose={onClose} fullScreen TransitionComponent={Transition} classes={{ paper: classes.innerDialog }}>
             <AppBar className={classes.header}>
-                <Toolbar>
+                <Toolbar className={classes.toolbar}>
                     <IconButton edge="start" onClick={onClose}>
                         <CloseIcon/>
+                    </IconButton>
+
+                    <IconButton edge="end" onClick={() => setIsSettingsDialogOpen(true)}>
+                        <SettingsIcon/>
                     </IconButton>
                 </Toolbar>
             </AppBar>
@@ -96,6 +108,11 @@ function ProfileDialog({ open, onClose, user, onReload = () => {} }) {
                 open={isDeleteConfirmDialogOpen}
                 onClose={handleConfirmDialogClose}
                 content="The post will be deleted"
+            />
+
+            <SettingsDialog
+                open={isSettingsDialogOpen}
+                onClose={() => setIsSettingsDialogOpen(false)}
             />
         </Dialog>
     )

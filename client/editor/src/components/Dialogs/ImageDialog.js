@@ -11,7 +11,7 @@ import CloseIcon from "@material-ui/icons/Close"
 import SendIcon from "@material-ui/icons/Send"
 
 import ShareDialog from "./ShareDialog.js"
-import UploadTermsDialog from "./UploadTermsDialog.js"
+import TermsDialog from "./TermsDialog.js"
 
 import { AppContext } from "../../App.js"
 import { dataURLToFile } from "../../utils"
@@ -118,7 +118,7 @@ function ImageDialog({ open, onClose, imageData }) {
     const [isPublishing, setIsPublishing] = useState(false)
     const [isPosting, setIsPosting] = useState(false)
     const [isShareDialogOpen, setIsShareDialogOpen] = useState(false)
-    const [isUploadTermsDialogOpen, setIsUploadTermsDialogOpen] = useState(false)
+    const [isTermsDialogOpen, setIsTermsDialogOpen] = useState(false)
     const [isUploadSnackbarOpen, setIsUploadSnackbarOpen] = useState(false)
     const [isStoredSnackbarOpen, setIsStoredSnackbarOpen] = useState(false)
     const [hasCreatedTemplate, setHasCreatedTemplate] = useState(false)
@@ -183,7 +183,7 @@ function ImageDialog({ open, onClose, imageData }) {
     }
 
     const handleUploadClick = () => {
-        setIsUploadTermsDialogOpen(true)
+        setIsTermsDialogOpen(true)
 
         new Promise((resolve, reject) => {
             onAccept.current = resolve
@@ -191,7 +191,7 @@ function ImageDialog({ open, onClose, imageData }) {
         })
 
         .then(async () => {
-            setIsUploadTermsDialogOpen(false)
+            setIsTermsDialogOpen(false)
             setIsUploading(true)
 
             const file = dataURLToFile(imageData, "image.png")
@@ -203,7 +203,7 @@ function ImageDialog({ open, onClose, imageData }) {
         })
 
         .catch(() => {
-            setIsUploadTermsDialogOpen(false)
+            setIsTermsDialogOpen(false)
         })
     }
 
@@ -392,8 +392,8 @@ function ImageDialog({ open, onClose, imageData }) {
                 )}
             </Dialog>
 
-            <UploadTermsDialog
-                open={isUploadTermsDialogOpen}
+            <TermsDialog
+                open={isTermsDialogOpen}
                 onAccept={onAccept.current}
                 onReject={onReject.current}
             />
