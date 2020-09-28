@@ -8,6 +8,7 @@ import LinkIcon from "@material-ui/icons/Link"
 import ShareIcon from "@material-ui/icons/Share"
 import PublishIcon from "@material-ui/icons/Publish"
 import CloseIcon from "@material-ui/icons/Close"
+import SendIcon from "@material-ui/icons/Send"
 
 import ShareDialog from "./ShareDialog.js"
 import UploadTermsDialog from "./UploadTermsDialog.js"
@@ -17,7 +18,7 @@ import { dataURLToFile } from "../../utils"
 import downloadDataURI from "../../utils/downloadDataURI.js"
 import uploadImage from "../../utils/uploadImage.js"
 import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
-import { uploadTemplate, editTemplate, registerTemplateUse, registerStickerUse } from "../../config/api.js"
+import { uploadTemplate, editTemplate, registerTemplateUse, registerStickerUse, createPost } from "../../config/api.js"
 import { IS_CORDOVA, BASE_ELEMENT_TYPES } from "../../config/constants.js"
 
 const useStyles = makeStyles(theme => {
@@ -47,7 +48,7 @@ const useStyles = makeStyles(theme => {
             margin: `${theme.spacing(2)}px auto`
         },
 
-        uploadButtonWrapper: {
+        buttonLoaderWrapper: {
             ...spacing,
             position: "relative"
         },
@@ -82,6 +83,20 @@ const useStyles = makeStyles(theme => {
     }
 })
 
+function LoadingButton({ isLoading, children, ...props }) {
+    const classes = useStyles()
+
+    return (
+        <div className={classes.buttonLoaderWrapper}>
+            <Button {...props}>
+                { children }
+            </Button>
+
+            {isLoading && <CircularProgress size={24} className={classes.buttonLoader} />}
+        </div>
+    )
+}
+
 function ImageDialog({ open, onClose, imageData }) {
     const context = useContext(AppContext)
 
@@ -97,12 +112,14 @@ function ImageDialog({ open, onClose, imageData }) {
     const [link, setLink] = useState()
     const [isUploading, setIsUploading] = useState(false)
     const [isPublishing, setIsPublishing] = useState(false)
+    const [isPosting, setIsPosting] = useState(false)
     const [isShareDialogOpen, setIsShareDialogOpen] = useState(false)
     const [isUploadTermsDialogOpen, setIsUploadTermsDialogOpen] = useState(false)
     const [isUploadSnackbarOpen, setIsUploadSnackbarOpen] = useState(false)
     const [isStoredSnackbarOpen, setIsStoredSnackbarOpen] = useState(false)
     const [hasCreatedTemplate, setHasCreatedTemplate] = useState(false)
     const [hasStoredImage, setHasStoredImage] = useState(false)
+    const [hasPostedImage, setHasPostedImage] = useState(false)
 
     const isEditingTemplate = !!context.currentTemplate
 
@@ -142,6 +159,24 @@ function ImageDialog({ open, onClose, imageData }) {
         
         registerUsage()
         dispatchEvent("downloadImage")
+    }
+
+    const handlePostClick = () => {
+        setIsPosting(true)
+
+        const file = dataURLToFile(imageData, "image.png")
+
+        const formData = new FormData()
+        formData.append("image", file)
+        
+        createPost(formData)
+            .then(res => {
+                if (res.status === 200) {
+                    setIsUploadSnackbarOpen(true)
+                    setHasPostedImage(true)
+                }
+            })
+            .finally(() => setIsPosting(false))
     }
 
     const handleUploadClick = () => {
@@ -255,6 +290,18 @@ function ImageDialog({ open, onClose, imageData }) {
                     <>
                         <img alt="" src={imageData} className={classes.image}/>
 
+                        <LoadingButton
+                            startIcon={<SendIcon/>}
+                            color="primary"
+                            variant="contained"
+                            onClick={handlePostClick}
+                            disabled={hasPostedImage}
+                            fullWidth
+                            isLoading={isPosting}
+                        >
+                            Post
+                        </LoadingButton>
+
                         <Paper variant="outlined" className={classes.linkWrapper} style={{ display: !link && "none" }}>
                             <Typography variant="body1" className={classes.link}>
                                 {link}
@@ -266,20 +313,17 @@ function ImageDialog({ open, onClose, imageData }) {
                         </Paper>
 
                         {!link && (
-                            <div className={classes.uploadButtonWrapper}>
-                                <Button
-                                    startIcon={<LinkIcon />}
-                                    color="primary"
-                                    variant="outlined"
-                                    onClick={handleUploadClick}
-                                    disabled={isUploading}
-                                    fullWidth
-                                >
-                                    Create Link
-                                </Button>
-
-                                {isUploading && <CircularProgress size={24} className={classes.buttonLoader} />}
-                            </div>
+                            <LoadingButton
+                                startIcon={<LinkIcon />}
+                                color="primary"
+                                variant="outlined"
+                                onClick={handleUploadClick}
+                                disabled={isUploading}
+                                fullWidth
+                                isLoading={isUploading}
+                            >
+                                Create Link
+                            </LoadingButton>
                         )}
 
                         {!hasStoredImage && (
@@ -306,21 +350,18 @@ function ImageDialog({ open, onClose, imageData }) {
                                     variant="outlined"
                                     defaultValue={context.rootElement.label}
                                 />
-                                
-                                <div className={classes.uploadButtonWrapper}>
-                                    <Button
-                                        startIcon={<PublishIcon />}
-                                        color="primary"
-                                        variant="outlined"
-                                        onClick={!isEditingTemplate ? handlePublishTemplateClick : handleEditTemplateClick}
-                                        disabled={isPublishing || !watch("label")}
-                                        fullWidth
-                                    >
-                                        { !isEditingTemplate ? "Create" : "Update" } Template
-                                    </Button>
 
-                                    {isPublishing && <CircularProgress size={24} className={classes.buttonLoader} />}
-                                </div>
+                                <LoadingButton
+                                    startIcon={<PublishIcon />}
+                                    color="primary"
+                                    variant="outlined"
+                                    onClick={!isEditingTemplate ? handlePublishTemplateClick : handleEditTemplateClick}
+                                    disabled={isPublishing || !watch("label")}
+                                    fullWidth
+                                    isLoading={isPublishing}
+                                >
+                                    {!isEditingTemplate ? "Create" : "Update"} Template
+                                </LoadingButton>
                             </>
                         )}
 
