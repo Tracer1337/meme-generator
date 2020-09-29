@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "concurrently -n server,editor -c blue,green,yellow npm:start-server npm:start-editor",
+    "start": "concurrently -n server,editor -c blue,green npm:start-server npm:start-editor",
     "start-server": "node scripts/start-server.js && nodemon server.js",
     "start-editor": "cd client && npm run start",
     "cordova": "node scripts/start-cordova.js",
