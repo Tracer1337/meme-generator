@@ -8,6 +8,6 @@ module.exports = {
         "password varchar(255) NOT NULL",
         "avatar_filename varchar(255)",
         "created_at varchar(255) NOT NULL",
-        "is_admin bit(0) NOT NULL DEFAULT 0"
+        "is_admin bit(1) NOT NULL DEFAULT 0"
     ]
 }
