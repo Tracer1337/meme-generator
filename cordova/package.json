@@ -2,7 +2,7 @@
   "name": "com.memegenerator",
   "displayName": "Meme Bros",
   "version": "1.0.0",
-  "description": "A sample Apache Cordova application that responds to the deviceready event.",
+  "description": "The easiest meme generator available",
   "main": "index.js",
   "scripts": {
     "create-release-bundle": "cordova build android --prod --release -- --packageType=bundle",

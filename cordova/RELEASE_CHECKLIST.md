@@ -5,4 +5,5 @@
 [] Sign the release-bundle by running "npm run sign-release-bundle"
 [] Move the bundle (cordova/platforms/android/app/build/outputs/bundle/release/app-release.aab) into store/google-play/releases/release-.../
 [] Create a new release in the Google Play Developer Console
+[] Create a new release on GitHub
 [] Comment REACT_BASE_URL in client/.env
