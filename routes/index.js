@@ -4,6 +4,7 @@ const express = require("express")
 const { createProxyMiddleware } = require("http-proxy-middleware")
 
 const { queryAsync } = require("../app/utils")
+const { VISIBILITY } = require("../config/constants.js")
 
 const ROOT_DIR = path.join(__dirname, "..")
 
@@ -13,8 +14,8 @@ const rootRouter = express.Router()
  * Serve landing page
  */
 rootRouter.get("/", async (req, res) => {
-    const firstQuery = "SELECT COUNT(*) as amount_templates FROM templates WHERE id = id and user_id IS NULL"
-    const secondQuery = "SELECT SUM(amount_uses) as total_template_uses FROM templates WHERE id = id"
+    const firstQuery = `SELECT COUNT(*) as amount_templates FROM templates WHERE visibility = ${VISIBILITY["GLOBAL"]}`
+    const secondQuery = "SELECT SUM(amount_uses) as total_template_uses FROM templates WHERE 1"
 
     try {
         const amountTemplates = (await queryAsync(firstQuery))[0].amount_templates

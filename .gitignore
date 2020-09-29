@@ -2,6 +2,7 @@ node_modules/
 *.pem
 *.log
 .env
+package-lock.json
 
 storage/*
 temp/*
