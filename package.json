@@ -20,6 +20,7 @@
   "license": "ISC",
   "dependencies": {
     "@m.moelter/task-runner": "^1.0.1",
+    "http-proxy-middleware": "^1.0.5",
     "aws-sdk": "^2.743.0",
     "bcrypt": "^5.0.0",
     "chalk": "^4.1.0",
@@ -38,7 +39,6 @@
   },
   "devDependencies": {
     "concurrently": "^5.2.0",
-    "http-proxy-middleware": "^1.0.5",
     "ncp": "^2.0.0",
     "node-ssh": "^10.0.2",
     "nodemon": "^2.0.4",
