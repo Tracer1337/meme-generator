@@ -33,9 +33,6 @@ router.post("/stickers", ProtectMiddleware.Admin, UploadMiddleware.single("image
 router.delete("/stickers/:id", ProtectMiddleware.Admin, StickersController.remove)
 router.post("/stickers/register-use/:id", StickersController.registerUse)
 
-router.get("/upload/random", UploadController.getRandom)
-router.get("/upload/all", UploadController.getAll)
-
 router.post("/auth/register", new Validator().email("email", { uniqueIn: User }).username("username", { uniqueIn: User }).password("password"), AuthController.register)
 router.post("/auth/login", new Validator().email("email", { existsIn: User }).password("password"), AuthController.login)
 

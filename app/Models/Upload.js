@@ -7,14 +7,9 @@ class Upload extends Model {
     constructor(values) {
         super({
             table: "uploads",
-            columns: ["id", "filename", "request_ip_address", "created_at", "is_hidden"],
+            columns: ["id", "filename", "request_ip_address", "created_at"],
             ...values
         })
-    }
-
-    async init() {
-        // Convert buffer ([0] || [1]) to boolean
-        this.is_hidden = !!this.is_hidden[0]
     }
 
     async delete() {
@@ -28,7 +23,6 @@ class Upload extends Model {
         return {
             id: this.id,
             filename: this.filename,
-            is_hidden: this.is_hidden,
 
             url: "/upload/" + this.filename,
             embedUrl: "/upload/" + removeExtension(this.filename),

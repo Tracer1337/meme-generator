@@ -5,7 +5,7 @@ const rmdir = require("rimraf")
 const { makeRunnable, run, exec } = require("@m.moelter/task-runner")
 
 const ROOT_DIR = path.join(__dirname, "..")
-const EDITOR_DIR = path.join(ROOT_DIR, "client", "editor")
+const EDITOR_DIR = path.join(ROOT_DIR, "client")
 const BUILD_DIR = path.join(EDITOR_DIR, "build")
 const INDEX_HTML_DIR = path.join(EDITOR_DIR, "public", "index.html")
 const CORDOVA_WWW_DIR = path.join(ROOT_DIR, "cordova", "www")
@@ -21,7 +21,7 @@ makeRunnable(async () => {
             // Insert cordova.js script tag into index.html
             await replaceVarInHTML("scripts", `<script src="cordova.js"></script>`)
 
-            await exec("cd ./client/editor && npm run build-cordova")
+            await exec("cd ./client && npm run build-cordova")
 
             await resetHTML()
         }, "Create react build")

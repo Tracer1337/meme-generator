@@ -8,7 +8,7 @@ require("dotenv").config({ path: path.join(__dirname, "..", ".env") })
 const ssh = new NodeSSH()
 const ROOT_DIR = path.join(__dirname, "..")
 
-const EDITOR_BUILD_DIR = path.join(ROOT_DIR, "client", "editor", "build")
+const EDITOR_BUILD_DIR = path.join(ROOT_DIR, "client", "", "build")
 const EDITOR_OUTPUT_DIR = path.join(ROOT_DIR, "public", "editor")
 
 program
@@ -42,7 +42,7 @@ makeRunnable(async () => {
  */
 
 async function createBuild() {
-    await exec("cd client/editor && npm run build")
+    await exec("cd client && npm run build")
 }
 
 async function moveBuild() {

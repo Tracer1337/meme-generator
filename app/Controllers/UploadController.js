@@ -1,28 +1,9 @@
 const fs = require("fs")
 
 const StorageFacade = require("../Facades/StorageFacade")
-const AuthServiceProvider = require("../Services/AuthServiceProvider")
 const ImageServiceProvider = require("../Services/ImageServiceProvider.js")
 const UploadServiceProvider = require("../Services/UploadServiceProvider.js")
-const Upload = require("../Models/Upload.js")
-const { changeExtension, removeExtension, hasExtension } = require("../utils")
-
-/**
- * Get all uploads
- */
-async function getAll(req, res) {
-    const isAuthorized = AuthServiceProvider.authorize(req)
-
-    const uploads = !isAuthorized ? await Upload.findAllBy("is_hidden", "0") : await Upload.getAll()
-
-    if (!isAuthorized) {
-        uploads.forEach(upload => delete upload.is_hidden)
-    }
-
-    uploads.sort((a, b) => b.created_at - a.created_at)
-
-    res.send(uploads)
-}
+const { changeExtension, hasExtension } = require("../utils")
 
 /**
  * Get upload by filename - Render embed or send file directly
@@ -56,17 +37,6 @@ async function getByFilename(req, res) {
 }
 
 /**
- * Get random upload
- */
-async function getRandom(req, res) {
-    const uploads = await Upload.findAllBy("is_hidden", "0")
-
-    const random = uploads[Math.floor(Math.random() * uploads.length)]
-
-    res.send(random)
-}
-
-/**
  * Create new upload
  */
 async function store(req, res) {
@@ -89,31 +59,7 @@ async function store(req, res) {
     }
 }
 
-/**
- * Update upload (is_hidden)
- */
-async function edit(req, res) {
-    if (![0, 1].includes(+req.body.is_hidden)) {
-        return res.status(400).end()
-    }
-
-    const upload = await Upload.findBy("filename", req.params.file)
-
-    if (!upload) {
-        return res.status(404).end()
-    }
-
-    upload.is_hidden = req.body.is_hidden
-
-    await upload.update()
-
-    res.send(upload)
-}
-
 module.exports = {
-    getAll,
     getByFilename,
-    getRandom,
     store,
-    edit
 }
