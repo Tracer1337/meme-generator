@@ -22,10 +22,13 @@ const runnable = makeRunnable(async () => {
     }, "Removing tables")
 
     await run(async () => {
-        await Promise.all([
-            StorageFacade.clearStorage(),
-            StorageFacade.clearLocalStorage()
-        ])
+        try {
+            await StorageFacade.clearStorage()
+        } catch {}
+
+        try {
+            await StorageFacade.clearLocalStorage()
+        } catch {}
     }, "Removing files")
 
     for (let migration of migrations) {
