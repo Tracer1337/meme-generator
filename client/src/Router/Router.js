@@ -1,5 +1,5 @@
 import React from "react"
-import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom"
+import { HashRouter, Switch, Route, Redirect } from "react-router-dom"
 
 import ProtectedRoute from "./ProtectedRoute.js"
 import EditorPage from "../Pages/EditorPage.js"
@@ -10,7 +10,7 @@ import ExplorePage from "../Pages/ExplorePage.js"
 
 function Router() {
     return (
-        <BrowserRouter basename={process.env.REACT_APP_ROUTER_BASE || "/"}>
+        <HashRouter basename={process.env.REACT_APP_ROUTER_BASE || "/"}>
             <Switch>
                 <Route path="/login">
                     <LoginPage/>
@@ -36,7 +36,7 @@ function Router() {
                     <Redirect to="/editor"/>
                 </Route>
             </Switch>
-        </BrowserRouter>
+        </HashRouter>
     )
 }
 
