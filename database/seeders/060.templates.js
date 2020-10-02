@@ -14,7 +14,7 @@ module.exports = {
 
     run: async () => {
         // Get templates from templates/templates.json
-        const templates = JSON.parse(fs.readFileSync(path.join(TEMPLATES_DIR, "templates.json"), "utf8"))
+        const templates = JSON.parse(fs.readFileSync(path.join(TEMPLATES_DIR, "templates.json"), "utf8")).slice(0, 30)
         templates.forEach(template => template.meta_data = JSON.parse(template.meta_data))
 
         await Promise.all(templates.map(async (template) => {

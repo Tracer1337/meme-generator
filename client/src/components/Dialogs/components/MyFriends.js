@@ -1,11 +1,12 @@
 import React, { useContext } from "react"
-import { IconButton, Typography } from "@material-ui/core"
+import { IconButton, Typography, CircularProgress } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import RemoveIcon from "@material-ui/icons/Close"
 
 import { AppContext } from "../../../App.js"
 import UserCard from "../../User/UserCard.js"
 import { removeFriend } from "../../../config/api.js"
+import useAPIData from "../../../utils/useAPIData.js"
 
 const useStyles = makeStyles(theme => ({
     letter: {
@@ -22,13 +23,24 @@ function MyFriends({ search }) {
 
     const classes = useStyles()
 
+    const { isLoading, data, reload } = useAPIData({
+        method: "getMyFriends",
+        useCache: false
+    })
+
     const handleAddClick = (user) => {
         removeFriend(user.id)
-            .then(context.reloadProfile)
+            .then(reload)
             .catch(console.error)
     }
 
-    const renderUsers = context.auth.user.friends.filter(user => user.username.startsWith(search))
+    if (isLoading || !data) {
+        return (
+            <CircularProgress />
+        )
+    }
+
+    const renderUsers = data.filter(user => user.username.startsWith(search))
 
     const sortedUsers = renderUsers.reduce((map, user) => {
         const letter = user.username[0].toUpperCase()

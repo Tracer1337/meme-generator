@@ -4,6 +4,7 @@ import format, {
     TEMPLATES,
     STICKERS,
     LOGIN,
+    USERS,
     USER,
     POSTS
 } from "./formatAPI.js"
@@ -51,4 +52,6 @@ export const createPost = (formData) => axios.post(url("/posts"), formData)
 export const deletePost = (id) => axios.delete(url("/posts/" + id))
 
 export const getProfile = () => axios.get(url("/profile")).then(format(USER))
+export const getMyTemplates = () => axios.get(url("/profile/templates")).then(format(TEMPLATES))
+export const getMyFriends = () => axios.get(url("/profile/friends")).then(format(USERS))
 export const editAvatar = (formData) => axios.post(url("/profile/avatar"), formData).then(format(USER))

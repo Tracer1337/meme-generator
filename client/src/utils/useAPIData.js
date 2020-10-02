@@ -17,7 +17,7 @@ function createKey(props) {
  * @param {Boolean} props.useCache - Whether or not to cache requests and use a cached response as the initial data
  * @param {Any} props.defaultValue - Default value for data
  * @param {Function} props.onLoad - Will be triggered when the requests was performed successfully. Receives the data as the first argument
- * @param {Boolen} props.initialRequests - If the hook should make an initial requests or not - Useful when you want to control the requests via "reload"
+ * @param {Boolen} props.initialRequest - If the hook should make an initial requests or not - Useful when you want to control the requests via "reload"
  * 
  * @returns {Object} response - A custom response object
  * @returns {Object} response.data - The data returned from the API
@@ -30,7 +30,7 @@ function useAPIData(props) {
     props = {
         method: typeof props === "string" ? props : props.method,
         useCache: true,
-        initialRequests: true,
+        initialRequest: true,
         ...(typeof props === "object" ? props : {})
     }
 
@@ -42,7 +42,7 @@ function useAPIData(props) {
 
     const method = API[props.method].bind(null, props.data)
 
-    const [isLoading, setIsLoading] = useState(!(props.defaultValue || cache.get(key) || !props.initialRequests))
+    const [isLoading, setIsLoading] = useState(!(props.defaultValue || cache.get(key) || !props.initialRequest))
     const [error, setError] = useState()
 
     const [data, setData] = useReducer((state, newValue) => {
@@ -53,7 +53,7 @@ function useAPIData(props) {
     const [version, reload] = useReducer((key) => key + 1, 0)
 
     useEffect(() => {
-        if ((data || !props.initialRequests) && version === 0) {
+        if ((data || !props.initialRequest) && version === 0) {
             return
         }
 
@@ -63,7 +63,6 @@ function useAPIData(props) {
             .then(res => {
                 setData(res.data)
                 setError(null)
-                setIsLoading(false)
 
                 if (props.onLoad) {
                     props.onLoad(res.data)
@@ -74,6 +73,8 @@ function useAPIData(props) {
                 
                 setData(null)
                 setError(error)
+            })
+            .finally(() => {
                 setIsLoading(false)
             })
         // eslint-disable-next-line

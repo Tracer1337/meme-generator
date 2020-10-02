@@ -37,6 +37,8 @@ router.post("/auth/register", new Validator().email("email", { uniqueIn: User })
 router.post("/auth/login", new Validator().email("email", { existsIn: User }).password("password"), AuthController.login)
 
 router.get("/profile", ProtectMiddleware, ProfileController.getProfile)
+router.get("/profile/templates", ProtectMiddleware, ProfileController.getTemplates)
+router.get("/profile/friends", ProtectMiddleware, ProfileController.getFriends)
 router.post("/profile/avatar", ProtectMiddleware, UploadMiddleware.single("image"), ProfileController.uploadAvatar)
 
 router.get("/posts", ProtectMiddleware, PostsController.getAll)

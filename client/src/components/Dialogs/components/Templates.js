@@ -100,6 +100,45 @@ function TemplatesGrid({ data, onClick, onDelete, search }) {
     )
 }
 
+const GlobalTemplates = React.forwardRef(function({ defaultValue, onClick, onDelete, search }, ref) {
+    const { data, isLoading, reload } = useAPIData({
+        method: "getTemplates",
+        defaultValue
+    })
+
+    useImperativeHandle(ref, () => ({ reload }))
+
+    if (isLoading) {
+        return <CircularProgress />
+    }
+
+    if (!data) {
+        return <Typography>Could not load data</Typography>
+    }
+
+    return (
+        <TemplatesGrid data={data} onClick={onClick} onDelete={onDelete} search={search} />
+    )
+})
+
+const UserTemplates = React.forwardRef(function({ defaultValue, onClick, onDelete, search }, ref) {
+    const { data, isLoading, reload } = useAPIData("getMyTemplates")
+
+    useImperativeHandle(ref, () => ({ reload }))
+
+    if (isLoading) {
+        return <CircularProgress />
+    }
+
+    if (!data) {
+        return <Typography>Could not load data</Typography>
+    }
+
+    return (
+        <TemplatesGrid data={data} onClick={onClick} onDelete={onDelete} search={search} />
+    )
+})
+
 function Templates({ onReload, templates, renderUserTemplates = true }, ref) {
     const context = useContext(AppContext)
     
@@ -110,14 +149,11 @@ function Templates({ onReload, templates, renderUserTemplates = true }, ref) {
     const classes = useStyles()
 
     const currentTemplate = useRef({})
+    const globalTemplatesRef = useRef()
+    const userTemplatesRef = useRef()
 
     const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false)
     const [search, setSearch] = useState("")
-
-    const { data, isLoading, reload } = useAPIData({
-        method: "getTemplates",
-        defaultValue: templates
-    })
 
     const handleDelete = (template) => {
         currentTemplate.current = template
@@ -149,17 +185,12 @@ function Templates({ onReload, templates, renderUserTemplates = true }, ref) {
         }
     }
 
-    useImperativeHandle(ref, () => ({
-        reload
-    }))
-
-    if (isLoading) {
-        return <CircularProgress />
+    const reload = () => {
+        globalTemplatesRef.current.reload()
+        userTemplatesRef.current.reload()
     }
-
-    if (!data) {
-        return <Typography>Could not load data</Typography>
-    }
+    
+    useImperativeHandle(ref, () => ({ reload }))
 
     return (
         <>
@@ -171,12 +202,23 @@ function Templates({ onReload, templates, renderUserTemplates = true }, ref) {
                 { context.auth.isLoggedIn && renderUserTemplates && (
                     <>
                         <Typography variant="h5" className={classes.title}>My Templates</Typography>
-                        <TemplatesGrid data={context.auth.user.templates} onClick={handleClick} onDelete={handleDelete} search={search}/>
-                        <Divider className={classes.divider}/>
+                        <UserTemplates
+                            ref={userTemplatesRef}
+                            onClick={handleClick}
+                            onDelete={handleDelete}
+                            search={search}
+                        />
+                        <Divider className={classes.divider} />
                     </>
                 ) }
 
-                <TemplatesGrid data={data} onClick={handleClick} onDelete={handleDelete} search={search}/>
+                <GlobalTemplates
+                    defaultValue={templates}
+                    ref={globalTemplatesRef}
+                    onClick={handleClick}
+                    onDelete={handleDelete}
+                    search={search}
+                />
 
                 <ConfirmDialog
                     open={isConfirmDialogOpen}

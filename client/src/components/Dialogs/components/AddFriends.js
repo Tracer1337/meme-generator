@@ -24,14 +24,19 @@ function AddFriends({ search }, ref) {
         method: "getUsersByQueryString",
         data: search,
         useCache: false,
-        initialRequests: false
+        initialRequest: false
+    })
+
+    const { isLoading: isLoadingFriends, data: friends } = useAPIData({
+        method: "getMyFriends",
+        useCache: false
     })
 
     const [addedUsers, setAddedUsers] = useState([])
 
     useImperativeHandle(ref, () => ({ reload, reset }))
 
-    if (isLoading) {
+    if (isLoading || isLoadingFriends) {
         return <CircularProgress/>
     }
 
@@ -49,7 +54,7 @@ function AddFriends({ search }, ref) {
 
     const renderUsers = data.filter(user => (
         user.id !== context.auth.user.id &&
-        !context.auth.user.friends.some(({ id }) => user.id === id)
+        !friends.some(({ id }) => user.id === id)
     ))
 
     return (

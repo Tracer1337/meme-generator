@@ -6,6 +6,7 @@ import { getCachedImage } from "../utils/cache.js"
 export const TEMPLATES = "TEMPLATES"
 export const STICKERS = "STICKERS"
 export const LOGIN = "LOGIN"
+export const USERS = "USERS"
 export const USER = "USER"
 export const POSTS = "POSTS"
 
@@ -30,18 +31,6 @@ function formatUser(user) {
 
     if (user.avatar_url) {
         user.avatar_url = formatRelativeURL(user.avatar_url)
-    }
-
-    if (user.templates) {
-        user.templates.map(formatTemplate)
-    } else {
-        user.templates = []
-    }
-
-    if (user.friends) {
-        user.friends.map(formatUser)
-    } else {
-        user.friends = []
     }
 }
 
@@ -75,6 +64,8 @@ export default function format(type) {
         fn = (data) => map(data.data, formatSticker)
     } else if (type === LOGIN) {
         fn = (data) => formatUser(data.data.user)
+    } else if (type === USERS) {
+        fn = (data) => map(data.data, formatUser)
     } else if (type === USER) {
         fn = (data) => formatUser(data.data)
     } else if (type === POSTS) {

@@ -5,7 +5,6 @@ const Template = require("./Template.js")
 const Post = require("./Post.js")
 const StorageFacade = require("../Facades/StorageFacade.js")
 const { queryAsync } = require("../utils/index.js")
-const { VISIBILITY } = require("../../config/constants.js")
 
 class User extends Model {
     constructor(values) {
@@ -20,7 +19,7 @@ class User extends Model {
         })
     }
 
-    async init({ authorized = false } = {}) {
+    async init({ initFriends = false } = {}) {
         this.templates = await Template.findAllBy("user_id", this.id)
         this.created_at = moment(this.created_at)
         
@@ -28,7 +27,7 @@ class User extends Model {
             this.is_admin = !!this.is_admin[0]
         }
         
-        if (authorized) {
+        if (initFriends) {
             this.friends = (await this.getFriends()) || []
             await this.friends.mapAsync(user => user.init())
         }
@@ -83,8 +82,6 @@ class User extends Model {
             id: this.id,
             username: this.username,
             created_at: this.created_at,
-            templates: (this.templates || []).filter(({ visibility }) => visibility !== VISIBILITY["GLOBAL"]),
-            friends: this.friends,
             avatar_url: this.avatar_filename ? "/upload/" + this.avatar_filename : null,
             is_admin: this.is_admin
         }

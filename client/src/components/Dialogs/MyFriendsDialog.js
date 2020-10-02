@@ -52,7 +52,7 @@ function MyFriendsDialog({ open, onClose }) {
             <div className={classes.body}>
                 <SearchBar value={search} onChange={setSearch} className={classes.searchBar} />
 
-                <MyFriends search={search} />
+                <MyFriends search={search}/>
             </div>
         </Dialog>
     )
