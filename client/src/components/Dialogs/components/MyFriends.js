@@ -1,9 +1,8 @@
-import React, { useContext } from "react"
+import React from "react"
 import { IconButton, Typography, CircularProgress } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import RemoveIcon from "@material-ui/icons/Close"
 
-import { AppContext } from "../../../App.js"
 import UserCard from "../../User/UserCard.js"
 import { removeFriend } from "../../../config/api.js"
 import useAPIData from "../../../utils/useAPIData.js"
@@ -19,8 +18,6 @@ const useStyles = makeStyles(theme => ({
 }))
 
 function MyFriends({ search }) {
-    const context = useContext(AppContext)
-
     const classes = useStyles()
 
     const { isLoading, data, reload } = useAPIData({
