@@ -6,7 +6,7 @@ const values = backgroundPage.getCurrentValues()
 const iframe = document.getElementById("main-frame")
 
 iframe.onload = async () => {
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 10; i++) {
         await new Promise(requestAnimationFrame)
     }
     iframe.contentWindow.postMessage(values, "*")
