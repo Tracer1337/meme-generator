@@ -37,6 +37,6 @@ class Template extends Model {
     }
 }
 
-Model.passMethods(Template, "templates")
+Model.bind(Template, "templates")
 
 module.exports = Template

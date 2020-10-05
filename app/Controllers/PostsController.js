@@ -10,7 +10,7 @@ const config = require("../../config")
 async function getAll(req, res) {
     const page = req.query.page || 0
 
-    const posts = await Post.where("id = id")
+    const posts = await Post.getAll()
 
     posts.sort((a, b) => b.created_at - a.created_at)
 

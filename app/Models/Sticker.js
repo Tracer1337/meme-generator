@@ -29,6 +29,6 @@ class Sticker extends Model {
     }
 }
 
-Model.passMethods(Sticker, "stickers")
+Model.bind(Sticker, "stickers")
 
 module.exports = Sticker

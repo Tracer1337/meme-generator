@@ -88,6 +88,6 @@ class User extends Model {
     }
 }
 
-Model.passMethods(User, "users")
+Model.bind(User, "users")
 
 module.exports = User

@@ -32,6 +32,6 @@ class Upload extends Model {
     }
 }
 
-Model.passMethods(Upload, "uploads")
+Model.bind(Upload, "uploads")
 
 module.exports = Upload

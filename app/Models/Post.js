@@ -45,6 +45,6 @@ class Post extends Model {
     }
 }
 
-Model.passMethods(Post, "posts")
+Model.bind(Post, "posts")
 
 module.exports = Post
