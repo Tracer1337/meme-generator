@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react"
+import React, { useContext } from "react"
 import { Dialog, AppBar, Toolbar, Typography, Slide, IconButton, Grid } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import CloseIcon from "@material-ui/icons/ExpandMore"
@@ -8,9 +8,6 @@ import { AppContext } from "../../App.js"
 import Avatar from "../User/Avatar.js" 
 import MyProfileElements from "./components/MyProfileElements.js"
 import ProfileContent from "./components/ProfileContent.js"
-import ConfirmDialog from "./ConfirmDialog.js"
-import SettingsDialog from "./SettingsDialog.js"
-import { createListeners } from "../../utils"
 import { deletePost } from "../../config/api.js"
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -49,32 +46,18 @@ function ProfileDialog({ open, onClose, user, onReload = () => {} }) {
 
     const classes = useStyles()
 
-    const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] = useState(false)
-    const [isSettingsDialogOpen, setIsSettingsDialogOpen] = useState(false)
-    const [currentPost, setCurrentPost] = useState(null)
-
     const isMyProfile = user.id === context.auth.user.id
 
     const handlePostDelete = (post) => {
-        setCurrentPost(post)
-        setIsDeleteConfirmDialogOpen(true)
+        const dialogHandle = context.openDialog("Confirm", { content: "The post will be deleted" })
+
+        dialogHandle.addListener("close", (shouldDelete) => {
+            if (shouldDelete) {
+                deletePost(post.id)
+                    .then(() => context.event.dispatchEvent(new CustomEvent("reloadPosts")))
+            }
+        })
     }
-
-    const handleConfirmDialogClose = (shouldDelete) => {
-        setIsDeleteConfirmDialogOpen(false)
-
-        if (shouldDelete) {
-            deletePost(currentPost.id)
-                .then(() => context.event.dispatchEvent(new CustomEvent("reloadPosts")))
-                .finally(() => setCurrentPost(null))
-        }
-    }
-
-    useEffect(() => {
-        return createListeners(context.event, [
-            ["loadTemplate", onClose]
-        ])
-    })
 
     return (
         <Dialog open={open} onClose={onClose} fullScreen TransitionComponent={Transition} classes={{ paper: classes.innerDialog }}>
@@ -85,7 +68,7 @@ function ProfileDialog({ open, onClose, user, onReload = () => {} }) {
                     </IconButton>
 
                     { isMyProfile && (
-                        <IconButton edge="end" onClick={() => setIsSettingsDialogOpen(true)}>
+                        <IconButton edge="end" onClick={() => context.openDialog("Settings")}>
                             <SettingsIcon />
                         </IconButton>
                     ) }
@@ -105,17 +88,6 @@ function ProfileDialog({ open, onClose, user, onReload = () => {} }) {
             { isMyProfile && <MyProfileElements/> }
 
             <ProfileContent user={user} onReload={onReload} onPostDelete={isMyProfile && handlePostDelete}/>
-
-            <ConfirmDialog
-                open={isDeleteConfirmDialogOpen}
-                onClose={handleConfirmDialogClose}
-                content="The post will be deleted"
-            />
-
-            <SettingsDialog
-                open={isSettingsDialogOpen}
-                onClose={() => setIsSettingsDialogOpen(false)}
-            />
         </Dialog>
     )
 }

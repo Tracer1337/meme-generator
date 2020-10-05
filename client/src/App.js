@@ -86,7 +86,7 @@ function App() {
             })
         },
 
-        reloadProfile: forceUpdate
+        reloadProfile: forceUpdate,
     }
 
     useEffect(() => {

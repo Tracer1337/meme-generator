@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useContext } from "react"
+import React, { useState, useRef, useContext } from "react"
 import clsx from "clsx"
 import { Toolbar, Fab, IconButton, Snackbar, Zoom as MuiZoom, Fade as MuiFade } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
@@ -11,8 +11,6 @@ import UndoIcon from "@material-ui/icons/Undo"
 import CloseIcon from "@material-ui/icons/Close"
 
 import Menu from "./Menu.js"
-import TemplatesDialog from "../Dialogs/TemplatesDialog.js"
-import HelpDialog from "../Dialogs/HelpDialog.js"
 import { AppContext } from "../../App.js"
 import helpOverlayData from "../../config/help-overlay-data.json"
 
@@ -74,8 +72,6 @@ function DefaultActions() {
     const openMenuButton = useRef()
 
     const [isMenuOpen, setIsMenuOpen] = useState(false)
-    const [isTemplatesOpen, setIsTemplatesOpen] = useState(false)
-    const [isHelpOpen, setIsHelpOpen] = useState(false)
     const [isLoggedOutSnackbarOpen, setIsLoggedOutSnackbarOpen] = useState(false)
 
     const handleMoreClick = () => {
@@ -86,14 +82,6 @@ function DefaultActions() {
         setIsMenuOpen(false)
     }
 
-    const handleTemplatesClick = () => {
-        setIsTemplatesOpen(true)
-    }
-
-    const handleHelpClick = () => {
-        setIsHelpOpen(true)
-    }
-
     const handleDisableDrawingClick = () => {
         context.set({
             drawing: {
@@ -102,28 +90,21 @@ function DefaultActions() {
             }
         })
     }
+
     const dispatchEvent = (name) => () => {
         context.event.dispatchEvent(new CustomEvent(name))
     }
-
-    useEffect(() => {
-        context.event.addEventListener("openTemplatesDialog", handleTemplatesClick)
-
-        return () => {
-            context.event.removeEventListener("openTemplatesDialog", handleTemplatesClick)
-        }
-    })
     
     return (
         <Fade in={!context.focus}>
             <Toolbar>
                 {/* Left */}
 
-                <IconButton onClick={handleHelpClick}>
+                <IconButton onClick={() => context.openDialog("Help", { data: helpOverlayData.default })}>
                     <HelpIcon />
                 </IconButton>
 
-                <IconButton onClick={handleTemplatesClick} id="templates-button">
+                <IconButton onClick={() => context.openDialog("Templates")} id="templates-button">
                     <CloudDownloadIcon />
                 </IconButton>
 
@@ -166,9 +147,6 @@ function DefaultActions() {
                 {/* Off-Layout */}
 
                 <Menu open={isMenuOpen} anchorEl={openMenuButton.current} onClose={handleMenuClose} />
-
-                <TemplatesDialog open={isTemplatesOpen} onClose={() => setIsTemplatesOpen(false)} />
-                <HelpDialog open={isHelpOpen} onClose={() => setIsHelpOpen(false)} data={helpOverlayData.default} />
 
                 <Snackbar
                     anchorOrigin={{

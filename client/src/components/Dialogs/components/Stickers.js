@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useRef, useImperativeHandle } from "react"
+import React, { useContext, useEffect, useRef, useImperativeHandle } from "react"
 import ReactDOM from "react-dom"
 import { IconButton, GridList, GridListTile, CircularProgress, Fab, Zoom, Typography } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
@@ -6,7 +6,6 @@ import DeleteIcon from "@material-ui/icons/Delete"
 import AddIcon from "@material-ui/icons/Add"
 
 import { AppContext } from "../../../App.js"
-import ConfirmDialog from "../ConfirmDialog.js"
 
 import { deleteSticker, uploadSticker } from "../../../config/api.js"
 import { importFile } from "../../../utils"
@@ -104,22 +103,19 @@ function Stickers({ onLoad, active }, ref) {
 
     const currentSticker = useRef({})
 
-    const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false)
-
     const { data, isLoading, reload } = useAPIData("getStickers")
 
     const handleDelete = (sticker) => {
         currentSticker.current = sticker
-        setIsConfirmDialogOpen(true)
-    }
 
-    const handleConfirmDialogClose = (shouldDelete) => {
-        setIsConfirmDialogOpen(false)
+        const dialogHandler = context.openDialog("Confirm", { content: `Sticker ${currentSticker.current.id} will be deleted` })
 
-        if (shouldDelete) {
-            deleteSticker(currentSticker.current.id)
-                .then(reload)
-        }
+        dialogHandler.addListener("close", (shouldDelete) => {
+            if (shouldDelete) {
+                deleteSticker(currentSticker.current.id)
+                    .then(reload)
+            }
+        })
     }
 
     const handleClick = (event, sticker) => {
@@ -168,12 +164,6 @@ function Stickers({ onLoad, active }, ref) {
                     </GridListTile>    
                 ))}
             </GridList>
-
-            <ConfirmDialog
-                open={isConfirmDialogOpen}
-                onClose={handleConfirmDialogClose}
-                content={`Sticker ${currentSticker.current.id} will be deleted`}
-            />
             
             {context.auth.user?.is_admin && actionContainer && ReactDOM.createPortal((
                 <Zoom in={active} unmountOnExit>

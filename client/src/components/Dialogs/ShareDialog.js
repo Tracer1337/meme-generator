@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-function ShareDialog({ open, link, onClose, onOpen }) {
+function ShareDialog({ open, link, onClose }) {
     link = encodeURIComponent(link)
     
     const classes = useStyles()
@@ -48,7 +48,7 @@ function ShareDialog({ open, link, onClose, onOpen }) {
             disableSwipeToOpen
             open={open}
             onClose={onClose}
-            onOpen={onOpen}
+            onOpen={() => {}}
             anchor="bottom"
             PaperProps={{ className: classes.innerDrawer }}
         >

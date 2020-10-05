@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useRef } from "react"
+import React, { useState, useContext, useRef } from "react"
 import { Dialog, AppBar, Toolbar, IconButton, Slide, Tabs, Tab } from "@material-ui/core"
 import SwipeableViews from "react-swipeable-views"
 import { makeStyles } from "@material-ui/core/styles"
@@ -11,7 +11,6 @@ import Stickers from "./components/Stickers.js"
 import { AppContext } from "../../App.js"
 import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
 import { IS_OFFLINE } from "../../config/constants.js"
-import { createListeners } from "../../utils"
 
 const useStyles = makeStyles(theme => ({
     toolbar: {
@@ -68,12 +67,6 @@ function TemplatesDialog({ onClose, open }) {
         setCurrentTab(index)
         scrollToTop()
     }
-
-    useEffect(() => {
-        return createListeners(context.event, [
-            ["loadTemplate", onClose]
-        ])
-    })
 
     return (
         <Dialog fullScreen onClose={onClose} open={open} TransitionComponent={Transition}>

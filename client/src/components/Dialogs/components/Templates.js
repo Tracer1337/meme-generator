@@ -5,7 +5,6 @@ import { makeStyles } from "@material-ui/core/styles"
 import DeleteIcon from "@material-ui/icons/Delete"
 
 import { AppContext } from "../../../App.js"
-import ConfirmDialog from "../ConfirmDialog.js"
 import SearchBar from "./SearchBar.js"
 import { deleteTemplate } from "../../../config/api.js"
 import { cacheImage } from "../../../utils/cache.js"
@@ -89,7 +88,7 @@ function TemplatesGrid({ data, onClick, onDelete, search }) {
 
                     <GridListTileBar title={template.label} subtitle={getSubtitle(template.amount_uses)} className={classes.tilebar} />
 
-                    {context.auth.isLoggedIn && template.user_id === context.auth.user.id && (
+                    {context.auth.isLoggedIn && (template.user_id === context.auth.user.id || context.auth.user.is_admin) && (
                         <IconButton onClick={() => onDelete(template)} className={classes.deleteButton}>
                             <DeleteIcon fontSize="small" />
                         </IconButton>
@@ -152,12 +151,19 @@ function Templates({ onReload, templates, renderUserTemplates = true }, ref) {
     const globalTemplatesRef = useRef()
     const userTemplatesRef = useRef()
 
-    const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false)
     const [search, setSearch] = useState("")
 
     const handleDelete = (template) => {
         currentTemplate.current = template
-        setIsConfirmDialogOpen(true)
+
+        const dialogHandle = context.openDialog("Confirm", { content: `The template "${currentTemplate.current.label}" will be deleted` })
+
+        dialogHandle.addListener("close", (shouldDelete) => {
+            if (shouldDelete) {
+                deleteTemplate(currentTemplate.current.id)
+                    .then(onReload || reload)
+            }
+        })
     }
 
     const handleLoad = async (template) => {
@@ -167,15 +173,6 @@ function Templates({ onReload, templates, renderUserTemplates = true }, ref) {
         }
         context.event.dispatchEvent(new CustomEvent("resetCanvas"))
         context.event.dispatchEvent(new CustomEvent("loadTemplate", { detail: { template } }))
-    }
-
-    const handleConfirmDialogClose = (shouldDelete) => {
-        setIsConfirmDialogOpen(false)
-
-        if (shouldDelete) {
-            deleteTemplate(currentTemplate.current.id)
-                .then(onReload || reload)
-        }
     }
 
     const handleClick = (event, template) => {
@@ -218,12 +215,6 @@ function Templates({ onReload, templates, renderUserTemplates = true }, ref) {
                     onClick={handleClick}
                     onDelete={handleDelete}
                     search={search}
-                />
-
-                <ConfirmDialog
-                    open={isConfirmDialogOpen}
-                    onClose={handleConfirmDialogClose}
-                    content={`The template "${currentTemplate.current.label}" will be deleted`}
                 />
             </div>
         </>

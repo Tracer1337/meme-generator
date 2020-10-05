@@ -1,8 +1,7 @@
-import React, { useState, useRef } from "react"
+import React, { useState, useRef, useContext } from "react"
 import { makeStyles } from "@material-ui/core/styles"
 
-import ImageSettingsDialog from "../../Dialogs/ImageSettingsDialog.js"
-
+import { AppContext } from "../../../App.js"
 import makeElement from "./makeElement.js"
 
 const defaultSettings = {
@@ -20,19 +19,13 @@ const useStyles = makeStyles(theme => ({
 function Sticker({ data: { defaultValues, src }, id, onFocus, dimensions, handle }, forwardedRef) {
     src = defaultValues?.src || src
 
+    const context = useContext(AppContext)
+
     const classes = useStyles()
 
     const imageRef = useRef()
 
     const [settings, setSettings] = useState({...defaultSettings, ...defaultValues?.settings})
-    const [isDialogOpen, setIsDialogOpen] = useState(false)
-
-    const handleSettingsApply = (values) => {
-        if(values) {
-            setSettings(values)
-        }
-        setIsDialogOpen(false)
-    }
 
     const styles = {
         width: dimensions.width + "px",
@@ -41,7 +34,16 @@ function Sticker({ data: { defaultValues, src }, id, onFocus, dimensions, handle
     }
 
     if(handle) {
-        handle.onSettingsClicked = () => setIsDialogOpen(true)
+        handle.onSettingsClicked = () => {
+            const dialogHandle = context.openDialog("ImageSettings", { values: settings, src })
+
+            dialogHandle.addListener("close", (values) => {
+                if (values) {
+                    setSettings(values)
+                }
+            })
+        }
+
         handle.getValues = () => ({ src, settings })
 
         if(settings.keepAspectRatio) {
@@ -57,24 +59,20 @@ function Sticker({ data: { defaultValues, src }, id, onFocus, dimensions, handle
     }
 
     return (
-        <>
-            <img
-                src={src}
-                alt=""
-                id={`element-${id}`}
-                ref={ref => {
-                    forwardedRef.current = ref
-                    imageRef.current = ref
-                }}
-                onMouseDown={onFocus}
-                onTouchStart={onFocus}
-                style={styles}
-                className={classes.image}
-                draggable="false"
-            />
-
-            <ImageSettingsDialog open={isDialogOpen} onClose={handleSettingsApply} values={settings} src={src}/>
-        </>
+        <img
+            src={src}
+            alt=""
+            id={`element-${id}`}
+            ref={ref => {
+                forwardedRef.current = ref
+                imageRef.current = ref
+            }}
+            onMouseDown={onFocus}
+            onTouchStart={onFocus}
+            style={styles}
+            className={classes.image}
+            draggable="false"
+        />
     )
 }
 

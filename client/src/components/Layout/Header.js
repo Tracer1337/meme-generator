@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react"
+import React, { useContext } from "react"
 import { useHistory } from "react-router-dom"
 import { AppBar, Toolbar, IconButton } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
@@ -7,10 +7,6 @@ import PersonAddIcon from "@material-ui/icons/PersonAdd"
 
 import { AppContext } from "../../App.js"
 import Avatar from "../User/Avatar.js"
-import AddFriendsDialog from "../Dialogs/AddFriendsDialog.js"
-import MyFriendsDialog from "../Dialogs/MyFriendsDialog.js"
-import ProfileDialog from "../Dialogs/ProfileDialog.js"
-import { createListeners } from "../../utils"
 
 const useStyles = makeStyles(theme => ({
     header: {
@@ -34,25 +30,17 @@ function Header({ isHidden }) {
     const history = useHistory()
     
     const classes = useStyles()
-
-    const [isAddFriendsDialogOpen, setIsAddFriendsDialogOpen] = useState(false)
-    const [isMyFriendsDialogOpen, setIsMyFriendsDialogOpen] = useState(false)
-    const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false)
-
+    
     const handleAvatarClick = () => {
         if (!context.auth.isLoggedIn) {
             history.push("/login")
         } else {
-            setIsProfileDialogOpen(true)
+            context.openDialog("Profile", {
+                user: context.auth.user,
+                onReload: context.reloadProfile
+            })
         }
     }
-
-    useEffect(() => {
-        return createListeners(context.event, [
-            ["openAddFriendsDialog", () => setIsAddFriendsDialogOpen(true)],
-            ["openMyFriendsDialog", () => setIsMyFriendsDialogOpen(true)]
-        ])
-    })
 
     return (
         <AppBar className={classes.header} style={{ display: isHidden && "none" }}>
@@ -68,24 +56,11 @@ function Header({ isHidden }) {
                 </div>
 
                 { context.auth.isLoggedIn && (
-                    <IconButton size="small" onClick={() => setIsAddFriendsDialogOpen(true)}>
+                    <IconButton size="small" onClick={() => context.openDialog("AddFriends")}>
                         <PersonAddIcon />
                     </IconButton>
                 ) }
             </Toolbar>
-
-            { context.auth.isLoggedIn && (
-                <>
-                    <ProfileDialog
-                        open={isProfileDialogOpen}
-                        onClose={() => setIsProfileDialogOpen(false)}
-                        user={context.auth.user}
-                        onReload={context.reloadProfile}
-                    />
-                    <AddFriendsDialog open={isAddFriendsDialogOpen} onClose={() => setIsAddFriendsDialogOpen(false)} />
-                    <MyFriendsDialog open={isMyFriendsDialogOpen} onClose={() => setIsMyFriendsDialogOpen(false)} />
-                </>
-            ) }
         </AppBar>
     )
 }

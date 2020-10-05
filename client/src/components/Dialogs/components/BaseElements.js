@@ -21,11 +21,9 @@ function BaseElements({ onBaseElementCreate, onClose = () => {} }) {
 
     const classes = useStyles()
 
-    const dispatchEvent = (name) => context.event.dispatchEvent(new CustomEvent(name))
-
-    const dispatch = (name) => () => {
+    const openTemplates = () => {
         onClose()
-        dispatchEvent(name)
+        context.openDialog("Templates")
     }
 
     const handleCreateImage = async () => {
@@ -50,7 +48,7 @@ function BaseElements({ onBaseElementCreate, onClose = () => {} }) {
 
     return (
         <List>
-            <ListItem button onClick={dispatch("openTemplatesDialog")} className={classes.listItem}>
+            <ListItem button onClick={openTemplates} className={classes.listItem}>
                 <ListItemIcon>
                     <CloudDownloadIcon />
                 </ListItemIcon>

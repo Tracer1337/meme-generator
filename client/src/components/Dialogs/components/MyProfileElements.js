@@ -53,15 +53,13 @@ function MyProfileElements() {
 
     const classes = useStyles()
 
-    const dispatch = (name) => () => context.event.dispatchEvent(new CustomEvent(name))
-
     return (
         <div className={classes.myProfileElements}>
             <Typography variant="h6" className={classes.title}>Meme-Bros</Typography>
 
-            <Button onClick={dispatch("openAddFriendsDialog")} Icon={PersonAddIcon}>Add Meme-Bros</Button>
+            <Button onClick={() => context.openDialog("AddFriends")} Icon={PersonAddIcon}>Add Meme-Bros</Button>
 
-            <Button onClick={dispatch("openMyFriendsDialog")} Icon={PeopleIcon}>My Meme-Bros</Button>
+            <Button onClick={() => context.openDialog("MyFriends")} Icon={PeopleIcon}>My Meme-Bros</Button>
         </div>
     )
 }

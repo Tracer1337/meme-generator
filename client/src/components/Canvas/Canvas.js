@@ -3,9 +3,6 @@ import { makeStyles } from "@material-ui/core/styles"
 
 import Grid from "./Grid.js"
 import DrawingCanvas from "./DrawingCanvas.js"
-import BorderDialog from "../Dialogs/BorderDialog.js"
-import ImageDialog from "../Dialogs/ImageDialog.js"
-import GridDialog from "../Dialogs/GridDialog.js"
 import Base from "./Base.js"
 import Elements from "./Elements/Elements.js"
 
@@ -81,34 +78,9 @@ function Canvas() {
 
     const [borderValues, setBorderValues] = useState(defaultBorderValues)
     const [gridValues, setGridValues] = useState(defaultGridValues)
-    const [isBorderDialogOpen, setIsBorderDialogOpen] = useState(false)
-    const [isImageDialogOpen, setIsImageDialogOpen] = useState(false)
-    const [isGridDialogOpen, setIsGridDialogOpen] = useState(false)
-    const [generatedImage, setGeneratedImage] = useState(null)
-
-    const handleBorderDialogClose = (values) => {
-        if(values) {
-            setBorderValues(values)
-        }
-        setIsBorderDialogOpen(false)
-    }
-
-    const handleGridDialogClose = (values) => {
-        if(values) {
-            setGridValues(values)
-        }
-        setIsGridDialogOpen(false)
-    }
-
-    const handleImageDialogClose = async () => {
-        setIsImageDialogOpen(false)
-        // Wait until dialog is closed
-        await waitFrames(3)
-        setGeneratedImage(null)
-    }
 
     const handleGenerateImage = async () => {
-        setIsImageDialogOpen(true)
+        const dialogHandle = context.openDialog("Image")
 
         // Wait until component got rendered and the textbox handles got applied
         await waitFrames(1)
@@ -122,17 +94,29 @@ function Canvas() {
 
         const imageData = await generateImage(container)
 
-        setGeneratedImage(imageData)
+        dialogHandle.set({ imageData })
         
         elementsRef.current.afterCapturing()
     }
 
     const handleSetBorder = () => {
-        setIsBorderDialogOpen(true)
+        const dialogHandle = context.openDialog("Border", { values: borderValues })
+
+        dialogHandle.addListener("close", (values) => {
+            if (values) {
+                setBorderValues(values)
+            }
+        })
     }
 
     const handleSetGrid = () => {
-        setIsGridDialogOpen(true)
+        const dialogHandle = context.openDialog("Grid", { values: gridValues })
+
+        dialogHandle.addListener("close", (values) => {
+            if (values) {
+                setGridValues(values)
+            }
+        })
     }
 
     const handleResetCanvas = () => {
@@ -318,10 +302,6 @@ function Canvas() {
             </div>
 
             <Grid config={gridValues} canvas={canvas.current} border={borderValues}/>
-
-            <BorderDialog open={isBorderDialogOpen} onClose={handleBorderDialogClose} values={borderValues}/>
-            <GridDialog open={isGridDialogOpen} onClose={handleGridDialogClose} values={gridValues}/>
-            <ImageDialog open={isImageDialogOpen} onClose={handleImageDialogClose} imageData={generatedImage}/>
         </div>
     )
 }

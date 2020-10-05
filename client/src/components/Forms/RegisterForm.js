@@ -1,12 +1,10 @@
-import React, { useState, useContext } from "react"
+import React, { useContext } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 import { Button, Typography } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 
 import { AppContext } from "../../App.js"
 import Input from "./components/Input.js"
-import TermsDialog from "../Dialogs/TermsDialog.js"
-import PrivacyDialog from "../Dialogs/PrivacyDialog.js"
 import { register as apiRegister } from "../../config/api.js"
 
 const useStyles = makeStyles(theme => ({
@@ -33,9 +31,6 @@ function RegisterForm({ onRegister }) {
     
     const formObject = useForm()
     const { handleSubmit, setError } = formObject
-
-    const [isTermsDialogOpen, setIsTermsDialogOpen] = useState(false)
-    const [isPrivacyDialogOpen, setIsPrivacyDialogOpen] = useState(false)
 
     const onSubmit = (values) => {
         if (values.password !== values.password_confirmation) {
@@ -103,7 +98,7 @@ function RegisterForm({ onRegister }) {
                 />
 
                 <Typography variant="caption" className={classes.legal}>
-                    By clicking on "Sign Up", you aggree to both our <span className={classes.link} onClick={() => setIsTermsDialogOpen(true)}>Terms and Conditions</span> and <span className={classes.link} onClick={() => setIsPrivacyDialogOpen(true)}>Privacy Policy</span>.
+                    By clicking on "Sign Up", you aggree to both our <span className={classes.link} onClick={() => context.openDialog("Terms")}>Terms and Conditions</span> and <span className={classes.link} onClick={() => context.openDialog("Privacy")}>Privacy Policy</span>.
                 </Typography>
 
                 <Button
@@ -112,16 +107,6 @@ function RegisterForm({ onRegister }) {
                     className={classes.submit}
                 >Sign Up</Button>
             </form>
-
-            <TermsDialog
-                open={isTermsDialogOpen}
-                onClose={() => setIsTermsDialogOpen(false)}
-            />
-
-            <PrivacyDialog
-                open={isPrivacyDialogOpen}
-                onClose={() => setIsPrivacyDialogOpen(false)}
-            />
         </FormProvider>
     )
 }

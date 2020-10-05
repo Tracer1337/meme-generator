@@ -1,8 +1,8 @@
-import React, { useState } from "react"
+import React, { useContext } from "react"
 import { Grid, Typography } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 
-import ProfileDialog from "../Dialogs/ProfileDialog.js"
+import { AppContext } from "../../App.js"
 import Avatar from "../User/Avatar.js"
 
 const useStyles = makeStyles(theme => ({
@@ -18,27 +18,23 @@ const useStyles = makeStyles(theme => ({
 }))
 
 function Header({ data }) {
+    const context = useContext(AppContext)
+
     const classes = useStyles()
 
-    const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false)
-
-    const openProfileDialog = () => setIsProfileDialogOpen(true)
+    const handleOpenDialog = () => {
+        context.openDialog("Profile", data)
+    }
 
     return (
         <Grid container className={classes.header}>
-            <Grid item onClick={openProfileDialog}>
+            <Grid item onClick={handleOpenDialog}>
                 <Avatar className={classes.avatar} user={data.user}/>
             </Grid>
 
-            <Grid item onClick={openProfileDialog}>
+            <Grid item onClick={handleOpenDialog}>
                 <Typography>{ data.user.username }</Typography>
             </Grid>
-
-            <ProfileDialog
-                open={isProfileDialogOpen}
-                onClose={() => setIsProfileDialogOpen(false)}
-                user={data.user}
-            />
         </Grid>
     )
 }

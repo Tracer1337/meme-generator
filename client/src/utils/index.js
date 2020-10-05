@@ -74,11 +74,16 @@ export function getDateString() {
 }
 
 export function createListeners(target, events) {
+    const methods = {
+        addEventListener: this?.addEventListener || "addEventListener",
+        removeEventListener: this?.removeEventListener || "removeEventListener"
+    }
+
     events.forEach(([name, fn]) => {
-        target.addEventListener(name, fn, false)
+        target[methods.addEventListener](name, fn, false)
     })
 
     return () => events.forEach(([name, fn]) => {
-        target.removeEventListener(name, fn, false)
+        target[methods.removeEventListener](name, fn, false)
     })
 }

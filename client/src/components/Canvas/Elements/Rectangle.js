@@ -1,9 +1,8 @@
-import React, { useState } from "react"
+import React, { useState, useContext } from "react"
 import { makeStyles } from "@material-ui/core/styles"
 
-import RectangleSettingsDialog from "../../Dialogs/RectangleSettingsDialog.js"
+import { AppContext } from "../../../App.js"
 import settingsOptions from "../../../config/settings-options.json"
-
 import makeElement from "./makeElement.js"
 
 const defaultSettings = {
@@ -25,17 +24,11 @@ const useStyles = makeStyles(theme => ({
 }))
 
 function Rectangle({ id, onFocus, dimensions, handle, data: { defaultValues } }, forwardedRef) {
+    const context = useContext(AppContext)
+
     const [settings, setSettings] = useState({ ...defaultSettings, ...defaultValues?.settings })
-    const [isDialogOpen, setIsDialogOpen] = useState(false)
     
     const classes = useStyles({ settings })
-
-    const handleSettingsApply = (values) => {
-        if (values) {
-            setSettings(values)
-        }
-        setIsDialogOpen(false)
-    }
 
     const styles = {
         width: dimensions.width + "px",
@@ -43,24 +36,28 @@ function Rectangle({ id, onFocus, dimensions, handle, data: { defaultValues } },
     }
 
     if (handle) {
-        handle.onSettingsClicked = () => setIsDialogOpen(true)
+        handle.onSettingsClicked = () => {
+            const dialogHandle = context.openDialog("RectangleSettings", { values: settings })
+
+            dialogHandle.addListener("close", (values) => {
+                if (values) {
+                    setSettings(values)
+                }
+            })
+        }
         handle.getValues = () => ({ settings })
     }
 
     return (
-        <>
-            <div
-                id={`element-${id}`}
-                ref={forwardedRef}
-                style={styles}
-                className={classes.rectangle}
-                draggable="false"
-                onMouseDown={onFocus}
-                onTouchStart={onFocus}
-            />
-
-            <RectangleSettingsDialog open={isDialogOpen} onClose={handleSettingsApply} values={settings}/>
-        </>
+        <div
+            id={`element-${id}`}
+            ref={forwardedRef}
+            style={styles}
+            className={classes.rectangle}
+            draggable="false"
+            onMouseDown={onFocus}
+            onTouchStart={onFocus}
+        />
     )
 }
 

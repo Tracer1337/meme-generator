@@ -1,17 +1,14 @@
-import React, { useState, useEffect, useContext } from "react"
+import React, { useEffect, useContext } from "react"
 import { Paper } from "@material-ui/core"
 
 import { AppContext } from "../../App.js"
 import BaseElements from "../Dialogs/components/BaseElements.js"
-import BaseElementsDialog from "../Dialogs/BaseElementsDialog.js"
 import BaseElement from "../../Models/BaseElement.js"
 import { BASE_ELEMENT_TYPES } from "../../config/constants.js"
 import { createListeners } from "../../utils"
 
 function Base(props, ref) {
     const context = useContext(AppContext)
-
-    const [isDialogOpen, setIsDialogOpen] = useState(false)
 
     const handleBaseElementCreate = (baseElement) => {
         context.event.dispatchEvent(new CustomEvent("resetCanvas"))
@@ -24,9 +21,11 @@ function Base(props, ref) {
         })
     }
 
+    const openDialog = () => context.openDialog("BaseElements", { onBaseElementCreate: handleBaseElementCreate })
+
     useEffect(() => {
         return createListeners(context.event, [
-            ["openBaseSelection", () => setIsDialogOpen(true)]
+            ["openBaseSelection", openDialog]
         ])
     })
 
@@ -77,17 +76,7 @@ function Base(props, ref) {
         )
     }
 
-    return (
-        <>
-            { baseElement }
-
-            <BaseElementsDialog
-                open={isDialogOpen}
-                onClose={() => setIsDialogOpen(false)}
-                onBaseElementCreate={handleBaseElementCreate}
-            />
-        </>
-    )
+    return baseElement
 }
 
 export default React.forwardRef(Base)

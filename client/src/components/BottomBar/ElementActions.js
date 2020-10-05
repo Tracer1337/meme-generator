@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react"
+import React, { useContext } from "react"
 import { Toolbar, IconButton, Fade } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import CloseIcon from "@material-ui/icons/Close"
@@ -7,7 +7,6 @@ import FlipToBackIcon from "@material-ui/icons/FlipToBack"
 import FlipToFrontIcon from "@material-ui/icons/FlipToFront"
 import HelpIcon from "@material-ui/icons/Help"
 
-import HelpDialog from "../Dialogs/HelpDialog.js"
 import { AppContext } from "../../App.js"
 import helpOverlayData from "../../config/help-overlay-data.json"
 
@@ -26,8 +25,6 @@ function ElementActions() {
 
     const classes = useStyles()
 
-    const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false)
-
     const { element, controls } = context.focus || {}
 
     const dispatchEvent = (name) => () => {
@@ -38,7 +35,7 @@ function ElementActions() {
         <Fade in={!!context.focus}>
             <Toolbar className={classes.elementActions}>
                 <div>
-                    <IconButton onClick={() => setIsHelpDialogOpen(true)}>
+                    <IconButton onClick={() => context.openDialog("Help", { data: helpOverlayData.elements })}>
                         <HelpIcon />
                     </IconButton>
                 </div>
@@ -66,8 +63,6 @@ function ElementActions() {
                         <CloseIcon />
                     </IconButton>
                 </div>
-
-                <HelpDialog open={isHelpDialogOpen} onClose={() => setIsHelpDialogOpen(false)} data={helpOverlayData.elements}/>
             </Toolbar>
         </Fade>
     )

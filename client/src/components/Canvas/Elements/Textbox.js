@@ -1,8 +1,7 @@
-import React, { useState, useRef, useMemo, useEffect } from "react"
+import React, { useState, useEffect, useRef, useMemo, useContext } from "react"
 import { makeStyles } from "@material-ui/core/styles"
 
-import TextboxSettingsDialog from "../../Dialogs/TextboxSettingsDialog.js"
-
+import { AppContext } from "../../../App.js"
 import useSnapshots from "../../../utils/useSnapshots.js"
 import makeElement from "./makeElement.js"
 import fitText from "../../../utils/fitText.js"
@@ -27,11 +26,12 @@ const useStyles = makeStyles(theme => ({
 }))
 
 function Textbox({ id, handle, onFocus, isFocused, toggleMovement, dimensions, data: { defaultValues } }, forwardedRef) {
+    const context = useContext(AppContext)
+
     const textboxRef = useRef()
     const shouldEmitSnapshot = useRef(false)
 
     const [value, setValue] = useState(defaultValues?.value || TEXTBOX_PLACEHOLDER)
-    const [dialogOpen, setDialogOpen] = useState(false)
     const [settings, setSettings] = useState({ ...defaultSettings, ...defaultValues?.settings })
     const [isEditing, setIsEditing] = useState(false)
 
@@ -54,15 +54,14 @@ function Textbox({ id, handle, onFocus, isFocused, toggleMovement, dimensions, d
     })
 
     const handleSettingsClicked = () => {
-        setDialogOpen(true)
-    }
+        const dialogHandle = context.openDialog("TextboxSettings", { values: settings, text: value })
 
-    const handleSettingsApply = values => {
-        if(values) {
-            addSnapshot()
-            setSettings(values)
-        }
-        setDialogOpen(false)
+        dialogHandle.addListener("close", (values) => {
+            if (values) {
+                addSnapshot()
+                setSettings(values)
+            }
+        })
     }
     
     const handleEditClicked = async () => {
@@ -158,23 +157,19 @@ function Textbox({ id, handle, onFocus, isFocused, toggleMovement, dimensions, d
     })
     
     return (
-        <>
-            <div
-                contentEditable={isEditing}
-                id={`element-${id}`}
-                className={`textbox ${classes.input}`}
-                style={styles}
-                ref={ref => {
-                    textboxRef.current = ref
-                    forwardedRef.current = ref
-                }}
-                onMouseDown={onFocus}
-                onTouchStart={onFocus}
-                onInput={handleValueChange}
-            />
-
-            <TextboxSettingsDialog open={dialogOpen} onClose={handleSettingsApply} values={settings} text={value}/>
-        </>
+        <div
+            contentEditable={isEditing}
+            id={`element-${id}`}
+            className={`textbox ${classes.input}`}
+            style={styles}
+            ref={ref => {
+                textboxRef.current = ref
+                forwardedRef.current = ref
+            }}
+            onMouseDown={onFocus}
+            onTouchStart={onFocus}
+            onInput={handleValueChange}
+        />
     )
 }
 
