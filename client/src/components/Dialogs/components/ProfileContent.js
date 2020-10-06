@@ -48,8 +48,7 @@ function ProfileContent({ user, onReload, onPostDelete }) {
                 disableLazyLoading
             >
                 <Templates
-                    templates={user.templates}
-                    renderUserTemplates={false}
+                    user={user}
                     onReload={onReload}
                 />
 

@@ -19,24 +19,12 @@ class User extends Model {
         })
     }
 
-    async init({ initFriends = false } = {}) {
-        this.templates = await Template.findAllBy("user_id", this.id)
+    async init() {
         this.created_at = moment(this.created_at)
         
         if (Buffer.isBuffer(this.is_admin)) {
             this.is_admin = !!this.is_admin[0]
         }
-        
-        if (initFriends) {
-            this.friends = (await this.getFriends()) || []
-            await this.friends.mapAsync(user => user.init())
-        }
-    }
-
-    async delete() {
-        await StorageFacade.deleteFile(process.env.AWS_BUCKET_PUBLIC_DIR + "/" + this.avatar_filename)
-        
-        return super.delete()
     }
 
     async getPosts() {
@@ -46,7 +34,17 @@ class User extends Model {
     async getFriends() {
         const query = `SELECT * FROM friends INNER JOIN users ON friends.to_user_id = users.id WHERE friends.from_user_id = '${this.id}'`
         const rows = await queryAsync(query)
-        return User.fromRows(rows)
+        const users = User.fromRows(rows)
+
+        if (users.length) {
+            await users.mapAsync(user => user.init())
+        }
+
+        return users
+    }
+
+    async getTemplates() {
+        return await Template.findAllBy("user_id", this.id)
     }
 
     async addFriend(user) {
@@ -69,6 +67,12 @@ class User extends Model {
         await queryAsync(query)
 
         return true
+    }
+
+    async delete() {
+        await StorageFacade.deleteFile(process.env.AWS_BUCKET_PUBLIC_DIR + "/" + this.avatar_filename)
+
+        return super.delete()
     }
 
     getColumns() {

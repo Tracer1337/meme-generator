@@ -33,7 +33,8 @@ async function remove(req, res) {
 async function getPosts(req, res) {
     const page = req.query.page || 0
 
-    let posts = await req.user.friends.mapAsync(user => user.getPosts())
+    const friends = await req.user.getFriends()
+    let posts = await friends.mapAsync(user => user.getPosts())
     posts.push(await req.user.getPosts())
 
     posts = posts.map(collection => collection.models).flat()

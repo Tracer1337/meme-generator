@@ -1,6 +1,7 @@
 const StorageFacade = require("../Facades/StorageFacade.js")
 const ImageServiceProvider = require("../Services/ImageServiceProvider.js")
 const Template = require("../Models/Template.js")
+const User = require("../Models/User.js")
 const { changeExtension, createTempFile } = require("../utils")
 const config = require("../../config")
 const { VISIBILITY } = require("../../config/constants.js")
@@ -97,4 +98,14 @@ async function registerUse(req, res) {
     res.send(template)
 }
 
-module.exports = { getAll, create, edit, remove, registerUse }
+async function getByUser(req, res) {
+    const user = await User.findBy("id", req.params.id)
+
+    if (!user) {
+        return res.sendStatus(404)
+    }
+
+    res.send(await user.getTemplates())
+}
+
+module.exports = { getAll, create, edit, remove, registerUse, getByUser }

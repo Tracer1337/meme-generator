@@ -27,6 +27,7 @@ router.post("/templates", new Validator().oneOf("visibility", { values: Object.v
 router.put("/templates", ProtectMiddleware, TemplatesController.edit)
 router.delete("/templates/:id", ProtectMiddleware, TemplatesController.remove)
 router.post("/templates/register-use/:id", TemplatesController.registerUse)
+router.get("/templates/user/:id", ProtectMiddleware, TemplatesController.getByUser)
 
 router.get("/stickers", StickersController.getAll)
 router.post("/stickers", ProtectMiddleware.Admin, UploadMiddleware.single("image"), StickersController.create)
@@ -37,7 +38,6 @@ router.post("/auth/register", new Validator().email("email", { uniqueIn: User })
 router.post("/auth/login", new Validator().email("email", { existsIn: User }).password("password"), AuthController.login)
 
 router.get("/profile", ProtectMiddleware, ProfileController.getProfile)
-router.get("/profile/templates", ProtectMiddleware, ProfileController.getTemplates)
 router.get("/profile/friends", ProtectMiddleware, ProfileController.getFriends)
 router.post("/profile/avatar", ProtectMiddleware, UploadMiddleware.single("image"), ProfileController.uploadAvatar)
 

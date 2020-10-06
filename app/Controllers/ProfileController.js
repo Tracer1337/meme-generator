@@ -10,12 +10,13 @@ async function getProfile(req, res) {
 }
 
 async function getTemplates(req, res) {
-    const templates = req.user.templates.filter(template => template.visibility !== VISIBILITY["GLOBAL"])
+    let templates = await req.user.getTemplates()
+    templates = templates.filter(template => template.visibility !== VISIBILITY["GLOBAL"])
     res.send(templates)
 }
 
 async function getFriends(req, res) {
-    res.send(req.user.friends)
+    res.send(await req.user.getFriends())
 }
 
 async function uploadAvatar(req, res) {

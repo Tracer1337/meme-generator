@@ -99,10 +99,10 @@ function TemplatesGrid({ data, onClick, onDelete, search }) {
     )
 }
 
-const GlobalTemplates = React.forwardRef(function({ defaultValue, onClick, onDelete, search }, ref) {
+const TemplatesRenderer = React.forwardRef(function({ user, onClick, onDelete, search }, ref) {
     const { data, isLoading, reload } = useAPIData({
-        method: "getTemplates",
-        defaultValue
+        method: !user ? "getTemplates" : "getTemplatesByUser",
+        data: user?.id
     })
 
     useImperativeHandle(ref, () => ({ reload }))
@@ -120,25 +120,7 @@ const GlobalTemplates = React.forwardRef(function({ defaultValue, onClick, onDel
     )
 })
 
-const UserTemplates = React.forwardRef(function({ defaultValue, onClick, onDelete, search }, ref) {
-    const { data, isLoading, reload } = useAPIData("getMyTemplates")
-
-    useImperativeHandle(ref, () => ({ reload }))
-
-    if (isLoading) {
-        return <CircularProgress />
-    }
-
-    if (!data) {
-        return <Typography>Could not load data</Typography>
-    }
-
-    return (
-        <TemplatesGrid data={data} onClick={onClick} onDelete={onDelete} search={search} />
-    )
-})
-
-function Templates({ onReload, templates, renderUserTemplates = true }, ref) {
+function Templates({ user, onReload }, ref) {
     const context = useContext(AppContext)
     
     const location = useLocation()
@@ -196,25 +178,26 @@ function Templates({ onReload, templates, renderUserTemplates = true }, ref) {
             <SearchBar onChange={setSearch} value={search} className={classes.searchBar}/>
             
             <div className={classes.listWrapper}>
-                { context.auth.isLoggedIn && renderUserTemplates && (
+                { context.auth.isLoggedIn && !user && (
                     <>
                         <Typography variant="h5" className={classes.title}>My Templates</Typography>
-                        <UserTemplates
+                        <TemplatesRenderer
                             ref={userTemplatesRef}
                             onClick={handleClick}
                             onDelete={handleDelete}
                             search={search}
+                            user={context.auth.user}
                         />
                         <Divider className={classes.divider} />
                     </>
                 ) }
 
-                <GlobalTemplates
-                    defaultValue={templates}
+                <TemplatesRenderer
                     ref={globalTemplatesRef}
                     onClick={handleClick}
                     onDelete={handleDelete}
                     search={search}
+                    user={user}
                 />
             </div>
         </>
