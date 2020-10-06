@@ -22,18 +22,6 @@ function compensateError(clonedDocument) {
     })
 
     /**
-     * Reverse order of elements
-     */
-    const elements = Array.from(clonedDocument.querySelectorAll(".element"))
-    if (elements.length > 0) {
-        const parent = elements[0].parentNode
-        elements
-            .map(node => parent.removeChild(node))
-            .reverse()
-            .map(node => parent.appendChild(node))
-    }
-
-    /**
      * Remove white border
      */
     const image = clonedDocument.querySelector(".base-element")
