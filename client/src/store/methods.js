@@ -14,18 +14,18 @@ function assign(target, val) {
     }
 }
 
-const methods = {
-    set(values) {
-        middleware(values)
+const methods = {}
 
-        assign(this.store, values)
+methods.set = function(values) {
+    middleware(values)
 
-        this.update()
-    },
+    assign(this.store, values)
 
-    reloadProfile() {
-        this.store.event.dispatchEvent(new CustomEvent("reloadProfile"))
-    }
+    this.update()
+}
+
+methods.reloadProfile = function() {
+    this.store.event.dispatchEvent(new CustomEvent("reloadProfile"))
 }
 
 methods.resetEditor = function () {

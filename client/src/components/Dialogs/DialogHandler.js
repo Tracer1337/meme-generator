@@ -107,7 +107,7 @@ function DialogHandler() {
     return dialogs.map((dialog) => (
         React.createElement(dialog.element, {
             open: dialog.isOpen,
-            onClose: (...args) => dialog.dispatchEvent("close", args),
+            onClose: data => dialog.dispatchEvent("close", data),
             key: dialog.id,
             ...dialog.data
         })
