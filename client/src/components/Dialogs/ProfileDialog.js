@@ -46,15 +46,15 @@ function ProfileDialog({ open, onClose, user, onReload = () => {} }) {
 
     const classes = useStyles()
 
-    const isMyProfile = user.id === context.auth.user.id
+    const isMyProfile = context.auth.isLoggedIn && user.id === context.auth.user.id
 
     const handlePostDelete = (post) => {
         const dialogHandle = context.openDialog("Confirm", { content: "The post will be deleted" })
 
-        dialogHandle.addListener("close", (shouldDelete) => {
+        dialogHandle.addEventListener("close", (shouldDelete) => {
             if (shouldDelete) {
                 deletePost(post.id)
-                    .then(() => context.event.dispatchEvent(new CustomEvent("reloadPosts")))
+                    .then(() => context.dispatchEvent("reloadPosts"))
             }
         })
     }

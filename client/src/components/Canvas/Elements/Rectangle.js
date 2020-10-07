@@ -39,7 +39,7 @@ function Rectangle({ id, onFocus, dimensions, handle, data: { defaultValues } },
         handle.onSettingsClicked = () => {
             const dialogHandle = context.openDialog("RectangleSettings", { values: settings })
 
-            dialogHandle.addListener("close", (values) => {
+            dialogHandle.addEventListener("close", (values) => {
                 if (values) {
                     setSettings(values)
                 }

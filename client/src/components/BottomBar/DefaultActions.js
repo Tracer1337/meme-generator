@@ -85,14 +85,13 @@ function DefaultActions() {
     const handleDisableDrawingClick = () => {
         context.set({
             drawing: {
-                ...context.drawing,
                 enabled: false
             }
         })
     }
 
     const dispatchEvent = (name) => () => {
-        context.event.dispatchEvent(new CustomEvent(name))
+        context.dispatchEvent(name)
     }
     
     return (

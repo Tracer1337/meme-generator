@@ -37,7 +37,7 @@ function Sticker({ data: { defaultValues, src }, id, onFocus, dimensions, handle
         handle.onSettingsClicked = () => {
             const dialogHandle = context.openDialog("ImageSettings", { values: settings, src })
 
-            dialogHandle.addListener("close", (values) => {
+            dialogHandle.addEventListener("close", (values) => {
                 if (values) {
                     setSettings(values)
                 }

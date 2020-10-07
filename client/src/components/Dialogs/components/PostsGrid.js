@@ -15,7 +15,7 @@ function PostsGrid({ user, onPostDelete }) {
     })
 
     useEffect(() => {
-        return createListeners(context.event, [
+        return createListeners(context, [
             ["reloadPosts", reload]
         ])
     })

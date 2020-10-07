@@ -79,7 +79,6 @@ function Elements({ base, grid, canvas }, ref) {
         context.set({
             elements: [...context.elements, newElement],
             focus: {
-                ...context.focus,
                 element: newElement
             }
         })
@@ -143,7 +142,7 @@ function Elements({ base, grid, canvas }, ref) {
         addSticker(base64Image)
     }
 
-    const handleLoadSticker = ({ detail: { sticker } }) => {
+    const handleLoadSticker = ({ sticker }) => {
         addSticker(sticker.image_url, sticker.id)
     }
 
@@ -164,7 +163,7 @@ function Elements({ base, grid, canvas }, ref) {
     useEffect(() => {
         window.getTextboxes = handleGetTextboxes
 
-        return createListeners(context.event, [
+        return createListeners(context, [
             ["importSticker", handleImportSticker],
             ["addTextbox", handleAddTextbox],
             ["addRectangle", handleAddRectangle],

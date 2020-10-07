@@ -11,7 +11,7 @@ function Base(props, ref) {
     const context = useContext(AppContext)
 
     const handleBaseElementCreate = (baseElement) => {
-        context.event.dispatchEvent(new CustomEvent("resetCanvas"))
+        context.dispatchEvent("resetCanvas")
 
         context.set({
             currentTemplate: null,
@@ -24,7 +24,7 @@ function Base(props, ref) {
     const openDialog = () => context.openDialog("BaseElements", { onBaseElementCreate: handleBaseElementCreate })
 
     useEffect(() => {
-        return createListeners(context.event, [
+        return createListeners(context, [
             ["openBaseSelection", openDialog]
         ])
     })

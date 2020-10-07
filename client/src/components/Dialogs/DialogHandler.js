@@ -89,12 +89,7 @@ function DialogHandler() {
             return newDialog
         }
 
-        const boundCreateListeners = createListeners.bind({
-            addEventListener: "addListener",
-            removeEventListener: "removeListener"
-        })
-
-        const removeListeners = dialogs.map(dialog => boundCreateListeners(dialog, [
+        const removeListeners = dialogs.map(dialog => createListeners(dialog, [
             ["update", update],
             ["close", () => close(dialog)]
         ]))
@@ -103,15 +98,16 @@ function DialogHandler() {
     })
 
     useEffect(() => {
-        return createListeners(context.event, [
-            ["loadTemplate", closeAll]
+        return createListeners(context, [
+            ["loadTemplate", closeAll],
+            ["logout", closeAll]
         ])
     })
 
     return dialogs.map((dialog) => (
         React.createElement(dialog.element, {
             open: dialog.isOpen,
-            onClose: (...args) => dialog.dispatch("close", args),
+            onClose: (...args) => dialog.dispatchEvent("close", args),
             key: dialog.id,
             ...dialog.data
         })

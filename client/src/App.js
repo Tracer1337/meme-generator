@@ -5,8 +5,9 @@ import { makeStyles } from "@material-ui/core/styles"
 import Router from "./Router/Router.js"
 import OfflineUseAlerts from "./utils/OfflineUseAlerts.js"
 import { setTokenHeader } from "./config/api.js"
-import settingsOptions from "./config/settings-options.json"
 import { getProfile } from "./config/api.js"
+import { useStore } from "./store/store.js"
+import { createListeners } from "./utils/index.js"
 
 const useStyles = makeStyles(theme => ({
     "@global": {
@@ -25,78 +26,22 @@ const useStyles = makeStyles(theme => ({
 
 const AppContext = React.createContext()
 
-function contextMiddleware(values) {
-    if ("auth" in values) {
-        if (values.auth.token) {
-            localStorage.setItem("token", values.auth.token)
-            setTokenHeader(values.auth.token)
-        } else {
-            localStorage.removeItem("token")
-            setTokenHeader(null)
-        }
-    }
-}
-
-const contextDefaultValue = {
-    password: localStorage.getItem("password"),
-    event: new EventTarget(),
-
-    auth: {
-        user: null,
-        isLoggedIn: false,
-        token: localStorage.getItem("token")
-    },
-
-    isEmptyState: true,
-    currentTemplate: null,
-    focus: null,
-    rootElement: null,
-    elements: [],
-    drawing: {
-        enabled: false,
-        color: settingsOptions.colors["Red"],
-        lineWidth: settingsOptions.lineWidth[1]
-    }
-}
-
 function App() {
     useStyles()
     
-    const [context, setContext] = useState(contextDefaultValue)
+    const store = useStore()
+
     const [isLoading, setIsLoading] = useState(!!localStorage.getItem("token"))
+
     const [updateKey, forceUpdate] = useReducer(key => key + 1, 0)
 
-    const contextMethods = {
-        set: values => {
-            contextMiddleware(values)
-            setContext({ ...context, ...values })
-        },
-
-        resetEditor: () => {
-            context.event.dispatchEvent(new CustomEvent("resetCanvas"))
-
-            setContext({
-                ...context,
-                isEmptyState: contextDefaultValue.isEmptyState,
-                currentTemplate: contextDefaultValue.currentTemplates,
-                focus: contextDefaultValue.focus,
-                rootElement: contextDefaultValue.rootElement,
-                elements: contextDefaultValue.elements,
-                drawing: contextDefaultValue.drawing
-            })
-        },
-
-        reloadProfile: forceUpdate,
-    }
-
     useEffect(() => {
-        if (context.auth.token) {
-            setTokenHeader(context.auth.token)
+        if (store.auth.token) {
+            setTokenHeader(store.auth.token)
             getProfile()
                 .then(res => {
-                    contextMethods.set({
+                    store.set({
                         auth: {
-                            ...context.auth,
                             user: res.data,
                             isLoggedIn: true
                         }
@@ -108,10 +53,16 @@ function App() {
         // eslint-disable-next-line
     }, [updateKey])
 
-    window.context = context
+    useEffect(() => {
+        return createListeners(store, [
+            ["reloadProfile", forceUpdate]
+        ])
+    })
+
+    window.store = store
 
     return (
-        <AppContext.Provider value={{ ...context, ...contextMethods }}>
+        <AppContext.Provider value={store}>
             <OfflineUseAlerts />
 
             {isLoading ? (

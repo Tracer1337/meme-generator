@@ -140,7 +140,7 @@ function Templates({ user, onReload }, ref) {
 
         const dialogHandle = context.openDialog("Confirm", { content: `The template "${currentTemplate.current.label}" will be deleted` })
 
-        dialogHandle.addListener("close", (shouldDelete) => {
+        dialogHandle.addEventListener("close", (shouldDelete) => {
             if (shouldDelete) {
                 deleteTemplate(currentTemplate.current.id)
                     .then(onReload || reload)
@@ -153,8 +153,8 @@ function Templates({ user, onReload }, ref) {
             history.push("/editor")
             await new Promise(requestAnimationFrame)
         }
-        context.event.dispatchEvent(new CustomEvent("resetCanvas"))
-        context.event.dispatchEvent(new CustomEvent("loadTemplate", { detail: { template } }))
+        context.dispatchEvent("resetCanvas")
+        context.dispatchEvent("loadTemplate", { template })
     }
 
     const handleClick = (event, template) => {

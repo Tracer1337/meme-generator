@@ -22,14 +22,13 @@ function Menu({ open, anchorEl, onClose }) {
     const classes = useStyles()
 
     const dispatchEvent = (name) => () => {
-        context.event.dispatchEvent(new CustomEvent(name))
+        context.dispatchEvent(name)
         onClose()
     }
 
     const handleEnableDrawing = () => {
         context.set({
             drawing: {
-                ...context.drawing,
                 enabled: true
             }
         })

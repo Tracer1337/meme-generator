@@ -182,11 +182,11 @@ function DrawingCanvas({ canvas, border }) {
 
         const removeListeners = createListeners(drawingCanvas, events)
 
-        context.event.addEventListener("resetCanvas", handleResetCanvas)
+        context.addEventListener("resetCanvas", handleResetCanvas)
         
         return () => {
             removeListeners()
-            context.event.removeEventListener("resetCanvas", handleResetCanvas)
+            context.removeEventListener("resetCanvas", handleResetCanvas)
         }
     })
 

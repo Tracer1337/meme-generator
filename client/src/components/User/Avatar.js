@@ -67,7 +67,6 @@ function Avatar({ user, hasUploadButton, className }) {
         editAvatar(formData)
             .then(res => context.set({
                 auth: {
-                    ...context.auth,
                     user: res.data
                 }
             }))

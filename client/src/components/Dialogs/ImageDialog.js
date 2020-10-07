@@ -120,7 +120,7 @@ function ImageDialog({ open, onClose, imageData }) {
 
     const isEditingTemplate = !!context.currentTemplate
 
-    const dispatchEvent = (name, detail) => context.event.dispatchEvent(new CustomEvent(name, { detail }))
+    const dispatchEvent = (name, data) => context.dispatchEvent(name, data)
 
     const registerUsage = async () => {
         // Register template usage
@@ -181,12 +181,12 @@ function ImageDialog({ open, onClose, imageData }) {
                 const dialogHandle = context.openDialog("Terms", {
                     onAccept: () => {
                         resolve()
-                        dialogHandle.dispatch("close")
+                        dialogHandle.dispatchEvent("close")
                     },
 
                     onReject: () => {
                         reject()
-                        dialogHandle.dispatch("close")
+                        dialogHandle.dispatchEvent("close")
                     }
                 })
             } else {

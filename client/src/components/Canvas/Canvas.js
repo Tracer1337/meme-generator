@@ -102,7 +102,7 @@ function Canvas() {
     const handleSetBorder = () => {
         const dialogHandle = context.openDialog("Border", { values: borderValues })
 
-        dialogHandle.addListener("close", (values) => {
+        dialogHandle.addEventListener("close", (values) => {
             if (values) {
                 setBorderValues(values)
             }
@@ -112,7 +112,7 @@ function Canvas() {
     const handleSetGrid = () => {
         const dialogHandle = context.openDialog("Grid", { values: gridValues })
 
-        dialogHandle.addListener("close", (values) => {
+        dialogHandle.addEventListener("close", (values) => {
             if (values) {
                 setGridValues(values)
             }
@@ -124,7 +124,7 @@ function Canvas() {
         setGridValues(defaultGridValues)
     }
 
-    const handleLoadTemplate = async ({ detail: { template } }) => {
+    const handleLoadTemplate = async ({ template }) => {
         const newContextValue = {
             currentTemplate: template,
             isEmptyState: false,
@@ -210,7 +210,7 @@ function Canvas() {
             ["generateImage", handleGenerateImage]
         ]
 
-        const removeListeners = createListeners(context.event, events)
+        const removeListeners = createListeners(context, events)
 
         return removeListeners
     })
@@ -219,7 +219,7 @@ function Canvas() {
         // Detect ctrl + z
         const handleUndo = (event) => {
             if (event.ctrlKey && event.keyCode === 90) {
-                context.event.dispatchEvent(new CustomEvent("undo"))
+                context.dispatchEvent("undo")
             }
         }
 

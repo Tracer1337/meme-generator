@@ -50,7 +50,7 @@ function TemplatesDialog({ onClose, open }) {
     }
 
     const handleStickerLoad = (sticker) => {
-        context.event.dispatchEvent(new CustomEvent("loadSticker", { detail: { sticker } }))
+        context.dispatchEvent("loadSticker", { sticker })
         onClose()
     }
 

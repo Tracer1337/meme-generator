@@ -56,7 +56,7 @@ function Textbox({ id, handle, onFocus, isFocused, toggleMovement, dimensions, d
     const handleSettingsClicked = () => {
         const dialogHandle = context.openDialog("TextboxSettings", { values: settings, text: value })
 
-        dialogHandle.addListener("close", (values) => {
+        dialogHandle.addEventListener("close", (values) => {
             if (values) {
                 addSnapshot()
                 setSettings(values)

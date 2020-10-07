@@ -43,7 +43,6 @@ function RegisterForm({ onRegister }) {
             .then(res => {
                 context.set({
                     auth: {
-                        ...context.auth,
                         token: res.data.token,
                         user: res.data.user,
                         isLoggedIn: true

@@ -28,7 +28,7 @@ function ElementActions() {
     const { element, controls } = context.focus || {}
 
     const dispatchEvent = (name) => () => {
-        context.event.dispatchEvent(new CustomEvent(name, { detail: { element } }))
+        context.dispatchEvent(name, { element })
     }
 
     return (

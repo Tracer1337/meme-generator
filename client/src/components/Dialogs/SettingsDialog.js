@@ -33,12 +33,14 @@ function SettingsDialog({ onClose, open }) {
     const handleLogout = () => {
         context.set({
             auth: {
-                ...context.auth,
                 user: null,
                 isLoggedIn: false,
                 token: null
             }
         })
+
+        context.dispatchEvent("logout")
+
         onClose()
     }
 

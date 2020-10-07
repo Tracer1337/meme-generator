@@ -59,7 +59,6 @@ function DrawingActions() {
     const handleLineWidthClick = (value) => {
         context.set({
             drawing: {
-                ...context.drawing,
                 lineWidth: value
             }
         })
@@ -70,7 +69,6 @@ function DrawingActions() {
     const handleColorClick = (color) => {
         context.set({
             drawing: {
-                ...context.drawing,
                 color
             }
         })

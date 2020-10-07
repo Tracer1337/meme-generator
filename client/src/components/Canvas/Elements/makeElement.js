@@ -323,12 +323,12 @@ function makeElement({
 
         useEffect(() => {
             const pipe = (fn) => (event) => {
-                if (event.detail.element.id === id) {
+                if (event.element.id === id) {
                     fn(id)
                 }
             }
 
-            return createListeners(context.event, [
+            return createListeners(context, [
                 ["elementClone", pipe(onClone)],
                 ["elementToBack", pipe(onToBack)],
                 ["elementToFront", pipe(onToFront)],

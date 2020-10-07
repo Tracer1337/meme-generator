@@ -110,7 +110,7 @@ function Stickers({ onLoad, active }, ref) {
 
         const dialogHandler = context.openDialog("Confirm", { content: `Sticker ${currentSticker.current.id} will be deleted` })
 
-        dialogHandler.addListener("close", (shouldDelete) => {
+        dialogHandler.addEventListener("close", (shouldDelete) => {
             if (shouldDelete) {
                 deleteSticker(currentSticker.current.id)
                     .then(reload)

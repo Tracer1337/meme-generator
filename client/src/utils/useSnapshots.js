@@ -34,17 +34,17 @@ function useSnapshots({ createSnapshot, applySnapshot, onSnapshotsEmpty }) {
     }
 
     useEffect(() => {
-        context.event.addEventListener("undo", handleUndo)
-        context.event.addEventListener("addSnapshot", addSnapshot)
+        context.addEventListener("undo", handleUndo)
+        context.addEventListener("addSnapshot", addSnapshot)
 
         return () => {
-            context.event.removeEventListener("undo", handleUndo)
-            context.event.removeEventListener("addSnapshot", addSnapshot)
+            context.removeEventListener("undo", handleUndo)
+            context.removeEventListener("addSnapshot", addSnapshot)
         }
     })
 
     return () => {
-        context.event.dispatchEvent(new CustomEvent("addSnapshot"))
+        context.dispatchEvent("addSnapshot")
     }
 }
 
