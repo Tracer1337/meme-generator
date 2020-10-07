@@ -5,7 +5,6 @@ import CloseIcon from "@material-ui/icons/ExpandMore"
 
 import SearchBar from "./components/SearchBar.js"
 import MyFriends from "./components/MyFriends.js"
-import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />
@@ -58,4 +57,4 @@ function MyFriendsDialog({ open, onClose }) {
     )
 }
 
-export default withBackButtonSupport(MyFriendsDialog, "my-bros")
+export default MyFriendsDialog

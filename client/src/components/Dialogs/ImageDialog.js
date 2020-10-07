@@ -14,7 +14,6 @@ import { AppContext } from "../../App.js"
 import { dataURLToFile } from "../../utils"
 import downloadDataURI from "../../utils/downloadDataURI.js"
 import uploadImage from "../../utils/uploadImage.js"
-import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
 import { uploadTemplate, editTemplate, registerTemplateUse, registerStickerUse, createPost } from "../../config/api.js"
 import { IS_CORDOVA, BASE_ELEMENT_TYPES, VISIBILITY } from "../../config/constants.js"
 
@@ -419,4 +418,4 @@ function ImageDialog({ open, onClose, imageData }) {
     )
 }
 
-export default withBackButtonSupport(ImageDialog, "image")
+export default ImageDialog

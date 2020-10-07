@@ -5,8 +5,6 @@ import { makeStyles } from "@material-ui/core/styles"
 
 import Switch from "./components/Switch.js"
 
-import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
-
 const useStyles = makeStyles(theme => ({
     form: {
         padding: theme.spacing(2),
@@ -70,4 +68,4 @@ function ImageSettingsDialog({ onClose, open, values, src }) {
     )
 }
 
-export default withBackButtonSupport(ImageSettingsDialog, "settings")
+export default ImageSettingsDialog

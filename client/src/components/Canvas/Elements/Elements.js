@@ -153,11 +153,11 @@ function Elements({ base, grid, canvas }, ref) {
     }
 
     const beforeCapturing = () => {
-        Object.values(elementRefs.current).forEach(textbox => textbox.beforeCapturing())
+        Object.values(elementRefs.current).forEach(element => element.beforeCapturing())
     }
 
     const afterCapturing = () => {
-        Object.values(elementRefs.current).forEach(textbox => textbox.afterCapturing())
+        Object.values(elementRefs.current).forEach(element => element.afterCapturing())
     }
 
     useEffect(() => {

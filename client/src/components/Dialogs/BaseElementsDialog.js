@@ -1,7 +1,6 @@
 import React from "react"
 import { Dialog } from "@material-ui/core"
 
-import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
 import BaseElements from "./components/BaseElements.js"
 
 function BaseElementsDialog({ onClose, open, onBaseElementCreate }) {
@@ -15,4 +14,4 @@ function BaseElementsDialog({ onClose, open, onBaseElementCreate }) {
     )
 }
 
-export default withBackButtonSupport(BaseElementsDialog, "base-elements")
+export default BaseElementsDialog

@@ -2,8 +2,6 @@ import React from "react"
 import { Dialog, ClickAwayListener, Tooltip } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 
-import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
-
 const useStyles = makeStyles(theme => ({
     innerDialog: {
         background: "none",
@@ -57,4 +55,4 @@ function HelpDialog({ open, onClose, data }) {
     )
 }
 
-export default withBackButtonSupport(HelpDialog, "help")
+export default HelpDialog

@@ -7,7 +7,6 @@ import Select from "./components/Select.js"
 import Switch from "./components/Switch.js"
 
 import settingsOptions from "../../config/settings-options.json"
-import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
 import getTextboxStyles from "../../utils/getTextboxStyles.js"
 
 const useStyles = makeStyles(theme => ({
@@ -140,4 +139,4 @@ function TextboxSettingsDialog({ onClose, open, values, text }) {
     )
 }
 
-export default withBackButtonSupport(TextboxSettingsDialog, "settings")
+export default TextboxSettingsDialog

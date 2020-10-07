@@ -9,7 +9,6 @@ import Templates from "./components/Templates.js"
 import Stickers from "./components/Stickers.js"
 
 import { AppContext } from "../../App.js"
-import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
 import { IS_OFFLINE } from "../../config/constants.js"
 
 const useStyles = makeStyles(theme => ({
@@ -106,4 +105,4 @@ function TemplatesDialog({ onClose, open }) {
     )
 }
 
-export default withBackButtonSupport(TemplatesDialog, "templates")
+export default TemplatesDialog

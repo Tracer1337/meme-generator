@@ -4,7 +4,6 @@ import { makeStyles } from "@material-ui/core/styles"
 import CloseIcon from "@material-ui/icons/ChevronLeft"
 
 import { AppContext } from "../../App.js"
-import withBackButtonSupport from "../../utils/withBackButtonSupport.js"
 
 const useStyles = makeStyles(theme => ({
     spacer: {
@@ -69,4 +68,4 @@ function SettingsDialog({ onClose, open }) {
     )
 }
 
-export default withBackButtonSupport(SettingsDialog, "settings")
+export default SettingsDialog
