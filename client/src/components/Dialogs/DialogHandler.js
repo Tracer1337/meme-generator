@@ -59,17 +59,23 @@ function DialogHandler() {
         dialog.isOpen = false
         setDialogs([...dialogs])
 
-        setTimeout(() => {
-            const newDialogs = dialogs.filter(({ id }) => dialog.id !== id)
-            setDialogs(newDialogs)
-        }, theme.transitions.duration.leavingScreen)
+        setTimeout(() => context.dispatchEvent("removeDialog", dialog), theme.transitions.duration.leavingScreen)
     }
 
     const closeAll = () => {
         dialogs.forEach(dialog => dialog.isOpen = false)
         setDialogs([...dialogs])
 
-        setTimeout(() => setDialogs([]), theme.transitions.duration.leavingScreen)
+        setTimeout(() => context.dispatchEvent("removeAllDialogs"), theme.transitions.duration.leavingScreen)
+    }
+
+    const remove = (dialog) => {
+        const newDialogs = dialogs.filter(({ id }) => dialog.id !== id)
+        setDialogs(newDialogs)
+    }
+
+    const removeAll = () => {
+        setDialogs([])
     }
 
     useEffect(() => {
@@ -100,7 +106,9 @@ function DialogHandler() {
     useEffect(() => {
         return createListeners(context, [
             ["loadTemplate", closeAll],
-            ["logout", closeAll]
+            ["logout", closeAll],
+            ["removeDialog", remove],
+            ["removeAllDialogs", removeAll]
         ])
     })
 
