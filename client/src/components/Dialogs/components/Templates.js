@@ -7,6 +7,7 @@ import DeleteIcon from "@material-ui/icons/Delete"
 import { AppContext } from "../../../App.js"
 import SearchBar from "./SearchBar.js"
 import { deleteTemplate } from "../../../config/api.js"
+import { VISIBILITY } from "../../../config/constants.js"
 import { cacheImage } from "../../../utils/cache.js"
 import useAPIData from "../../../utils/useAPIData.js"
 
@@ -88,7 +89,7 @@ function TemplatesGrid({ data, onClick, onDelete, search }) {
 
                     <GridListTileBar title={template.label} subtitle={getSubtitle(template.amount_uses)} className={classes.tilebar} />
 
-                    {context.auth.isLoggedIn && (template.user_id === context.auth.user.id || context.auth.user.is_admin) && (
+                    {context.auth.isLoggedIn && (template.user_id === context.auth.user.id || (template.visibility === VISIBILITY["GLOBAL"] && context.auth.user.is_admin)) && (
                         <IconButton onClick={() => onDelete(template)} className={classes.deleteButton}>
                             <DeleteIcon fontSize="small" />
                         </IconButton>
