@@ -58,7 +58,7 @@ function App() {
             ["reloadProfile", forceUpdate]
         ])
     })
-
+    
     window.store = store
 
     return (

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useContext, useReducer } from "react"
+import { useHistory } from "react-router-dom"
 import { useTheme } from "@material-ui/core"
 
 import { AppContext } from "../../App.js"
@@ -46,6 +47,8 @@ const dialogsMap = {
 function DialogHandler() {
     const context = useContext(AppContext)
 
+    const history = useHistory()
+
     const theme = useTheme()
 
     const idCounter = useRef(0)
@@ -69,6 +72,15 @@ function DialogHandler() {
         setTimeout(() => context.dispatchEvent("removeAllDialogs"), theme.transitions.duration.leavingScreen)
     }
 
+    const closeLatest = () => {
+        const openDialogs = dialogs.filter(dialog => dialog.isOpen)
+        const lastDialog = openDialogs[openDialogs.length - 1]
+
+        if (lastDialog) {
+            close(lastDialog)
+        }
+    }
+
     const remove = (dialog) => {
         const newDialogs = dialogs.filter(({ id }) => dialog.id !== id)
         setDialogs(newDialogs)
@@ -89,7 +101,9 @@ function DialogHandler() {
                 data,
                 id: idCounter.current++
             })
-            
+
+            history.push(history.location.pathname + "/" + newDialog.id)
+
             setDialogs([...dialogs, newDialog])
 
             return newDialog
@@ -107,6 +121,7 @@ function DialogHandler() {
         return createListeners(context, [
             ["loadTemplate", closeAll],
             ["logout", closeAll],
+            ["backButton", closeLatest],
             ["removeDialog", remove],
             ["removeAllDialogs", removeAll]
         ])

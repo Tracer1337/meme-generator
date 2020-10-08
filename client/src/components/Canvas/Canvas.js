@@ -202,17 +202,13 @@ function Canvas() {
     useEffect(() => {
         window.getBorder = handleGetBorder
 
-        const events = [
+        return createListeners(context, [
             ["resetCanvas", handleResetCanvas],
             ["setBorder", handleSetBorder],
             ["setGrid", handleSetGrid],
             ["loadTemplate", handleLoadTemplate],
             ["generateImage", handleGenerateImage]
-        ]
-
-        const removeListeners = createListeners(context, events)
-
-        return removeListeners
+        ])
     })
 
     useEffect(() => {
