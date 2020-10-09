@@ -3,7 +3,11 @@ import { useEffect, useRef } from "react"
 import { createListeners } from "../utils/index.js"
 
 function BackButtonHandler({ onBackButton }) {
-    const isForwardCall = useRef()
+    const isForwardCall = useRef(false)
+
+    useEffect(() => {
+        window.history.pushState(null, null, window.location.pathname)
+    }, [])
 
     useEffect(() => {
         return createListeners(window, [
