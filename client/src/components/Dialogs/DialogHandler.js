@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext, useReducer } from "react"
-import { useHistory } from "react-router-dom"
+import { useHistory, useLocation } from "react-router-dom"
 import { useTheme } from "@material-ui/core"
 
 import { AppContext } from "../../App.js"
@@ -49,6 +49,8 @@ function DialogHandler() {
 
     const history = useHistory()
 
+    const location = useLocation()
+
     const theme = useTheme()
 
     const idCounter = useRef(0)
@@ -72,14 +74,14 @@ function DialogHandler() {
         setTimeout(() => context.dispatchEvent("removeAllDialogs"), theme.transitions.duration.leavingScreen)
     }
 
-    const closeLatest = () => {
-        const openDialogs = dialogs.filter(dialog => dialog.isOpen)
-        const lastDialog = openDialogs[openDialogs.length - 1]
+    // const closeLatest = () => {
+    //     const openDialogs = dialogs.filter(dialog => dialog.isOpen)
+    //     const lastDialog = openDialogs[openDialogs.length - 1]
 
-        if (lastDialog) {
-            close(lastDialog)
-        }
-    }
+    //     if (lastDialog) {
+    //         close(lastDialog)
+    //     }
+    // }
 
     const remove = (dialog) => {
         const newDialogs = dialogs.filter(({ id }) => dialog.id !== id)
@@ -102,7 +104,10 @@ function DialogHandler() {
                 id: idCounter.current++
             })
 
-            history.push(history.location.pathname + "/" + newDialog.id)
+            history.push(history.location.pathname + "/" + name)
+            const entry = history.entries[history.entries.length - 1]
+            
+            newDialog.historyKey = entry.key
 
             setDialogs([...dialogs, newDialog])
 
@@ -111,19 +116,33 @@ function DialogHandler() {
 
         const removeListeners = dialogs.map(dialog => createListeners(dialog, [
             ["update", update],
-            ["close", () => close(dialog)]
+            ["close", history.goBack]
         ]))
 
         return () => removeListeners.forEach(fn => fn())
     })
 
     useEffect(() => {
+        dialogs.forEach(dialog => {
+            for (let i = 0; i <= history.index; i++) {
+                if (history.entries[i].key === dialog.historyKey) {
+                    return
+                }
+            }
+
+            close(dialog)
+        })
+
+        // eslint-disable-next-line
+    }, [location])
+
+    useEffect(() => {
         return createListeners(context, [
             ["loadTemplate", closeAll],
             ["logout", closeAll],
-            ["backButton", closeLatest],
             ["removeDialog", remove],
-            ["removeAllDialogs", removeAll]
+            ["removeAllDialogs", removeAll],
+            [""]
         ])
     })
 

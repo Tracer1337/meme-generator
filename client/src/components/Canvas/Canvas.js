@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState, useRef } from "react"
+import { useHistory, useLocation } from "react-router-dom"
 import { makeStyles } from "@material-ui/core/styles"
 
 import Grid from "./Grid.js"
@@ -71,10 +72,15 @@ function Canvas() {
 
     const classes = useStyles()
 
+    const history = useHistory()
+
+    const location = useLocation()
+
     const baseRef = useRef()
     const elementsRef = useRef()
     const canvas = useRef()
     const container = useRef()
+    const historyKey = useRef()
 
     const [borderValues, setBorderValues] = useState(defaultBorderValues)
     const [gridValues, setGridValues] = useState(defaultGridValues)
@@ -223,6 +229,30 @@ function Canvas() {
             ["keydown", handleUndo]
         ])
     })
+
+    useEffect(() => {
+        if (!context.isEmptyState) {
+            if (!historyKey.current) {
+                history.push(location.pathname)
+                const entry = history.entries[history.entries.length - 1]
+                historyKey.current = entry.key
+            }
+        } else {
+            historyKey.current = null
+        }
+    }, [context.isEmptyState])
+
+    useEffect(() => {
+        if (historyKey.current) {
+            for (let i = 0; i <= history.index; i++) {
+                if (history.entries[i].key === historyKey.current) {
+                    return
+                }
+            }
+
+            context.resetEditor()
+        }
+    }, [location])
 
     // Set base dimensions
     useEffect(() => {

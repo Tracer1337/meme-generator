@@ -8,6 +8,7 @@ class DialogHandle extends Emittable {
         this.data = data
         this.id = id
         this.isOpen = isOpen
+        this.historyKey = null
     }
 
     set(data) {
