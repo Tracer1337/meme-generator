@@ -5,6 +5,7 @@ import PaletteIcon from "@material-ui/icons/Palette"
 
 import { AppContext } from "../../App.js"
 import settingsOptions from "../../config/settings-options.json"
+import useBackButton from "../../utils/useBackButton.js"
 
 const useStyles = makeStyles(theme => ({
     drawingActions: {
@@ -55,6 +56,12 @@ function DrawingActions() {
 
     const [isWidthDialOpen, setIsWidthDialOpen] = useState(false)
     const [isPaletteOpen, setIsPaletteOpen] = useState(false)
+
+    useBackButton(context.drawing.enabled, () => context.set({
+        drawing: {
+            enabled: false
+        }
+    }))
 
     const handleLineWidthClick = (value) => {
         context.set({

@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState, useRef } from "react"
-import { useHistory, useLocation } from "react-router-dom"
 import { makeStyles } from "@material-ui/core/styles"
 
 import Grid from "./Grid.js"
@@ -13,6 +12,7 @@ import generateImage from "../../utils/generateImage.js"
 import BaseElement from "../../Models/BaseElement.js"
 import Element from "../../Models/Element.js"
 import { BASE_ELEMENT_TYPES } from "../../config/constants.js"
+import useBackButton from "../../utils/useBackButton.js"
 
 function getDimensionsWithoutPadding(element) {
     const styles = getComputedStyle(element)
@@ -72,15 +72,12 @@ function Canvas() {
 
     const classes = useStyles()
 
-    const history = useHistory()
-
-    const location = useLocation()
+    useBackButton(!context.isEmptyState, context.resetEditor)
 
     const baseRef = useRef()
     const elementsRef = useRef()
     const canvas = useRef()
     const container = useRef()
-    const historyKey = useRef()
 
     const [borderValues, setBorderValues] = useState(defaultBorderValues)
     const [gridValues, setGridValues] = useState(defaultGridValues)
@@ -229,30 +226,6 @@ function Canvas() {
             ["keydown", handleUndo]
         ])
     })
-
-    useEffect(() => {
-        if (!context.isEmptyState) {
-            if (!historyKey.current) {
-                history.push(location.pathname)
-                const entry = history.entries[history.entries.length - 1]
-                historyKey.current = entry.key
-            }
-        } else {
-            historyKey.current = null
-        }
-    }, [context.isEmptyState])
-
-    useEffect(() => {
-        if (historyKey.current) {
-            for (let i = 0; i <= history.index; i++) {
-                if (history.entries[i].key === historyKey.current) {
-                    return
-                }
-            }
-
-            context.resetEditor()
-        }
-    }, [location])
 
     // Set base dimensions
     useEffect(() => {
