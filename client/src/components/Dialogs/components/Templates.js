@@ -66,7 +66,7 @@ const getSubtitle = (count) => {
     }
 }
 
-function TemplatesGrid({ data, onClick, onDelete, search }) {
+function TemplatesGrid({ data, onClick, onDelete, search, showGlobalTemplates = true }) {
     const context = useContext(AppContext)
 
     const classes = useStyles()
@@ -75,8 +75,14 @@ function TemplatesGrid({ data, onClick, onDelete, search }) {
         cacheImage(template.image_url)
     }
 
+    let renderTemplates = data
+
+    if (!showGlobalTemplates) {
+        renderTemplates = renderTemplates.filter(template => template.visibility !== VISIBILITY["GLOBAL"])
+    }
+
     // Filter by search string
-    const renderTemplates = data.filter(({ label }) => label.toLowerCase().includes(search.toLowerCase()))
+    renderTemplates = renderTemplates.filter(({ label }) => label.toLowerCase().includes(search.toLowerCase()))
 
     // Sort by usage => Push most used memes to the top
     renderTemplates.sort((a, b) => b.amount_uses - a.amount_uses)
@@ -117,7 +123,13 @@ const TemplatesRenderer = React.forwardRef(function({ user, onClick, onDelete, s
     }
 
     return (
-        <TemplatesGrid data={data} onClick={onClick} onDelete={onDelete} search={search} />
+        <TemplatesGrid
+            data={data}
+            onClick={onClick}
+            onDelete={onDelete}
+            search={search}
+            showGlobalTemplates={!user}
+        />
     )
 })
 

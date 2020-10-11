@@ -17,6 +17,8 @@ module.exports = {
         const templates = JSON.parse(fs.readFileSync(path.join(TEMPLATES_DIR, "templates.json"), "utf8")).slice(0, 30)
         templates.forEach(template => template.meta_data = JSON.parse(template.meta_data))
 
+        const user = await User.findBy("username", "first_user")
+
         await Promise.all(templates.map(async (template) => {
             // Store image in local storage
             const filename = template.image_url.replace("/storage/", "")
@@ -39,7 +41,7 @@ module.exports = {
             // Create database entry
             await new Template({
                 ...template,
-                user_id: (await User.getAll()).random().id,
+                user_id: user.id,
                 model: model,
                 visibility: VISIBILITY["GLOBAL"]
             }).store()
