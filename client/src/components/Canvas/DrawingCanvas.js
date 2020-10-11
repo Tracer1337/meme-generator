@@ -87,6 +87,11 @@ function DrawingCanvas({ canvas, border }) {
     }
     
     const handleDrawStart = (event) => {
+        currentPath.current = new Path({
+            color: context.drawing.color,
+            width: context.drawing.lineWidth
+        })
+
         setIsDrawing(true)
         addSnapshot()
         handleDraw(event)
@@ -94,10 +99,7 @@ function DrawingCanvas({ canvas, border }) {
     
     const handleDrawEnd = () => {
         paths.current.push(currentPath.current)
-        currentPath.current = new Path({
-            color: context.drawing.color,
-            width: context.drawing.lineWidth
-        })
+        currentPath.current = null
 
         setIsDrawing(false)
     }
@@ -114,7 +116,7 @@ function DrawingCanvas({ canvas, border }) {
     const drawPath = () => {
         const context = renderContext.current
 
-        for (let path of paths.current.concat([currentPath.current])) {
+        for (let path of paths.current.concat([currentPath.current || new Path()])) {
             context.beginPath()
 
             context.fillStyle = path.color

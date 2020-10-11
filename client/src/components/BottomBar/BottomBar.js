@@ -3,7 +3,6 @@ import { AppBar } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 
 import { AppContext } from "../../App.js"
-import HeaderActions from "./HeaderActions.js"
 import DefaultActions from "./DefaultActions.js"
 import ElementActions from "./ElementActions"
 
@@ -25,8 +24,6 @@ function BottomBar() {
 
     return (
         <div style={{ display: context.isEmptyState && "none" }}>
-            <HeaderActions />
-            
             <AppBar position="fixed" className={classes.appBar} id="bottom-bar">
                 <DefaultActions/>
                 <ElementActions/>

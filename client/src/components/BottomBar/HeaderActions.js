@@ -11,8 +11,7 @@ const useStyles = makeStyles(theme => ({
         display: "flex",
         justifyContent: "space-between",
         backgroundColor: "transparent",
-        boxShadow: "none",
-        zIndex: 0
+        boxShadow: "none"
     }
 }))
 
@@ -26,7 +25,7 @@ function HeaderActions() {
     }
 
     return (
-        <AppBar className={classes.headerActions}>
+        <AppBar className={classes.headerActions} style={{ display: context.isEmptyState && "none" }}>
             <Toolbar>
                 <div>
                     <IconButton onClick={handleClose} edge="start">

@@ -25,11 +25,11 @@ methods.set = function(values) {
 }
 
 methods.reloadProfile = function() {
-    this.store.event.dispatchEvent(new CustomEvent("reloadProfile"))
+    this.store.event.dispatchEvent("reloadProfile")
 }
 
 methods.resetEditor = function () {
-    this.store.dispatchEvent(new CustomEvent("resetCanvas"))
+    this.store.dispatchEvent("resetCanvas")
 
     const defaultState = new State()
 
