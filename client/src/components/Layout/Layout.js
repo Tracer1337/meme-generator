@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles"
 
 import Header from "./Header.js"
 import Footer from "./Footer.js"
-import DialogHandler from "../Dialogs/DialogHandler.js"
+import ComponentOpener from "../ComponentOpener/ComponentOpener.js"
 
 const useStyles = makeStyles(theme => ({
     layout: props => ({
@@ -31,7 +31,7 @@ function Layout({ children, center, header = true, footer = true }) {
 
             <Footer isHidden={!footer}/>
 
-            <DialogHandler />
+            <ComponentOpener />
         </div>
     )
 }

@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useContext, useRef } from "react"
 import { useForm, Controller } from "react-hook-form"
-import { Dialog, Button, CircularProgress, Paper, Typography, IconButton, TextField, Snackbar, Divider, RadioGroup, FormControlLabel, Radio } from "@material-ui/core"
+import { Dialog, Button, CircularProgress, Paper, Typography, IconButton, TextField, Divider, RadioGroup, FormControlLabel, Radio } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import DownloadIcon from "@material-ui/icons/GetApp"
 import SaveIcon from "@material-ui/icons/Save"
 import LinkIcon from "@material-ui/icons/Link"
 import ShareIcon from "@material-ui/icons/Share"
 import PublishIcon from "@material-ui/icons/Publish"
-import CloseIcon from "@material-ui/icons/Close"
 import SendIcon from "@material-ui/icons/Send"
 
 import { AppContext } from "../../App.js"
@@ -71,10 +70,6 @@ const useStyles = makeStyles(theme => {
 
         shareButton: {
             padding: theme.spacing(1)
-        },
-
-        snackbarClose: {
-            color: theme.palette.primary.variant
         }
     }
 })
@@ -111,8 +106,6 @@ function ImageDialog({ open, onClose, imageData }) {
     const [isUploading, setIsUploading] = useState(false)
     const [isPublishing, setIsPublishing] = useState(false)
     const [isPosting, setIsPosting] = useState(false)
-    const [isUploadSnackbarOpen, setIsUploadSnackbarOpen] = useState(false)
-    const [isStoredSnackbarOpen, setIsStoredSnackbarOpen] = useState(false)
     const [hasCreatedTemplate, setHasCreatedTemplate] = useState(false)
     const [hasStoredImage, setHasStoredImage] = useState(false)
     const [hasPostedImage, setHasPostedImage] = useState(false)
@@ -149,7 +142,7 @@ function ImageDialog({ open, onClose, imageData }) {
         await downloadDataURI(imageData)
 
         if (IS_CORDOVA) {
-            setIsStoredSnackbarOpen(true)
+            context.openSnackbar("Stored in gallery")
             setHasStoredImage(true)
         }
         
@@ -167,7 +160,7 @@ function ImageDialog({ open, onClose, imageData }) {
         createPost(formData)
             .then(res => {
                 if (res.status === 200) {
-                    setIsUploadSnackbarOpen(true)
+                    context.openSnackbar("Uploaded")
                     setHasPostedImage(true)
                 }
             })
@@ -235,7 +228,7 @@ function ImageDialog({ open, onClose, imageData }) {
         uploadTemplate(body).then(res => {
             if(res.status === 200) {
                 setHasCreatedTemplate(true)
-                setIsUploadSnackbarOpen(true)
+                context.openSnackbar("Uploaded")
             }
         }).finally(() => {
             setIsPublishing(false)
@@ -267,7 +260,7 @@ function ImageDialog({ open, onClose, imageData }) {
         editTemplate(body).then(res => {
             if (res.status === 200) {
                 setHasCreatedTemplate(true)
-                setIsUploadSnackbarOpen(true)
+                context.openSnackbar("Uploaded")
             }
         }).finally(() => {
             setIsPublishing(false)
@@ -340,7 +333,7 @@ function ImageDialog({ open, onClose, imageData }) {
                                 </Button>
                         )}
 
-                        {context.auth.isLoggedIn && !hasCreatedTemplate && context.rootElement.type === BASE_ELEMENT_TYPES["IMAGE"] && (
+                        {context.auth.isLoggedIn && !hasCreatedTemplate && context.rootElement?.type === BASE_ELEMENT_TYPES["IMAGE"] && (
                             <>
                                 <Divider className={classes.spacing}/>
 
@@ -382,38 +375,6 @@ function ImageDialog({ open, onClose, imageData }) {
                     </>
                 )}
             </Dialog>
-
-            <Snackbar
-                anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "left"
-                }}
-                open={isUploadSnackbarOpen}
-                autoHideDuration={3000}
-                onClose={() => setIsUploadSnackbarOpen(false)}
-                message="Uploaded"
-                action={
-                    <IconButton onClick={() => setIsUploadSnackbarOpen(false)} className={classes.snackbarClose}>
-                        <CloseIcon/>
-                    </IconButton>
-                }
-            />
-
-            <Snackbar
-                anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "left"
-                }}
-                open={isStoredSnackbarOpen}
-                autoHideDuration={3000}
-                onClose={() => setIsStoredSnackbarOpen(false)}
-                message="Stored in gallery"
-                action={
-                    <IconButton onClick={() => setIsStoredSnackbarOpen(false)} className={classes.snackbarClose}>
-                        <CloseIcon />
-                    </IconButton>
-                }
-            />
         </>
     )
 }

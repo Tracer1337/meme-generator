@@ -1,6 +1,6 @@
 import React, { useState, useRef, useContext } from "react"
 import clsx from "clsx"
-import { Toolbar, Fab, IconButton, Snackbar, Zoom as MuiZoom, Fade as MuiFade } from "@material-ui/core"
+import { Toolbar, Fab, IconButton, Zoom as MuiZoom, Fade as MuiFade } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import DoneIcon from "@material-ui/icons/Done"
 import TextFieldsIcon from "@material-ui/icons/TextFields"
@@ -30,10 +30,6 @@ const useStyles = makeStyles(theme => ({
     elementRight: {
         position: "absolute",
         right: theme.spacing(2)
-    },
-
-    snackbarClose: {
-        color: theme.palette.primary.variant
     },
 
     fade: {
@@ -72,7 +68,6 @@ function DefaultActions() {
     const openMenuButton = useRef()
 
     const [isMenuOpen, setIsMenuOpen] = useState(false)
-    const [isLoggedOutSnackbarOpen, setIsLoggedOutSnackbarOpen] = useState(false)
 
     const handleMoreClick = () => {
         setIsMenuOpen(!isMenuOpen)
@@ -146,22 +141,6 @@ function DefaultActions() {
                 {/* Off-Layout */}
 
                 <Menu open={isMenuOpen} anchorEl={openMenuButton.current} onClose={handleMenuClose} />
-
-                <Snackbar
-                    anchorOrigin={{
-                        vertical: "bottom",
-                        horizontal: "right"
-                    }}
-                    open={isLoggedOutSnackbarOpen}
-                    autoHideDuration={3000}
-                    onClose={() => setIsLoggedOutSnackbarOpen(false)}
-                    message="Logged Out"
-                    action={
-                        <IconButton onClick={() => setIsLoggedOutSnackbarOpen(false)} className={classes.snackbarClose}>
-                            <CloseIcon />
-                        </IconButton>
-                    }
-                />
             </Toolbar>
         </Fade>
     )
