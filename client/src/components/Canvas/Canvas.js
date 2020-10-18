@@ -13,6 +13,7 @@ import BaseElement from "../../Models/BaseElement.js"
 import Element from "../../Models/Element.js"
 import { BASE_ELEMENT_TYPES } from "../../config/constants.js"
 import useBackButton from "../../utils/useBackButton.js"
+import { defaultBorderValues } from "../../store/state.js"
 
 function getDimensionsWithoutPadding(element) {
     const styles = getComputedStyle(element)
@@ -27,15 +28,6 @@ async function waitFrames(amount = 1) {
     for(let i = 0; i < amount; i++) {
         await new Promise(requestAnimationFrame)
     }
-}
-
-const defaultBorderValues = {
-    size: 0,
-    top: true,
-    bottom: true,
-    left: false,
-    right: false,
-    color: "white"
 }
 
 const defaultGridValues = {
@@ -79,7 +71,6 @@ function Canvas() {
     const canvas = useRef()
     const container = useRef()
 
-    const [borderValues, setBorderValues] = useState(defaultBorderValues)
     const [gridValues, setGridValues] = useState(defaultGridValues)
 
     const handleGenerateImage = async () => {
@@ -103,11 +94,11 @@ function Canvas() {
     }
 
     const handleSetBorder = () => {
-        const dialogHandle = context.openDialog("Border", { values: borderValues })
+        const dialogHandle = context.openDialog("Border", { values: context.border })
 
         dialogHandle.addEventListener("close", (values) => {
             if (values) {
-                setBorderValues(values)
+                context.set({ border: values })
             }
         })
     }
@@ -123,7 +114,7 @@ function Canvas() {
     }
 
     const handleResetCanvas = () => {
-        setBorderValues(defaultBorderValues)
+        context.set({ border: defaultBorderValues })
         setGridValues(defaultGridValues)
     }
 
@@ -167,7 +158,7 @@ function Canvas() {
         }
 
         // Set border
-        setBorderValues(border || defaultBorderValues)
+        newContextValue.border = border || defaultBorderValues
 
         // Handle elements
         if (elements) {
@@ -189,10 +180,6 @@ function Canvas() {
         context.set(newContextValue)
     }
 
-    const handleGetBorder = () => {
-        return borderValues
-    }
-
     const awaitImageLoad = () => new Promise(resolve => {
         if (context.rootElement?.type !== BASE_ELEMENT_TYPES["IMAGE"] || baseRef.current.complete) {
             resolve()
@@ -203,8 +190,6 @@ function Canvas() {
 
     // Set event listeners
     useEffect(() => {
-        window.getBorder = handleGetBorder
-
         return createListeners(context, [
             ["resetCanvas", handleResetCanvas],
             ["setBorder", handleSetBorder],
@@ -253,12 +238,12 @@ function Canvas() {
             if (maxWidth * ratio > maxHeight) {
                 // Height is larger than max height => Constrain height
                 const margin = 32
-                const borderSize = (borderValues.top || 0 + borderValues.bottom || 0) * borderValues.size
+                const borderSize = (context.border.top || 0 + context.border.bottom || 0) * context.border.size
                 newHeight = maxHeight - margin - borderSize
                 newWidth = newHeight * (1 / ratio)
             } else {
                 // Width is larger than max width => Constrain width
-                const borderSize = (borderValues.left || 0 + borderValues.right || 0) * borderValues.size
+                const borderSize = (context.border.left || 0 + context.border.right || 0) * context.border.size
                 newWidth = maxWidth - borderSize
                 newHeight = newWidth * ratio
             }
@@ -276,18 +261,18 @@ function Canvas() {
         })()
 
         // eslint-disable-next-line
-    }, [context.rootElement, baseRef, container, canvas, borderValues])
+    }, [context.rootElement, baseRef, container, canvas, context.border])
 
     return (
         <div className={classes.canvasWrapper} ref={container}>
             <div 
                 className={classes.canvas} 
                 style={{
-                    paddingTop: borderValues.top && borderValues.size + "px",
-                    paddingBottom: borderValues.bottom && borderValues.size + "px",
-                    paddingLeft: borderValues.left && borderValues.size + "px",
-                    paddingRight: borderValues.right && borderValues.size + "px",
-                    backgroundColor: !context.isEmptyState && borderValues.color,
+                    paddingTop: context.border.top && context.border.size + "px",
+                    paddingBottom: context.border.bottom && context.border.size + "px",
+                    paddingLeft: context.border.left && context.border.size + "px",
+                    paddingRight: context.border.right && context.border.size + "px",
+                    backgroundColor: !context.isEmptyState && context.border.color,
                     width: context.isEmptyState && "unset",
                     height: context.isEmptyState && "unset"
                 }}
@@ -297,10 +282,10 @@ function Canvas() {
 
                 <Elements ref={elementsRef} base={baseRef.current} grid={gridValues} canvas={canvas.current}/>
 
-                <DrawingCanvas canvas={canvas.current} border={borderValues} />
+                <DrawingCanvas canvas={canvas.current} border={context.border} />
             </div>
 
-            <Grid config={gridValues} canvas={canvas.current} border={borderValues}/>
+            <Grid config={gridValues} canvas={canvas.current} border={context.border}/>
         </div>
     )
 }

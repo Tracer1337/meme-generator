@@ -323,7 +323,7 @@ function makeElement({
 
         useEffect(() => {
             const pipe = (fn) => (event) => {
-                if (event.element.id === id) {
+                if (event.element?.id === id) {
                     fn(id)
                 }
             }

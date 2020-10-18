@@ -75,7 +75,6 @@ function Elements({ base, grid, canvas }, ref) {
             defaultValues: elementRefs.current[element.id].getValues()
         })
 
-        // addElement(newElement)
         context.set({
             elements: [...context.elements, newElement],
             focus: {
