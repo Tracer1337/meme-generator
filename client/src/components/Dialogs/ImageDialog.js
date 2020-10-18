@@ -216,7 +216,7 @@ function ImageDialog({ open, onClose, imageData }) {
         const model = {
             rootElement: context.rootElement,
             elements: context.elements,
-            border: window.getBorder()
+            border: context.border
         }
 
         const body = {
@@ -243,17 +243,16 @@ function ImageDialog({ open, onClose, imageData }) {
         setIsPublishing(true)
 
         // Collect image data
-        const label = getValues("label")
-        const metaData = {
-            textboxes: window.getTextboxes(),
-            border: window.getBorder()
+        const model = {
+            elements: context.elements,
+            border: context.border
         }
 
         // Create body object
         const body = {
             id: context.currentTemplate.id,
-            label,
-            meta_data: metaData
+            label: getValues("label"),
+            model
         }
 
         // Upload data

@@ -61,7 +61,7 @@ async function edit(req, res) {
     }
 
     template.label = req.body.label
-    template.meta_data = JSON.stringify(req.body.meta_data)
+    template.model = req.body.model
 
     await template.update()
 
