@@ -10,17 +10,11 @@ const { VISIBILITY } = require("../../config/constants.js")
  * Get all templates
  */
 async function getAll(req, res) {
-    const page = req.query.page || 0
-
     let templates = await Template.where(`visibility = ${VISIBILITY["GLOBAL"]}`)
-
-    for (let i = 0; i < 5; i++) [
-        templates = templates.concat(templates)
-    ]
 
     templates.sort((a, b) => b.amount_uses - a.amount_uses)
 
-    res.send(paginate(templates, page, config.pagination.templates))
+    res.send(templates)
 }
 
 /**
@@ -107,8 +101,6 @@ async function registerUse(req, res) {
 }
 
 async function getByUser(req, res) {
-    const page = req.query.page || 0
-
     const user = await User.findBy("id", req.params.id)
 
     if (!user) {
@@ -119,7 +111,7 @@ async function getByUser(req, res) {
 
     templates.sort((a, b) => b.amount_uses - a.amount_uses)
 
-    res.send(paginate(templates, page, config.pagination.templates))
+    res.send(templates)
 }
 
 module.exports = { getAll, create, edit, remove, registerUse, getByUser }

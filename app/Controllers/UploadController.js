@@ -13,7 +13,7 @@ async function getByFilename(req, res) {
     if (!hasExtension(req.params.file)) {
         return res.render("image", {
             imagePath: `/nudes/${req.params.file}.jpg`,
-            title: "Created with meme bros"
+            title: "Created with Meme Bros"
         })
     }
 

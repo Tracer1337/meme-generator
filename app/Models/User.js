@@ -48,7 +48,9 @@ class User extends Model {
     }
 
     async addFriend(user) {
-        if (this.friends.some(({ id }) => user.id === id)) {
+        const friends = await this.getFriends()
+
+        if (friends.some(({ id }) => user.id === id)) {
             return false
         }
         
@@ -59,7 +61,9 @@ class User extends Model {
     }
 
     async removeFriend(user) {
-        if (!this.friends.some(({ id }) => user.id === id)) {
+        const friends = await this.getFriends()
+
+        if (!friends.some(({ id }) => user.id === id)) {
             return false
         }
         

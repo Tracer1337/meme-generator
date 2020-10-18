@@ -35,3 +35,6 @@ export const VISIBILITY = {
     "PUBLIC": 0,
     "GLOBAL": 1
 }
+
+export const PAGINATION_OFFSET = 100
+export const TEMPLATES_PER_PAGE = 10

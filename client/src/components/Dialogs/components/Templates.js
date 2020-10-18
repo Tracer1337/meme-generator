@@ -1,16 +1,16 @@
 import React, { useState, useContext, useRef, useEffect, useImperativeHandle } from "react"
 import { useLocation, useHistory } from "react-router-dom"
-import { IconButton, GridList, GridListTile, GridListTileBar, Typography, Divider } from "@material-ui/core"
+import { IconButton, GridList, GridListTile, GridListTileBar, Typography, Divider, CircularProgress } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import DeleteIcon from "@material-ui/icons/Delete"
 
 import { AppContext } from "../../../App.js"
 import SearchBar from "./SearchBar.js"
 import { deleteTemplate } from "../../../config/api.js"
-import { VISIBILITY } from "../../../config/constants.js"
+import { VISIBILITY, PAGINATION_OFFSET, TEMPLATES_PER_PAGE } from "../../../config/constants.js"
 import { cacheImage } from "../../../utils/cache.js"
-import makePagination from "../../../utils/makePagination.js"
 import { createListeners } from "../../../utils"
+import useAPIData from "../../../utils/useAPIData.js"
 
 const useStyles = makeStyles(theme => ({
     spacer: {
@@ -67,21 +67,24 @@ const getSubtitle = (count) => {
     }
 }
 
-function TemplatesGrid({ data, onClick, onDelete, search, user, onLoadNextPage }) {
+function TemplatesChunk({ index, ...props }) {
+    const { data, onClick, onDelete } = props
+
     const context = useContext(AppContext)
 
     const classes = useStyles()
 
     const lastElementRef = useRef()
 
-    const handleImageLoad = (template) => {
-        cacheImage(template.image_url)
-    }
+    const [hasChild, setHasChild] = useState(false)
+
+    const start = index * TEMPLATES_PER_PAGE
+    const renderTemplates = data.slice(start, start + TEMPLATES_PER_PAGE)
 
     useEffect(() => {
         const parent = document.getElementById("templates-dialog-inner-container")
 
-        if (!parent || !data.length) {
+        if (!parent || !renderTemplates?.length) {
             return
         }
 
@@ -92,8 +95,8 @@ function TemplatesGrid({ data, onClick, onDelete, search, user, onLoadNextPage }
                 return
             }
 
-            if (parent.scrollTop + parent.offsetHeight >= parent.scrollHeight - 100) {
-                onLoadNextPage()
+            if (parent.scrollTop + parent.offsetHeight >= parent.scrollHeight - PAGINATION_OFFSET) {
+                setHasChild(true)
                 hasScrolledToBottom = true
             }
         }
@@ -107,40 +110,63 @@ function TemplatesGrid({ data, onClick, onDelete, search, user, onLoadNextPage }
         // eslint-disable-next-line
     }, [])
 
-    let renderTemplates = data
-
-    if (user) {
-        renderTemplates = renderTemplates.filter(template => template.visibility !== VISIBILITY["GLOBAL"])
-    }
-
-    // Filter by search string
-    renderTemplates = renderTemplates.filter(({ label }) => label.toLowerCase().includes(search.toLowerCase()))
-
     return (
-        <GridList cellHeight={150} className={classes.list}>
-            {renderTemplates.map((template, i) => {
-                const isLastElement = i === renderTemplates.length - 1
-                
-                return (
-                    <GridListTile key={i} className={classes.tile} onClick={e => onClick(e, template)} ref={isLastElement ? lastElementRef : null}>
-                        <img src={template.image_url} alt={template.label} loading="lazy" onLoad={() => handleImageLoad(template)} />
+        <>
+            <GridList cellHeight={150} className={classes.list}>
+                {renderTemplates.map((template, i) => {
+                    const isLastElement = i === renderTemplates.length - 1
 
-                        <GridListTileBar title={template.label} subtitle={getSubtitle(template.amount_uses)} className={classes.tilebar} />
+                    return (
+                        <GridListTile key={i} className={classes.tile} onClick={e => onClick(e, template)} ref={isLastElement ? lastElementRef : null}>
+                            <img src={template.image_url} alt={template.label} loading="lazy" onLoad={() => cacheImage(template.image_url)} />
 
-                        {context.auth.isLoggedIn && (template.user_id === context.auth.user.id || (template.visibility === VISIBILITY["GLOBAL"] && context.auth.user.is_admin)) && (
-                            <IconButton onClick={() => onDelete(template)} className={classes.deleteButton}>
-                                <DeleteIcon fontSize="small" />
-                            </IconButton>
-                        )}
-                    </GridListTile>
-                )
-            })}
-        </GridList>
+                            <GridListTileBar title={template.label} subtitle={getSubtitle(template.amount_uses)} className={classes.tilebar} />
+
+                            {context.auth.isLoggedIn && (template.user_id === context.auth.user.id || (template.visibility === VISIBILITY["GLOBAL"] && context.auth.user.is_admin)) && (
+                                <IconButton onClick={() => onDelete(template)} className={classes.deleteButton}>
+                                    <DeleteIcon fontSize="small" />
+                                </IconButton>
+                            )}
+                        </GridListTile>
+                    )
+                })}
+            </GridList>
+
+            { hasChild && <TemplatesChunk index={index + 1} {...props}/> }
+        </>
     )
 }
 
-const GlobalTemplatesRenderer = makePagination("getTemplates", TemplatesGrid)
-const UserTemplatesRenderer = makePagination("getTemplatesByUser", TemplatesGrid)
+function makeTemplatesGrid(apiMethod) {
+    return React.forwardRef(function TemplatesGrid({ search, user, ...props }, ref) {
+        const { data, isLoading, reload } = useAPIData({
+            method: apiMethod,
+            data: user?.id
+        })
+
+        useImperativeHandle(ref, () => ({ reload }))
+
+        if (isLoading) {
+            return <CircularProgress/>
+        }
+
+        let renderTemplates = data
+
+        if (user) {
+            renderTemplates = renderTemplates.filter(template => template.visibility !== VISIBILITY["GLOBAL"])
+        }
+
+        // Filter by search string
+        renderTemplates = renderTemplates.filter(({ label }) => label.toLowerCase().includes(search.toLowerCase()))
+
+        return (
+            <TemplatesChunk data={renderTemplates} index={0} {...props} />
+        )
+    })   
+}
+
+const GlobalTemplatesRenderer = makeTemplatesGrid("getTemplates")
+const UserTemplatesRenderer = makeTemplatesGrid("getTemplatesByUser")
 
 function Templates({ user, onReload }, ref) {
     const context = useContext(AppContext)
@@ -217,7 +243,6 @@ function Templates({ user, onReload }, ref) {
                         <UserTemplatesRenderer
                             ref={userTemplatesRef}
                             user={context.auth.user}
-                            apiData={{ userId: context.auth.user.id }}
                             {...sharedProps}
                         />
                         <Divider className={classes.divider} />
@@ -227,7 +252,6 @@ function Templates({ user, onReload }, ref) {
                 <Renderer
                     ref={globalTemplatesRef}
                     user={user}
-                    apiData={{ userId: user?.id }}
                     {...sharedProps}
                 />
             </div>

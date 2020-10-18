@@ -25,7 +25,7 @@ function Grid({ config, canvas, border }) {
 
     const grid = useRef()
 
-    let renderContext;
+    let renderContext
 
     const setDimensions = async () => {
         // Wait until canvas has resized proberly
