@@ -2,7 +2,7 @@ const StorageFacade = require("../Facades/StorageFacade.js")
 const ImageServiceProvider = require("../Services/ImageServiceProvider.js")
 const Template = require("../Models/Template.js")
 const User = require("../Models/User.js")
-const { changeExtension, createTempFile } = require("../utils")
+const { changeExtension, createTempFile, paginate } = require("../utils")
 const config = require("../../config")
 const { VISIBILITY } = require("../../config/constants.js")
 
@@ -10,9 +10,17 @@ const { VISIBILITY } = require("../../config/constants.js")
  * Get all templates
  */
 async function getAll(req, res) {
-    const templates = await Template.where(`visibility = ${VISIBILITY["GLOBAL"]}`)
+    const page = req.query.page || 0
 
-    res.send(templates)
+    let templates = await Template.where(`visibility = ${VISIBILITY["GLOBAL"]}`)
+
+    for (let i = 0; i < 5; i++) [
+        templates = templates.concat(templates)
+    ]
+
+    templates.sort((a, b) => b.amount_uses - a.amount_uses)
+
+    res.send(paginate(templates, page, config.pagination.templates))
 }
 
 /**
@@ -99,13 +107,19 @@ async function registerUse(req, res) {
 }
 
 async function getByUser(req, res) {
+    const page = req.query.page || 0
+
     const user = await User.findBy("id", req.params.id)
 
     if (!user) {
         return res.sendStatus(404)
     }
 
-    res.send(await user.getTemplates())
+    const templates = await user.getTemplates()
+
+    templates.sort((a, b) => b.amount_uses - a.amount_uses)
+
+    res.send(paginate(templates, page, config.pagination.templates))
 }
 
 module.exports = { getAll, create, edit, remove, registerUse, getByUser }

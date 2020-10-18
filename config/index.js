@@ -8,6 +8,7 @@ module.exports = {
 
     pagination: {
         feed: 15,
-        explore: 50
+        explore: 50,
+        templates: 20
     }
 }

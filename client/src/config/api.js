@@ -23,12 +23,12 @@ function url(path) {
 
 export const authorize = (password) => axios.post(url("/auth/authorize"), { password })
 
-export const getTemplates = () => cachedRequest(url("/templates")).then(format(TEMPLATES))
+export const getTemplates = ({ page }) => cachedRequest(url("/templates?page=" + page)).then(format(TEMPLATES))
 export const uploadTemplate = (body) => axios.post(url("/templates"), body)
 export const editTemplate = (body) => axios.put(url("/templates"), body)
 export const deleteTemplate = (id) => axios.delete(url("/templates/" + id))
 export const registerTemplateUse = (id) => axios.post(url("/templates/register-use/" + id))
-export const getTemplatesByUser = (id) => axios.get(url("/templates/user/" + id)).then(format(TEMPLATES))
+export const getTemplatesByUser = ({ userId, page }) => axios.get(url(`/templates/user/${userId}?page=${page}`)).then(format(TEMPLATES))
 
 export const getStickers = () => cachedRequest(url("/stickers")).then(format(STICKERS))
 export const uploadSticker = (formData) => axios.post(url("/stickers"), formData)

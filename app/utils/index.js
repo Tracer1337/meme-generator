@@ -79,8 +79,8 @@ function hasExtension(filename) {
 /**
  * Extract chunk out of array
  */
-function paginate(array, pageNr, itemsPerPage) {
-    const start = itemsPerPage * pageNr
+function paginate(array, page, itemsPerPage) {
+    const start = itemsPerPage * page
     const end = start + itemsPerPage
     return array.slice(start, end)
 }
