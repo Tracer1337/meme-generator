@@ -248,6 +248,12 @@ function ImageDialog({ open, onClose, imageData }) {
             border: context.border
         }
 
+        model.elements.forEach(element => {
+            if (element.data.fromTemplate) {
+                element.data = element.data.defaultValues
+            }
+        })
+
         // Create body object
         const body = {
             id: context.currentTemplate.id,
