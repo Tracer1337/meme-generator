@@ -2,10 +2,17 @@ import { useEffect, useContext } from "react"
 
 import { AppContext } from "../App.js"
 
+// Safari does not support BroadcastChannel
+const supportsBroadcastChannel = !!window.BroadcastChannel
+
 function OfflineUseAlerts() {
     const context = useContext(AppContext)
 
     useEffect(() => {
+        if (!supportsBroadcastChannel) {
+            return
+        }
+
         const channel = new BroadcastChannel("sw-0")
 
         channel.addEventListener("message", function ({ data: message }) {

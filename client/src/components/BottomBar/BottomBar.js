@@ -8,11 +8,9 @@ import ElementActions from "./ElementActions"
 
 const useStyles = makeStyles(theme => ({
     appBar: {
-        position: "absolute",
-        top: "unset",
+        position: "fixed",
+        top: "auto",
         bottom: 0,
-        left: 0,
-        right: "unset",
         backgroundColor: theme.palette.background.paper
     }
 }))

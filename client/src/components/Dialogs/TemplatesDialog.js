@@ -22,6 +22,11 @@ const useStyles = makeStyles(theme => ({
         display: "flex"
     },
 
+    innerContainer: {
+        overflow: "scroll",
+        "-webkit-overflow-scrolling": "touch"
+    },
+
     body: {
         marginTop: 46
     }
@@ -92,7 +97,14 @@ function TemplatesDialog({ onClose, open }) {
                 </Toolbar>
             </AppBar>
 
-            <SwipeableViews index={currentTab} onChangeIndex={handleChangeIndex} axis="x" id="templates-dialog-inner-container" disableLazyLoading>
+            <SwipeableViews
+                index={currentTab}
+                onChangeIndex={handleChangeIndex}
+                axis="x"
+                disableLazyLoading
+                id="templates-dialog-inner-container"
+                className={classes.innerContainer}
+            >
                 <div className={classes.body}>
                     <Templates active={currentTab === 0} ref={templatesRef}/>
                 </div>
