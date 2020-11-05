@@ -118,10 +118,6 @@ main {
     align-items: center;
 }
 
-.download-badge-wrapper {
-    display: flex;
-}
-
 .download-badge {
     margin-top: 8px;
 }
