@@ -11,7 +11,12 @@ const useStyles = makeStyles(theme => ({
         display: "flex",
         justifyContent: "space-between",
         backgroundColor: "transparent",
-        boxShadow: "none"
+        boxShadow: "none",
+        pointerEvents: "none"
+    },
+
+    action: {
+        pointerEvents: "all"
     }
 }))
 
@@ -28,7 +33,7 @@ function HeaderActions() {
         <AppBar className={classes.headerActions} style={{ display: context.isEmptyState && "none" }}>
             <Toolbar>
                 <div>
-                    <IconButton onClick={handleClose} edge="start">
+                    <IconButton onClick={handleClose} edge="start" className={classes.action}>
                         <CloseIcon/>
                     </IconButton>
                 </div>
