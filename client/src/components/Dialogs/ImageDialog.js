@@ -267,8 +267,6 @@ function ImageDialog({ open, onClose, imageData }) {
         if(!open) {
             // Reset link when dialog closes
             setLink(null)
-        } else {
-            console.log(context.editor.model)
         }
     }, [open])
 
