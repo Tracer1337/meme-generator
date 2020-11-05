@@ -33,14 +33,7 @@ methods.resetEditor = function () {
 
     const defaultState = new State()
 
-    methods.set.call(this, {
-        isEmptyState: defaultState.isEmptyState,
-        currentTemplate: defaultState.currentTemplates,
-        focus: defaultState.focus,
-        rootElement: defaultState.rootElement,
-        elements: defaultState.elements,
-        drawing: defaultState.drawing
-    })
+    methods.set.call(this, { editor: defaultState.editor })
 }
 
 export default methods

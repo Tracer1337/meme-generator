@@ -30,7 +30,7 @@ function HeaderActions() {
     }
 
     return (
-        <AppBar className={classes.headerActions} style={{ display: context.isEmptyState && "none" }}>
+        <AppBar className={classes.headerActions} style={{ display: context.editor.isEmptyState && "none" }}>
             <Toolbar>
                 <div>
                     <IconButton onClick={handleClose} edge="start" className={classes.action}>

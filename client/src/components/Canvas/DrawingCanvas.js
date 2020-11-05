@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
 function DrawingCanvas({ canvas, border }) {
     const context = useContext(AppContext)
     
-    const classes = useStyles(context.drawing)
+    const classes = useStyles(context.editor.drawing)
 
     const drawingCanvasRef = useRef()
     const renderContext = useRef()
@@ -88,8 +88,8 @@ function DrawingCanvas({ canvas, border }) {
     
     const handleDrawStart = (event) => {
         currentPath.current = new Path({
-            color: context.drawing.color,
-            width: context.drawing.lineWidth
+            color: context.editor.drawing.color,
+            width: context.editor.drawing.lineWidth
         })
 
         setIsDrawing(true)
@@ -162,9 +162,9 @@ function DrawingCanvas({ canvas, border }) {
     }, [canvas?.clientWidth, canvas?.clientHeight, border])
 
     useEffect(() => {
-        currentPath.current.setColor(context.drawing.color)
-        currentPath.current.setWidth(context.drawing.lineWidth)
-    }, [context.drawing])
+        currentPath.current.setColor(context.editor.drawing.color)
+        currentPath.current.setWidth(context.editor.drawing.lineWidth)
+    }, [context.editor.drawing])
 
     useEffect(() => {
         const drawingCanvas = drawingCanvasRef.current

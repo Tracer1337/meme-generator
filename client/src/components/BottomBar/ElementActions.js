@@ -25,14 +25,14 @@ function ElementActions() {
 
     const classes = useStyles()
 
-    const { element, controls } = context.focus || {}
+    const { element, controls } = context.editor.focus || {}
 
     const dispatchEvent = (name) => () => {
         context.dispatchEvent(name, { element })
     }
 
     return (
-        <Fade in={!!context.focus}>
+        <Fade in={!!context.editor.focus}>
             <Toolbar className={classes.elementActions}>
                 <div>
                     <IconButton onClick={() => context.openDialog("Help", { data: helpOverlayData.elements })}>

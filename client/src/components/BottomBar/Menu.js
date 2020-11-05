@@ -28,8 +28,10 @@ function Menu({ open, anchorEl, onClose }) {
 
     const handleEnableDrawing = () => {
         context.set({
-            drawing: {
-                enabled: true
+            editor: {
+                drawing: {
+                    enabled: true
+                }
             }
         })
         onClose()

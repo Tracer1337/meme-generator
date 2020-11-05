@@ -12,12 +12,16 @@ function Base(props, ref) {
 
     const handleBaseElementCreate = (baseElement) => {
         context.dispatchEvent("resetCanvas")
-
+        
         context.set({
-            currentTemplate: null,
-            isEmptyState: false,
-            elements: [],
-            rootElement: baseElement
+            editor: {
+                currentTemplate: null,
+                isEmptyState: false,
+                model: {
+                    rootElement: baseElement,
+                    elements: []
+                }
+            }
         })
     }
 
@@ -54,15 +58,15 @@ function Base(props, ref) {
     
     let baseElement
 
-    if (context.rootElement?.type === BASE_ELEMENT_TYPES["IMAGE"]) {
+    if (context.editor.model.rootElement?.type === BASE_ELEMENT_TYPES["IMAGE"]) {
         baseElement = (
             <img
                 alt=""
-                src={context.rootElement.image}
+                src={context.editor.model.rootElement.image}
                 {...sharedProps}
             />
         )
-    } else if (context.rootElement?.type === BASE_ELEMENT_TYPES["BLANK"]) {
+    } else if (context.editor.model.rootElement?.type === BASE_ELEMENT_TYPES["BLANK"]) {
         baseElement = (
             <div
                 {...sharedProps}

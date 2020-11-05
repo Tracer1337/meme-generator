@@ -57,28 +57,16 @@ function DrawingActions() {
     const [isWidthDialOpen, setIsWidthDialOpen] = useState(false)
     const [isPaletteOpen, setIsPaletteOpen] = useState(false)
 
-    useBackButton(context.drawing.enabled, () => context.set({
-        drawing: {
-            enabled: false
-        }
-    }))
+    useBackButton(context.editor.drawing.enabled, () => context.set({ editor: { drawing: { enabled: false } } }))
 
     const handleLineWidthClick = (value) => {
-        context.set({
-            drawing: {
-                lineWidth: value
-            }
-        })
+        context.set({ editor: { drawing: { lineWidth: value } } })
 
         setIsWidthDialOpen(false)
     }
 
     const handleColorClick = (color) => {
-        context.set({
-            drawing: {
-                color
-            }
-        })
+        context.set({ editor: { drawing: { color } } })
 
         setIsPaletteOpen(false)
     }
@@ -88,9 +76,9 @@ function DrawingActions() {
             {/* Line Width */}
             <SpeedDial
                 ariaLabel="Line Width"
-                hidden={!context.drawing.enabled}
+                hidden={!context.editor.drawing.enabled}
                 open={isWidthDialOpen}
-                icon={<LineWidthIcon value={context.drawing.lineWidth}/>}
+                icon={<LineWidthIcon value={context.editor.drawing.lineWidth}/>}
                 onOpen={() => setIsWidthDialOpen(true)}
                 onClose={() => setIsWidthDialOpen(false)}
                 direction="down"
@@ -101,7 +89,7 @@ function DrawingActions() {
                         key={i}
                         tooltipTitle={value + "px"}
                         onClick={() => handleLineWidthClick(value)}
-                        classes={{ fab: context.drawing.lineWidth === value && classes.selected }}
+                        classes={{ fab: context.editor.drawing.lineWidth === value && classes.selected }}
                         icon={<LineWidthIcon value={value} isOption/>}
                     />
                 ))}
@@ -110,7 +98,7 @@ function DrawingActions() {
             {/* Palette */}
             <SpeedDial
                 ariaLabel="Palette"
-                hidden={!context.drawing.enabled}
+                hidden={!context.editor.drawing.enabled}
                 open={isPaletteOpen}
                 icon={<PaletteIcon />}
                 onOpen={() => setIsPaletteOpen(true)}
@@ -118,7 +106,7 @@ function DrawingActions() {
                 direction="down"
                 classes={{ fab: classes.fab }}
                 FabProps={{
-                    style: { backgroundColor: context.drawing.color }
+                    style: { backgroundColor: context.editor.drawing.color }
                 }}
             >
                 {Object.entries(settingsOptions.colors).reverse().map(([label, color], i) => (
@@ -127,7 +115,7 @@ function DrawingActions() {
                         tooltipTitle={label}
                         icon={<></>}
                         onClick={() => handleColorClick(color)}
-                        classes={{ fab: context.drawing.color === color && classes.selected }}
+                        classes={{ fab: context.editor.drawing.color === color && classes.selected }}
                         FabProps={{
                             style: { backgroundColor: color }
                         }}

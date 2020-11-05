@@ -88,7 +88,7 @@ function Grid({ config, canvas, border }) {
         setDimensions().then(renderGrid)
 
         // eslint-disable-next-line
-    }, [canvas, config, context.rootElement, border])
+    }, [canvas, config, context.editor.model.rootElement, border])
 
     return (
         <canvas

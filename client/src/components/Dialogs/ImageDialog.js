@@ -14,7 +14,7 @@ import { dataURLToFile } from "../../utils"
 import downloadDataURI from "../../utils/downloadDataURI.js"
 import uploadImage from "../../utils/uploadImage.js"
 import { uploadTemplate, editTemplate, registerTemplateUse, registerStickerUse, createPost } from "../../config/api.js"
-import { IS_CORDOVA, BASE_ELEMENT_TYPES, VISIBILITY } from "../../config/constants.js"
+import { IS_CORDOVA, BASE_ELEMENT_TYPES, ELEMENT_TYPES, VISIBILITY } from "../../config/constants.js"
 
 const useStyles = makeStyles(theme => {
     const spacing = {
@@ -110,21 +110,21 @@ function ImageDialog({ open, onClose, imageData }) {
     const [hasStoredImage, setHasStoredImage] = useState(false)
     const [hasPostedImage, setHasPostedImage] = useState(false)
 
-    const isEditingTemplate = !!context.currentTemplate
+    const isEditingTemplate = !!context.editor.currentTemplate
 
     const dispatchEvent = (name, data) => context.dispatchEvent(name, data)
 
     const registerUsage = async () => {
         // Register template usage
-        if(context.currentTemplate) {
+        if (context.editor.currentTemplate) {
             if (!isRegistered.current) {
-                await registerTemplateUse(context.currentTemplate.id)
+                await registerTemplateUse(context.editor.currentTemplate.id)
             }
         }
 
         // Register sticker usage
-        for(let element of context.elements) {
-            if (element.type === "sticker" && element.data.id !== undefined) {
+        for(let element of context.editor.model.elements) {
+            if (element.type === ELEMENT_TYPES["STICKER"] && element.data.id !== undefined) {
                 await registerStickerUse(element.data.id)
             }
         }
@@ -203,21 +203,18 @@ function ImageDialog({ open, onClose, imageData }) {
     }
 
     const handlePublishTemplateClick = async () => {
-        if (!getValues("label") || context.rootElement.type !== BASE_ELEMENT_TYPES["IMAGE"]) {
+        if (!getValues("label") || context.editor.model.rootElement.type !== BASE_ELEMENT_TYPES["IMAGE"]) {
             return
         }
 
         setIsPublishing(true)
 
-        dispatchEvent("createTemplate")
+        dispatchEvent("accessElements")
 
-        context.rootElement.label = getValues("label")
+        context.editor.model.rootElement.label = getValues("label")
 
-        const model = {
-            rootElement: context.rootElement,
-            elements: context.elements,
-            border: context.border
-        }
+        const model = {...context.editor.model}
+        model.elements = model.elements.filter(element => element.type !== ELEMENT_TYPES["STICKER"])
 
         const body = {
             model,
@@ -242,21 +239,15 @@ function ImageDialog({ open, onClose, imageData }) {
 
         setIsPublishing(true)
 
-        // Collect image data
-        const model = {
-            elements: context.elements,
-            border: context.border
-        }
+        dispatchEvent("accessElements")
 
-        model.elements.forEach(element => {
-            if (element.data.fromTemplate) {
-                element.data = element.data.defaultValues
-            }
-        })
+        // Collect image data
+        const model = {...context.editor.model}
+        model.elements = model.elements.filter(element => element.type !== ELEMENT_TYPES["STICKER"])
 
         // Create body object
         const body = {
-            id: context.currentTemplate.id,
+            id: context.editor.currentTemplate.id,
             label: getValues("label"),
             model
         }
@@ -276,6 +267,8 @@ function ImageDialog({ open, onClose, imageData }) {
         if(!open) {
             // Reset link when dialog closes
             setLink(null)
+        } else {
+            console.log(context.editor.model)
         }
     }, [open])
 
@@ -338,7 +331,7 @@ function ImageDialog({ open, onClose, imageData }) {
                                 </Button>
                         )}
 
-                        {context.auth.isLoggedIn && !hasCreatedTemplate && context.rootElement?.type === BASE_ELEMENT_TYPES["IMAGE"] && (
+                        {context.auth.isLoggedIn && !hasCreatedTemplate && context.editor.model.rootElement?.type === BASE_ELEMENT_TYPES["IMAGE"] && (
                             <>
                                 <Divider className={classes.spacing}/>
 
@@ -348,7 +341,7 @@ function ImageDialog({ open, onClose, imageData }) {
                                     label="Label"
                                     className={classes.spacing}
                                     variant="outlined"
-                                    defaultValue={context.rootElement.label}
+                                        defaultValue={context.editor.model.rootElement.label}
                                 />
 
                                 { context.auth.user.is_admin && !isEditingTemplate && (

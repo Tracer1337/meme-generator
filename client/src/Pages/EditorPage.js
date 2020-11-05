@@ -10,7 +10,7 @@ function EditorPage() {
     const context = useContext(AppContext)
 
     return (
-        <Layout header={context.isEmptyState} footer={context.isEmptyState}>
+        <Layout header={context.editor.isEmptyState} footer={context.editor.isEmptyState}>
             <HeaderActions/>
             <Canvas/>
             <BottomBar/>

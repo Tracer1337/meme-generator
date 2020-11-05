@@ -53,6 +53,18 @@ function Textbox({ id, handle, onFocus, isFocused, toggleMovement, dimensions, d
         }
     })
 
+    const getChangedSettings = () => {
+        const changedSettings = defaultValues?.settings || {}
+
+        for (let key in settings) {
+            if (settings[key] !== defaultSettings[key]) {
+                changedSettings[key] = settings[key]
+            }
+        }
+
+        return changedSettings
+    }
+
     const handleSettingsClicked = () => {
         const dialogHandle = context.openDialog("TextboxSettings", { values: settings, text: value })
 
@@ -97,33 +109,17 @@ function Textbox({ id, handle, onFocus, isFocused, toggleMovement, dimensions, d
         setValue(newValue)
     }
 
-    const toObject = ({ image }) => {
-        const toPercentage = (value, useWidth = false) => value / (useWidth ? image.clientWidth : image.clientHeight) * 100 + "%"
-
-        const changedSettings = defaultValues?.settings || {}
-        for(let key in settings) {
-            if(settings[key] !== defaultSettings[key]) {
-                changedSettings[key] = settings[key]
-            }
-        }
-
-        return {
-            value,
-            width: toPercentage(dimensions.width + TEXTBOX_PADDING * 2, true),
-            height: toPercentage(dimensions.height + TEXTBOX_PADDING * 2),
-            x: toPercentage(dimensions.x, true),
-            y: toPercentage(dimensions.y),
-            rotation: dimensions.rotation,
-            settings: changedSettings
-        }
-    }
-
     // Expose methods for parent
     if(handle) {
-        handle.toObject = toObject
         handle.onEditClicked = handleEditClicked
         handle.onSettingsClicked = handleSettingsClicked
-        handle.getValues = () => ({ value, settings })
+
+        handle.getDimensions = () => ({
+            width: dimensions.width + TEXTBOX_PADDING * 2,
+            height: dimensions.height + TEXTBOX_PADDING * 2
+        })
+
+        handle.getValues = () => ({ value, settings: getChangedSettings() })
     }
 
     // Generate stylings for textbox

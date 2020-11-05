@@ -5,7 +5,6 @@ const path = require("path")
 require("dotenv").config({ path: path.join(__dirname, "..", "..", ".env") })
 
 const User = require("../../app/Models/User.js")
-const Templates = require("../../app/Models/Template.js")
 
 function randomTimestamp() {
     const offset = Math.random() * 1000 * 3600 * 24 * 7

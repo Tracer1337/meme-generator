@@ -79,8 +79,10 @@ function DefaultActions() {
 
     const handleDisableDrawingClick = () => {
         context.set({
-            drawing: {
-                enabled: false
+            editor: {
+                drawing: {
+                    enabled: false
+                }
             }
         })
     }
@@ -90,7 +92,7 @@ function DefaultActions() {
     }
     
     return (
-        <Fade in={!context.focus}>
+        <Fade in={!context.editor.focus}>
             <Toolbar>
                 {/* Left */}
 
@@ -106,8 +108,8 @@ function DefaultActions() {
 
                 <div className={classes.spacer} />
 
-                <Zoom in={!context.focus} className={classes.mainAction}>
-                    <Fab color="primary" onClick={dispatchEvent("generateImage")} disabled={context.isEmptyState}>
+                <Zoom in={!context.editor.focus} className={classes.mainAction}>
+                    <Fab color="primary" onClick={dispatchEvent("generateImage")} disabled={context.editor.isEmptyState}>
                         <DoneIcon />
                     </Fab>
                 </Zoom>
@@ -115,24 +117,24 @@ function DefaultActions() {
                 {/* Right */}
 
                 <div className={classes.elementRight}>
-                    <Fade in={!context.drawing.enabled}>
-                        <IconButton onClick={dispatchEvent("addTextbox")} id="textbox-button" disabled={context.isEmptyState}>
+                    <Fade in={!context.editor.drawing.enabled}>
+                        <IconButton onClick={dispatchEvent("addTextbox")} id="textbox-button" disabled={context.editor.isEmptyState}>
                             <TextFieldsIcon />
                         </IconButton>
                     </Fade>
 
-                    <IconButton onClick={dispatchEvent("undo")} id="undo-button" disabled={context.isEmptyState}>
+                    <IconButton onClick={dispatchEvent("undo")} id="undo-button" disabled={context.editor.isEmptyState}>
                         <UndoIcon />
                     </IconButton>
 
-                    <Fade in={!context.drawing.enabled}>
-                        <IconButton onClick={handleMoreClick} ref={openMenuButton} disabled={context.isEmptyState}>
+                    <Fade in={!context.editor.drawing.enabled}>
+                        <IconButton onClick={handleMoreClick} ref={openMenuButton} disabled={context.editor.isEmptyState}>
                             <MoreVertIcon />
                         </IconButton>
                     </Fade>
                 </div>
 
-                <Zoom in={context.drawing.enabled}>
+                <Zoom in={context.editor.drawing.enabled}>
                     <IconButton onClick={handleDisableDrawingClick} className={classes.elementRight}>
                         <CloseIcon />
                     </IconButton>

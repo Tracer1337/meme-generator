@@ -60,6 +60,8 @@ async function edit(req, res) {
         return res.status(404).end()
     }
 
+    delete req.body.model.rootElement.image
+
     template.label = req.body.label
     template.model = req.body.model
 

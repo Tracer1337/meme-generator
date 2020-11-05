@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme => ({
         top: 0, left: 0,
         width: "100%",
         height: "100%",
-        pointerEvents: props => props.context.isEmptyState && "none"
+        pointerEvents: props => props.context.editor.isEmptyState && "none"
     }
 }))
 
@@ -29,88 +29,81 @@ function Elements({ base, grid, canvas }, ref) {
     const elementRefs = useRef({})
 
     elementRefs.current = {}
-    for (let element of context.elements) {
+    for (let element of context.editor.model.elements) {
         elementRefs.current[element.id] = {}
     }
 
     const addSnapshot = useSnapshots({
-        createSnapshot: () => ({ elements: [...context.elements] }),
+        createSnapshot: () => ({ elements: [...context.editor.model.elements] }),
 
         applySnapshot: (snapshot) => {
-            context.set({ elements: snapshot.elements })
+            context.set({ editor: { model: { elements: snapshot.elements } } })
         }
     })
 
     const addElement = (element) => {
-        context.set({
-            elements: [...context.elements, element]
-        })
+        context.set({ editor: { model: { elements: [...context.editor.model.elements, element] } } })
     }
 
     const setElements = (elements) => {
-        context.set({ elements })
+        context.set({ editor: { model: { elements } } })
     }
 
     const handleRemoveElement = (elementId) => {
-        const newElements = context.elements.filter(({ id }) => id !== elementId)
+        const newElements = context.editor.model.elements.filter(({ id }) => id !== elementId)
         setElements(newElements)
     }
 
     const handleTemporaryRemoveElement = (elementId) => {
-        const element = context.elements.find(({ id }) => id === elementId)
+        const element = context.editor.model.elements.find(({ id }) => id === elementId)
         element.data.isRemoved = true
-        setElements([...context.elements])
+        setElements([...context.editor.model.elements])
     }
 
     const handleUndoRemoveElement = (elementId) => {
-        const element = context.elements.find(({ id }) => id === elementId)
+        const element = context.editor.model.elements.find(({ id }) => id === elementId)
         element.data.isRemoved = false
-        setElements([...context.elements])
+        setElements([...context.editor.model.elements])
     }
 
     const handleCloneElement = (elementId) => {
-        const element = context.elements.find(({ id }) => id === elementId)
+        const element = context.editor.model.elements.find(({ id }) => id === elementId)
 
         const newElement = createNewElement(element.type, {
             defaultValues: elementRefs.current[element.id].getValues()
         })
 
         context.set({
-            elements: [...context.elements, newElement],
-            focus: {
-                element: newElement
+            editor: {
+                focus: { element: newElement },
+                model: { elements: [...context.editor.model.elements, newElement] }
             }
         })
     }
 
     const handleToFront = (elementId) => {
         addSnapshot()
-        const index = context.elements.findIndex(({ id }) => id === elementId)
-        const element = context.elements.splice(index, 1)[0]
-        context.set({ elements: [...context.elements, element] })
+        const index = context.editor.model.elements.findIndex(({ id }) => id === elementId)
+        const element = context.editor.model.elements.splice(index, 1)[0]
+        setElements([...context.editor.model.elements, element])
     }
     
     const handleToBack = (elementId) => {
         addSnapshot()
-        const index = context.elements.findIndex(({ id }) => id === elementId)
-        const element = context.elements.splice(index, 1)[0]
-        context.set({ elements: [element, ...context.elements] })
+        const index = context.editor.model.elements.findIndex(({ id }) => id === elementId)
+        const element = context.editor.model.elements.splice(index, 1)[0]
+        setElements([element, ...context.editor.model.elements])
     }
 
     const handleFocus = (elementId) => {
-        const element = context.elements.find(({ id }) => id === elementId)
+        const element = context.editor.model.elements.find(({ id }) => id === elementId)
         const controls = elementRefs.current[elementId].getControls()
         
-        context.set({
-            focus: {
-                element,
-                controls
-            }
-        })
+        context.set({ editor: { focus: { element, controls } } })
     }
 
     const handleBlur = () => {
-        context.set({ focus: null })
+        context.set({ editor: { focus: null } })
     }
 
     const createNewElement = (type, data = {}) => {
@@ -124,15 +117,15 @@ function Elements({ base, grid, canvas }, ref) {
     }
 
     const handleAddTextbox = ({ data }) => {
-        addElement(createNewElement("textbox", data))
+        addElement(createNewElement(ELEMENT_TYPES["TEXTBOX"], data))
     }
 
     const handleAddRectangle = () => {
-        addElement(createNewElement("rectangle"))
+        addElement(createNewElement(ELEMENT_TYPES["RECTANGLE"]))
     }
 
     const addSticker = (src, id) => {
-        addElement(createNewElement("sticker", { src, id }))
+        addElement(createNewElement(ELEMENT_TYPES["STICKER"], { src, id }))
     }
 
     const handleImportSticker = async () => {
@@ -145,10 +138,10 @@ function Elements({ base, grid, canvas }, ref) {
         addSticker(sticker.image_url, sticker.id)
     }
 
-    const handleGetTextboxes = () => {
-        const textboxIds = context.elements.filter(({ type }) => type === "textbox").map(({ id }) => id)
-        const formatted = textboxIds.map(id => elementRefs.current[id].toObject({ image: base }))
-        return formatted
+    const handleAccessElements = () => {
+        context.editor.model.elements.forEach(element => {
+            Object.assign(element.data, elementRefs.current[element.id].toObject({ image: base }))
+        })
     }
 
     const beforeCapturing = () => {
@@ -160,13 +153,12 @@ function Elements({ base, grid, canvas }, ref) {
     }
 
     useEffect(() => {
-        window.getTextboxes = handleGetTextboxes
-
         return createListeners(context, [
             ["importSticker", handleImportSticker],
             ["addTextbox", handleAddTextbox],
             ["addRectangle", handleAddRectangle],
             ["loadSticker", handleLoadSticker],
+            ["accessElements", handleAccessElements]
         ])
     })
 
@@ -178,7 +170,7 @@ function Elements({ base, grid, canvas }, ref) {
 
     return (
         <div className={classes.elements}>
-            {context.elements.map(({ type, id, data }) => {
+            {context.editor.model.elements.map(({ type, id, data }) => {
                 const props = {
                     key: id, id, data, grid, canvas,
                     onRemove: handleRemoveElement,
@@ -189,7 +181,7 @@ function Elements({ base, grid, canvas }, ref) {
                     onToBack: handleToBack,
                     onFocus: handleFocus,
                     onBlur: handleBlur,
-                    isFocused: context.focus?.element.id === id,
+                    isFocused: context.editor.focus?.element.id === id,
                     handle: elementRefs.current[id]
                 }
 

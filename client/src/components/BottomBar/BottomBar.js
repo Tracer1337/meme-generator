@@ -23,7 +23,7 @@ function BottomBar() {
     const classes = useStyles()
 
     return (
-        <div style={{ display: context.isEmptyState && "none" }}>
+        <div style={{ display: context.editor.isEmptyState && "none" }}>
             <AppBar position="fixed" className={classes.appBar} id="bottom-bar">
                 <DefaultActions/>
                 <ElementActions/>

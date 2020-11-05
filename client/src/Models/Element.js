@@ -1,5 +1,3 @@
-const removePropertiesFromTemplate = ["defaultValues", "fromTemplate"]
-
 class Element {
     static fromTemplate(data) {
         return new Element({
@@ -21,9 +19,8 @@ class Element {
     toJSON() {
         const result = {...this}
 
-        removePropertiesFromTemplate.forEach(key => {
-            delete result[key]
-        })
+        delete result.data.defaultValues
+        delete result.data.fromTemplate
 
         return result
     }

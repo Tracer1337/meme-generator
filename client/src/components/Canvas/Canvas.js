@@ -64,7 +64,7 @@ function Canvas() {
 
     const classes = useStyles()
 
-    useBackButton(!context.isEmptyState, context.resetEditor)
+    useBackButton(!context.editor.isEmptyState, context.resetEditor)
 
     const baseRef = useRef()
     const elementsRef = useRef()
@@ -94,11 +94,11 @@ function Canvas() {
     }
 
     const handleSetBorder = () => {
-        const dialogHandle = context.openDialog("Border", { values: context.border })
+        const dialogHandle = context.openDialog("Border", { values: context.editor.model.border })
 
         dialogHandle.addEventListener("close", (values) => {
             if (values) {
-                context.set({ border: values })
+                context.set({ editor: { model: { border: values } } })
             }
         })
     }
@@ -114,20 +114,24 @@ function Canvas() {
     }
 
     const handleResetCanvas = () => {
-        context.set({ border: defaultBorderValues })
+        context.set({ editor: { model: { border: defaultBorderValues } } })
         setGridValues(defaultGridValues)
     }
 
     const handleLoadTemplate = async ({ template }) => {
         const newContextValue = {
-            currentTemplate: template,
-            isEmptyState: false,
-            elements: [],
-            rootElement: new BaseElement({
-                type: BASE_ELEMENT_TYPES["IMAGE"],
-                image: template.image_url,
-                label: template.label
-            })
+            editor: {
+                currentTemplate: template,
+                isEmptyState: false,
+                model: {
+                    rootElement: new BaseElement({
+                        type: BASE_ELEMENT_TYPES["IMAGE"],
+                        image: template.image_url,
+                        label: template.label
+                    }),
+                    elements: []
+                }
+            }
         }
 
         context.set(newContextValue)
@@ -158,7 +162,7 @@ function Canvas() {
         }
 
         // Set border
-        newContextValue.border = border || defaultBorderValues
+        newContextValue.editor.model.border = border || defaultBorderValues
 
         // Handle elements
         if (elements) {
@@ -170,7 +174,7 @@ function Canvas() {
                 formatPercentage(element.data, "y")
 
                 // Add element to context
-                newContextValue.elements.push(Element.fromTemplate({
+                newContextValue.editor.model.elements.push(Element.fromTemplate({
                     ...element,
                     id: elementsRef.current.createId()
                 }))
@@ -181,7 +185,7 @@ function Canvas() {
     }
 
     const awaitImageLoad = () => new Promise(resolve => {
-        if (context.rootElement?.type !== BASE_ELEMENT_TYPES["IMAGE"] || baseRef.current.complete) {
+        if (context.editor.model.rootElement?.type !== BASE_ELEMENT_TYPES["IMAGE"] || baseRef.current.complete) {
             resolve()
         }
 
@@ -224,7 +228,7 @@ function Canvas() {
 
             // Get base (image) ratio
             let ratio = 1
-            if (context.rootElement.type === BASE_ELEMENT_TYPES["IMAGE"]) {
+            if (context.editor.model.rootElement.type === BASE_ELEMENT_TYPES["IMAGE"]) {
                 const imgWidth = baseRef.current.naturalWidth
                 const imgHeight = baseRef.current.naturalHeight
                 ratio = imgHeight / imgWidth
@@ -238,12 +242,12 @@ function Canvas() {
             if (maxWidth * ratio > maxHeight) {
                 // Height is larger than max height => Constrain height
                 const margin = 32
-                const borderSize = (context.border.top || 0 + context.border.bottom || 0) * context.border.size
+                const borderSize = (context.editor.model.border.top || 0 + context.editor.model.border.bottom || 0) * context.editor.model.border.size
                 newHeight = maxHeight - margin - borderSize
                 newWidth = newHeight * (1 / ratio)
             } else {
                 // Width is larger than max width => Constrain width
-                const borderSize = (context.border.left || 0 + context.border.right || 0) * context.border.size
+                const borderSize = (context.editor.model.border.left || 0 + context.editor.model.border.right || 0) * context.editor.model.border.size
                 newWidth = maxWidth - borderSize
                 newHeight = newWidth * ratio
             }
@@ -261,20 +265,20 @@ function Canvas() {
         })()
 
         // eslint-disable-next-line
-    }, [context.rootElement, baseRef, container, canvas, context.border])
+    }, [context.editor.model.rootElement, baseRef, container, canvas, context.editor.model.border])
 
     return (
         <div className={classes.canvasWrapper} ref={container}>
             <div 
                 className={classes.canvas} 
                 style={{
-                    paddingTop: context.border.top && context.border.size + "px",
-                    paddingBottom: context.border.bottom && context.border.size + "px",
-                    paddingLeft: context.border.left && context.border.size + "px",
-                    paddingRight: context.border.right && context.border.size + "px",
-                    backgroundColor: !context.isEmptyState && context.border.color,
-                    width: context.isEmptyState && "unset",
-                    height: context.isEmptyState && "unset"
+                    paddingTop: context.editor.model.border.top && context.editor.model.border.size + "px",
+                    paddingBottom: context.editor.model.border.bottom && context.editor.model.border.size + "px",
+                    paddingLeft: context.editor.model.border.left && context.editor.model.border.size + "px",
+                    paddingRight: context.editor.model.border.right && context.editor.model.border.size + "px",
+                    backgroundColor: !context.editor.isEmptyState && context.editor.model.border.color,
+                    width: context.editor.isEmptyState && "unset",
+                    height: context.editor.isEmptyState && "unset"
                 }}
                 ref={canvas}
             >
@@ -282,10 +286,10 @@ function Canvas() {
 
                 <Elements ref={elementsRef} base={baseRef.current} grid={gridValues} canvas={canvas.current}/>
 
-                <DrawingCanvas canvas={canvas.current} border={context.border} />
+                <DrawingCanvas canvas={canvas.current} border={context.editor.model.border} />
             </div>
 
-            <Grid config={gridValues} canvas={canvas.current} border={context.border}/>
+            <Grid config={gridValues} canvas={canvas.current} border={context.editor.model.border}/>
         </div>
     )
 }

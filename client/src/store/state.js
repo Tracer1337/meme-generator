@@ -22,19 +22,24 @@ class State extends Emittable {
                 isLoggedIn: false,
                 token: localStorage.getItem("token")
             },
+            
+            editor: {
+                isEmptyState: true,
+                currentTemplate: null,
+                focus: null,
 
-            isEmptyState: true,
-            currentTemplate: null,
-            focus: null,
-            rootElement: null,
-            elements: [],
+                drawing: {
+                    enabled: false,
+                    color: settingsOptions.colors["Red"],
+                    lineWidth: settingsOptions.lineWidth[1]
+                },
+                
+                model: {
+                    rootElement: null,
+                    elements: [],
 
-            border: defaultBorderValues,
-
-            drawing: {
-                enabled: false,
-                color: settingsOptions.colors["Red"],
-                lineWidth: settingsOptions.lineWidth[1]
+                    border: defaultBorderValues,
+                }
             }
         })
     }

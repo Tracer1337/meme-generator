@@ -283,14 +283,18 @@ function makeElement({
             onBlur()
         }
 
-        const handleCreateTemplate = () => {
-            const element = context.elements.find(element => element.id === id)
-            element.data = {
-                ...element.data,
-                ...position,
-                rotation,
-                width,
-                height
+        const toObject = ({ image }) => {
+            const toPercentage = (value, useWidth = false) => value / (useWidth ? image.clientWidth : image.clientHeight) * 100 + "%"
+
+            const dimensions = handle.getDimensions ? handle.getDimensions() : { width, height }
+
+            return {
+                width: toPercentage(dimensions.width + TEXTBOX_PADDING * 2, true),
+                height: toPercentage(dimensions.height + TEXTBOX_PADDING * 2),
+                x: toPercentage(position.x, true),
+                y: toPercentage(position.y),
+                rotation: rotation,
+                ...handle.getValues()
             }
         }
 
@@ -299,6 +303,7 @@ function makeElement({
             handle.beforeCapturing = () => setCapture(true)
             handle.afterCapturing = () => setCapture(false)
             handle.getControls = () => controls
+            handle.toObject = toObject
         }
 
         useEffect(() => {
@@ -332,8 +337,7 @@ function makeElement({
                 ["elementClone", pipe(onClone)],
                 ["elementToBack", pipe(onToBack)],
                 ["elementToFront", pipe(onToFront)],
-                ["elementBlur", pipe(onBlur)],
-                ["createTemplate", handleCreateTemplate]
+                ["elementBlur", pipe(onBlur)]
             ])
         })
 
