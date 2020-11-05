@@ -31,6 +31,7 @@ function compensateError(clonedDocument) {
 
 async function generateImage(container) {
     const canvas = await html2canvas(container, {
+        allowTaint: true,
         useCORS: true,
         onclone: compensateError
     })
