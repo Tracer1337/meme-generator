@@ -15,6 +15,7 @@ import ShareDialog from "./ShareDialog.js"
 import TemplatesDialog from "./TemplatesDialog.js"
 import TermsDialog from "./TermsDialog.js"
 import TextboxSettingsDialog from "./TextboxSettingsDialog.js"
+import AuthDialog from "./AuthDialog.js"
 
 export default {
     "AddFriends": AddFriendsDialog,
@@ -33,5 +34,6 @@ export default {
     "Share": ShareDialog,
     "Templates": TemplatesDialog,
     "Terms": TermsDialog,
-    "TextboxSettings": TextboxSettingsDialog
+    "TextboxSettings": TextboxSettingsDialog,
+    "Auth": AuthDialog
 }

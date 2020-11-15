@@ -33,7 +33,7 @@ function Header({ isHidden }) {
     
     const handleAvatarClick = () => {
         if (!context.auth.isLoggedIn) {
-            history.push("/login")
+            context.openDialog("Auth")
         } else {
             context.openDialog("Profile", {
                 user: context.auth.user,

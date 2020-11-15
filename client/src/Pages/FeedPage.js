@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef, useImperativeHandle } from "react"
-import { CircularProgress } from "@material-ui/core"
+import { CircularProgress, Typography } from "@material-ui/core"
 import PullToRefresh from "pulltorefreshjs"
 
-import Layout from "../components/Layout/Layout.js"
+import Container from "../components/Layout/Container.js"
 import Post from "../components/Post/Post.js"
 import useAPIData from "../utils/useAPIData.js"
 import { createListeners } from "../utils"
@@ -53,6 +53,10 @@ const Page = React.forwardRef(function ({ page }, ref) {
         return <CircularProgress />
     }
 
+    if (!data) {
+        return <Typography>Could not load data</Typography>
+    }
+
     return (
         <>
             { data.map(post => (
@@ -64,22 +68,26 @@ const Page = React.forwardRef(function ({ page }, ref) {
     )
 })
 
-function FeedPage() {
+function FeedPage({ isActive }) {
     const pageRef = useRef()
 
     useEffect(() => {
-        PullToRefresh.init({
-            mainElement: "body",
-            onRefresh: pageRef.current.reload
-        })
+        if (isActive) {
+            PullToRefresh.init({
+                mainElement: "body",
+                onRefresh: pageRef.current.reload
+            })
+        } else {
+            PullToRefresh.destroyAll()
+        }
 
         return PullToRefresh.destroyAll
-    })
+    }, [isActive])
 
     return (
-        <Layout>
-            <Page page={0} ref={pageRef}/>
-        </Layout>
+        <Container>
+            <Page page={0} ref={pageRef} />
+        </Container>
     )
 }
 

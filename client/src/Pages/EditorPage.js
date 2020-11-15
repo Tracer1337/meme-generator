@@ -1,20 +1,17 @@
-import React, { useContext } from "react"
+import React from "react"
 
-import { AppContext } from "../App.js"
-import Layout from "../components/Layout/Layout.js"
+import Container from "../components/Layout/Container.js"
 import HeaderActions from "../components/BottomBar/HeaderActions.js"
 import Canvas from "../components/Canvas/Canvas.js"
 import BottomBar from "../components/BottomBar/BottomBar.js"
 
 function EditorPage() {
-    const context = useContext(AppContext)
-
     return (
-        <Layout header={context.editor.isEmptyState} footer={context.editor.isEmptyState}>
+        <Container>
             <HeaderActions/>
             <Canvas/>
             <BottomBar/>
-        </Layout>
+        </Container>
     )
 }
 

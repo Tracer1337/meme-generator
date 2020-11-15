@@ -20,6 +20,10 @@ const useStyles = makeStyles(theme => ({
             color: theme.palette.text.primary,
             textDecoration: "none",
             fontFamily: theme.typography.fontFamily
+        },
+
+        ".MuiAppBar-positionFixed": {
+            right: "unset"
         }
     }
 }))

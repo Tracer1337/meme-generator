@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { CircularProgress } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 
-import Layout from "../components/Layout/Layout.js"
+import Container from "../components/Layout/Container.js"
 import ImageGrid from "../components/ImageGrid/ImageGrid.js"
 import { createListeners } from "../utils"
 import { getAllPosts } from "../config/api.js"
@@ -48,21 +48,17 @@ function ExplorePage() {
     }, [page])
 
     if (isLoading && page === 0) {
-        return (
-            <Layout>
-                <CircularProgress />
-            </Layout>
-        )
+        return <CircularProgress />
     }
 
     const images = data.map(post => post.upload.url)
 
     return (
-        <Layout>
+        <Container>
             <ImageGrid images={images} />
 
             { isLoading && page > 0 ? <CircularProgress/> : <div className={classes.spacer}/> }
-        </Layout>
+        </Container>
     )
 }
 
