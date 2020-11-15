@@ -1,6 +1,6 @@
 import React, { useState, useRef, useContext } from "react"
 import clsx from "clsx"
-import { Toolbar, Fab, IconButton, Zoom as MuiZoom, Fade as MuiFade } from "@material-ui/core"
+import { Toolbar, Fab, IconButton, Zoom as MuiZoom, Fade as MuiFade, Tooltip } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import DoneIcon from "@material-ui/icons/Done"
 import TextFieldsIcon from "@material-ui/icons/TextFields"
@@ -96,13 +96,17 @@ function DefaultActions() {
             <Toolbar>
                 {/* Left */}
 
-                <IconButton onClick={() => context.openDialog("Help", { data: helpOverlayData.default })}>
-                    <HelpIcon />
-                </IconButton>
+                <Tooltip title="Help">
+                    <IconButton onClick={() => context.openDialog("Help", { data: helpOverlayData.default })}>
+                        <HelpIcon />
+                    </IconButton>
+                </Tooltip>
 
-                <IconButton onClick={() => context.openDialog("Templates")} id="templates-button">
-                    <CloudDownloadIcon />
-                </IconButton>
+                <Tooltip title="Templates & Stickers">
+                    <IconButton onClick={() => context.openDialog("Templates")} id="templates-button">
+                        <CloudDownloadIcon />
+                    </IconButton>
+                </Tooltip>
 
                 {/* Center */}
 
@@ -118,14 +122,18 @@ function DefaultActions() {
 
                 <div className={classes.elementRight}>
                     <Fade in={!context.editor.drawing.enabled}>
-                        <IconButton onClick={dispatchEvent("addTextbox")} id="textbox-button" disabled={context.editor.isEmptyState}>
-                            <TextFieldsIcon />
-                        </IconButton>
+                        <Tooltip title="Add Textbox">
+                            <IconButton onClick={dispatchEvent("addTextbox")} id="textbox-button" disabled={context.editor.isEmptyState}>
+                                <TextFieldsIcon />
+                            </IconButton>
+                        </Tooltip>
                     </Fade>
 
-                    <IconButton onClick={dispatchEvent("undo")} id="undo-button" disabled={context.editor.isEmptyState}>
-                        <UndoIcon />
-                    </IconButton>
+                    <Tooltip title="Undo">
+                        <IconButton onClick={dispatchEvent("undo")} id="undo-button" disabled={context.editor.isEmptyState}>
+                            <UndoIcon />
+                        </IconButton>
+                    </Tooltip>
 
                     <Fade in={!context.editor.drawing.enabled}>
                         <IconButton onClick={handleMoreClick} ref={openMenuButton} disabled={context.editor.isEmptyState}>
