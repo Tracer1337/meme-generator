@@ -32,7 +32,7 @@ function SwipeableRoutes({ children }) {
     }, [location])
 
     return (
-        <SwipableViews index={currentIndex} onChangeIndex={handleChangeIndex} disabled>
+        <SwipableViews index={currentIndex} onChangeIndex={handleChangeIndex} disabled animateHeight>
             {React.Children.map(children, (child, i) => (
                 React.cloneElement(child, {
                     isActive: i === currentIndex

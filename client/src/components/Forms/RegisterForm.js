@@ -104,7 +104,7 @@ function RegisterForm({ onRegister }) {
                     type="submit"
                     fullWidth
                     className={classes.submit}
-                >Sign Up</Button>
+                >Register</Button>
             </form>
         </FormProvider>
     )
