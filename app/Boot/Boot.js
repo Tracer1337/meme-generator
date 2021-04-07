@@ -1,14 +1,11 @@
 const express = require("express")
 const cors = require("cors")
-const AWS = require("aws-sdk")
 
 const createConnection = require("../../database")
 const routes = require("../../routes")
 
 async function boot(app) {
     global.db = await createConnection()
-
-    AWS.config.update({ region: "eu-central-1" })
 
     setupExpress(app)
 }
