@@ -1,6 +1,5 @@
 const Model = require("../../lib/Model.js")
 const StorageFacade = require("../Facades/StorageFacade.js")
-const config = require("../../config")
 const { removeExtension } = require("../utils")
 
 class Upload extends Model {
@@ -14,7 +13,7 @@ class Upload extends Model {
 
     async delete() {
         // Delete image from storage
-        await StorageFacade.deleteFile(process.env.AWS_BUCKET_PUBLIC_DIR + "/" + this.filename)
+        await StorageFacade.deleteFile(this.filename)
         
         return super.delete()
     }

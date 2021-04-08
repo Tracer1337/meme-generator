@@ -74,7 +74,7 @@ class User extends Model {
     }
 
     async delete() {
-        await StorageFacade.deleteFile(process.env.AWS_BUCKET_PUBLIC_DIR + "/" + this.avatar_filename)
+        await StorageFacade.deleteFile(this.avatar_filename)
 
         return super.delete()
     }

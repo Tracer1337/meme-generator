@@ -22,7 +22,7 @@ async function getByFilename(req, res) {
         await new Promise(resolve => setTimeout(resolve, 100))
     }
     
-    const buffer = StorageFacade.getFile(process.env.AWS_BUCKET_PUBLIC_DIR + "/" + req.params.file)
+    const buffer = StorageFacade.getFile(req.params.file)
 
     // Check if Storage returned the buffer from cache, or a promise
     if (Buffer.isBuffer(buffer)) {
@@ -31,6 +31,7 @@ async function getByFilename(req, res) {
         try {
             res.end(await buffer)
         } catch (error) {
+            console.error(error)
             res.status(404).end()
         }
     }

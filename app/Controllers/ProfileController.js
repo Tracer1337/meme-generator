@@ -23,7 +23,7 @@ async function uploadAvatar(req, res) {
     try {
         if (req.user.avatar_filename) {
             try {
-                await StorageFacade.deleteFile(process.env.AWS_BUCKET_PUBLIC_DIR + "/" + req.user.avatar_filename)
+                await StorageFacade.deleteFile(req.user.avatar_filename)
             } catch (error) {
                 console.error(error)
             }
@@ -37,7 +37,7 @@ async function uploadAvatar(req, res) {
 
         const newFilename = changeExtension(req.file.filename, "png")
 
-        await StorageFacade.uploadFile(req.file.path, process.env.AWS_BUCKET_PUBLIC_DIR + "/" + newFilename)
+        await StorageFacade.uploadFile(req.file.path, newFilename)
 
         req.user.avatar_filename = newFilename
 
